@@ -1,0 +1,84 @@
+<?php
+
+/**
+ * Copyright since 2024 Firstruner and Contributors
+ * Firstruner is an Registered Trademark & Property of Christophe BOULAS
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Freemium License
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to contact@firstruner.fr so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit, reproduce ou modify this file.
+ * Please refer to https://firstruner.fr/ or contact Firstruner for more information.
+ *
+ * @author    Firstruner and Contributors <contact@firstruner.fr>
+ * @copyright Since 2024 Firstruner and Contributors
+ * @license   Proprietary
+ * @version 2.0.0
+ */
+
+namespace System;
+
+use \Exception;
+use System\Attributes\Partial;
+use System\Default\_string;
+
+#[Partial()]
+final class Guid implements IGuid_Static
+{
+      // static
+      public static function Empty()
+      {
+            return new Guid();
+      }
+
+      public static function NewGuid()
+      {
+            $value = _string::EmptyString;
+
+            if (function_exists('com_create_guid')) {
+                  $value = trim(com_create_guid(), '{}');
+            } else {
+                  $value =
+                        sprintf(
+                              '%04X%04X%04X%04X%04X%04X%04X%04X',
+                              mt_rand(0, 65535),
+                              mt_rand(0, 65535),
+                              mt_rand(0, 65535),
+                              mt_rand(16384, 20479),
+                              mt_rand(32768, 49151),
+                              mt_rand(0, 65535),
+                              mt_rand(0, 65535),
+                              mt_rand(0, 65535)
+                        );
+            }
+
+            return new Guid($value);
+      }
+
+      public static function Parse($value)
+      {
+            return new Guid($value);
+      }
+
+      public static function TryParse($value)
+      {
+            try {
+                  return new Guid($value);
+            } catch (Exception $ex) {
+                  return new Guid();
+            } catch (\Error $er) {
+                  return new Guid();
+            }
+      }
+
+      public static function NewFromLenght(int $length)
+      {
+            return bin2hex(openssl_random_pseudo_bytes($length));
+      }
+}
