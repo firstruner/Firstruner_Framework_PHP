@@ -24,8 +24,6 @@
 
 namespace System;
 
-use System\Guid;
-
 abstract class TypeCode
 {
       const Boolean = 3; // A simple type representing Boolean values of true or false.
