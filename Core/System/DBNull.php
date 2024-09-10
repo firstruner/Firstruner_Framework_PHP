@@ -48,18 +48,18 @@ final class DBNull
             return _string::EmptyString;
       }
 
-      /*
-      public function ToString(IFormatProvider? provider)
-      {
-      return ;
-      }
-
-      public TypeCode GetTypeCode()
-      {
-      return TypeCode.DBNull;
-      }
-
       
+      // public function ToString(IFormatProvider? provider)
+      // {
+      // return ;
+      // }
+
+      public function GetTypeCode() : int
+      {
+            return TypeCode::DBNull;
+      }
+
+      /*
       bool IConvertible.ToBoolean(IFormatProvider? provider)
       {
       throw new InvalidCastException("Invalid cast from DBNull");

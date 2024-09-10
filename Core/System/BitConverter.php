@@ -37,13 +37,13 @@ class BitConverter
       // This field indicates the "endianness" of the architecture.
       // The value is set to true if the architecture is
       // little endian; false if it is big endian.
-#if BIGENDIAN
-      [Intrinsic]
-      public static readonly bool IsLittleEndian /* = false */;
-#else
-      [Intrinsic]
-      public static readonly bool IsLittleEndian = true;
-#endif
+// #if BIGENDIAN
+//       [Intrinsic]
+//       public static readonly bool IsLittleEndian /* = false */;
+// #else
+//       [Intrinsic]
+      public const IsLittleEndian = true;
+// #endif
 
       /// <summary>
       /// Returns the specified Boolean value as a byte array.
