@@ -46,7 +46,7 @@ abstract class PropertyInfo extends MemberInfo
     public function getAccessors() {
         return $this->getAccessors(false);
     }
-    abstract public function getAccessors($nonPublic);
+    //abstract public function getAccessors($nonPublic);
 
     public function getMethod() {
         return $this->getGetMethod(true);
@@ -54,7 +54,7 @@ abstract class PropertyInfo extends MemberInfo
     public function getGetMethod() {
         return $this->getGetMethod(false);
     }
-    abstract public function getGetMethod($nonPublic);
+    //abstract public function getGetMethod($nonPublic);
 
     public function setMethod() {
         return $this->getSetMethod(true);
@@ -62,7 +62,7 @@ abstract class PropertyInfo extends MemberInfo
     public function getSetMethod() {
         return $this->getSetMethod(false);
     }
-    abstract public function getSetMethod($nonPublic);
+    //abstract public function getSetMethod($nonPublic);
 
     public function getModifiedPropertyType() {
         throw new \Exception("NotSupportedException");
@@ -80,7 +80,7 @@ abstract class PropertyInfo extends MemberInfo
     public function getValueWithIndex($obj = null, $index = null) {
         return $this->getValue($obj, BindingFlags::Default, null, $index, null);
     }
-    abstract public function getValue($obj, $invokeAttr, $binder, $index, $culture);
+    //abstract public function getValue($obj, $invokeAttr, $binder, $index, $culture);
 
     public function getConstantValue() {
         throw new \Exception("NotImplementedException");
@@ -95,7 +95,7 @@ abstract class PropertyInfo extends MemberInfo
     public function setValueWithIndex($obj = null, $value = null, $index = null) {
         $this->setValue($obj, $value, BindingFlags::Default, null, $index, null);
     }
-    abstract public function setValue($obj, $value, $invokeAttr, $binder, $index, $culture);
+    //abstract public function setValue($obj, $value, $invokeAttr, $binder, $index, $culture);
 
     public function equals($obj) {
         return parent::equals($obj);

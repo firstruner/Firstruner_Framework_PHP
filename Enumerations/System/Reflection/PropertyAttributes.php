@@ -24,25 +24,14 @@
 
 namespace System\Reflection;
 
-class ArgumentData
+abstract class PropertyAttributes
 {
-      private $arg0;
-
-      // public function asSpan($length) {
-      //       assert((uint)$length <= self::MaxStackAllocArgCount);
-      //       return new Span($this->arg0, $length);
-      // }
-
-      public function set($index, $value) {
-            assert((uint)$index < self::MaxStackAllocArgCount);
-            Unsafe::add($this->arg0, $index) = $value;
-      }
-
-      public function __set($index, $value) {
-            if ($index < 0) throw new 
-
-            if ($name === 'valeur' && is_int($value)) {
-                $this->valeur = $value;
-            }
-      }
+    const None = 0x0000;
+    const SpecialName = 0x0200;     // property is special.  Name describes how.
+    const RTSpecialName = 0x0400;   // Runtime(metadata internal APIs) should check name encoding.
+    const HasDefault = 0x1000;      // Property has default
+    const Reserved2 = 0x2000;
+    const Reserved3 = 0x4000;
+    const Reserved4 = 0x8000;
+    const ReservedMask = 0xf400;
 }
