@@ -24,58 +24,43 @@
 
 namespace System;
 
+use Obselete;
+
 class Enumerations
 {
+    #[Obselete("Use Enum class")]
     public static function HasFlag(int $flags, int $flag) : bool
     {
-        //return ($value / $searched) > 1;
-        return (($flags & $flag) === $flag);
+        return Enum::HasFlag($flags, $flag);
     }
 
+    #[Obselete("Use Enum class")]
     public static function HasFlag_FromArray(array $collection, int $key) : bool
     {
-        foreach ($collection as $value) {
-            if ($value == $key) { return true; }
-        }
-        
-        return false;
+        return Enum::HasFlag_FromArray($collection, $key);
     }
 
-    private static function extractEnumsKeyValues(string $enumName): array
-    {
-        $reflect = new \ReflectionClass($enumName);
-        return $reflect->getConstants();
-    }
-
+    #[Obselete("Use Enum class")]
     public static function GetKey_FromValue(string $enumName, $value)
     {
-        foreach (Enumerations::extractEnumsKeyValues($enumName) as $_key => $_value)
-            if ($value == $_value) return $_key;
-
-        return null;
+        return Enum::GetKey_FromValue($enumName, $value);
     }
 
+    #[Obselete("Use Enum class")]
     public static function GetValue_FromKey(string $enumName, string $key)
     {
-        foreach (Enumerations::extractEnumsKeyValues($enumName) as $_key => $_value)
-            if ($key == $_key) return $_value;
-
-        return null;
+        return Enum::GetValue_FromKey($enumName, $key);
     }
 
+    #[Obselete("Use Enum class")]
     public static function Exist_Key(string $enumName, string $key): bool
     {
-        foreach (Enumerations::extractEnumsKeyValues($enumName) as $_key => $_value)
-            if ($key == $_key) return true;
-
-        return false;
+        return Enum::Exist_Key($enumName, $key);
     }
 
+    #[Obselete("Use Enum class")]
     public static function Exist_Value(string $enumName, string $value): bool
     {
-        foreach (Enumerations::extractEnumsKeyValues($enumName) as $_key => $_value)
-            if ($value == $_value) return true;
-
-        return false;
+        return Enum::Exist_Value($enumName, $value);
     }
 }
