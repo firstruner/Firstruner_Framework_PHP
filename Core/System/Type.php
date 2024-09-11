@@ -36,6 +36,14 @@
 
 namespace System;
 
+use Exception;
+use System\Exceptions\ArgumentNullException;
+use System\Exceptions\NotImplementedException;
+use System\Reflection\BindingFlags;
+use System\Reflection\FieldInfo;
+use System\Reflection\PropertyInfo;
+use System\Reflection\MethodInfo;
+
 abstract class Type// : MemberInfo, IReflect
 {
       protected function __construct() { }
@@ -118,7 +126,7 @@ abstract class Type// : MemberInfo, IReflect
 
       public function IsAbstract() : bool
       {
-            $reflection = new ReflectionClass($this);
+            $reflection = new \ReflectionClass($this);
             return $reflection->isAbstract();
       }
 
@@ -130,7 +138,7 @@ abstract class Type// : MemberInfo, IReflect
 
       public function IsSealed() : bool
       {
-            $reflection = new ReflectionClass($this);
+            $reflection = new \ReflectionClass($this);
             return $reflection->isFinal();
       }
 
@@ -155,8 +163,10 @@ abstract class Type// : MemberInfo, IReflect
 
       public function IsPublic() : bool
       {
-            $reflection = new ReflectionClass($this);
-            return $reflection->isPublic();
+            throw new NotImplementedException();
+
+            $reflection = new \ReflectionClass($this);
+            return $reflection;//->is Public;
       }
 
       // public bool IsAutoLayout => (GetAttributeFlagsImpl() & TypeAttributes.LayoutMask) == TypeAttributes.AutoLayout;
@@ -245,7 +255,7 @@ abstract class Type// : MemberInfo, IReflect
       // protected abstract ConstructorInfo? GetConstructorImpl(BindingFlags bindingAttr, Binder? binder, CallingConventions callConvention, Type[] types, ParameterModifier[]? modifiers);
 
       private function getConstructorInfo($className) : int {
-            $reflection = new ReflectionClass($className);
+            $reflection = new \ReflectionClass($className);
             $constructor = $reflection->getConstructor();
         
             return ($constructor == null);
@@ -278,13 +288,17 @@ abstract class Type// : MemberInfo, IReflect
       // public abstract EventInfo[] GetEvents(BindingFlags bindingAttr);
 
       // [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicFields)]
-      public FieldInfo? GetField(string name) => GetField(name, DefaultLookup);
+      public function GetField(string $name = null) : ?FieldInfo
+      {
+            // => GetField(name, DefaultLookup);
+            return null;
+      }
 
       // [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicFields | DynamicallyAccessedMemberTypes.NonPublicFields)]
       // public abstract FieldInfo? GetField(string name, BindingFlags bindingAttr);
 
       // [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicFields)]
-      public FieldInfo[] GetFields() => GetFields(DefaultLookup);
+      //public array GetFields() => GetFields(DefaultLookup);
 
       // [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicFields | DynamicallyAccessedMemberTypes.NonPublicFields)]
       // public abstract FieldInfo[] GetFields(BindingFlags bindingAttr);
@@ -353,14 +367,15 @@ abstract class Type// : MemberInfo, IReflect
       // public abstract MemberInfo[] GetMembers(BindingFlags bindingAttr);
 
       // [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods)]
-      public MethodInfo? GetMethod(string name) => GetMethod(name, DefaultLookup);
+      //public MethodInfo? GetMethod(string name) => GetMethod(name, DefaultLookup);
 
       // [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods | DynamicallyAccessedMemberTypes.NonPublicMethods)]
-      public MethodInfo? GetMethod(string name, BindingFlags bindingAttr)
+      public function GetMethod(string $name, BindingFlags $bindingAttr = null) : ?MethodInfo
       {
-      ArgumentNullException.ThrowIfNull(name);
+            if ($name == null) throw new ArgumentNullException("name");
 
-      return GetMethodImpl(name, bindingAttr, null, CallingConventions.Any, null, null);
+            //return $this->GetMethodImpl(name, bindingAttr, null, CallingConventions.Any, null, null);
+            return null;
       }
 
       /// <summary>
@@ -379,384 +394,385 @@ abstract class Type// : MemberInfo, IReflect
       /// </param>
       /// <returns>An object representing the method that matches the specified requirements, if found; otherwise, null.</returns>
       // [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods | DynamicallyAccessedMemberTypes.NonPublicMethods)]
-      public MethodInfo? GetMethod(string name, BindingFlags bindingAttr, Type[] types) => GetMethod(name, bindingAttr, binder: null, types, modifiers: null);
+      // public MethodInfo? GetMethod(string name, BindingFlags bindingAttr, Type[] types) => GetMethod(name, bindingAttr, binder: null, types, modifiers: null);
 
-      // [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods)]
-      public MethodInfo? GetMethod(string name, Type[] types) => GetMethod(name, types, null);
+      // // [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods)]
+      // public MethodInfo? GetMethod(string name, Type[] types) => GetMethod(name, types, null);
 
-      // [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods)]
-      public MethodInfo? GetMethod(string name, Type[] types, ParameterModifier[]? modifiers) => GetMethod(name, DefaultLookup, null, types, modifiers);
+      // // [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods)]
+      // public MethodInfo? GetMethod(string name, Type[] types, ParameterModifier[]? modifiers) => GetMethod(name, DefaultLookup, null, types, modifiers);
 
-      // [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods | DynamicallyAccessedMemberTypes.NonPublicMethods)]
-      public MethodInfo? GetMethod(string name, BindingFlags bindingAttr, Binder? binder, Type[] types, ParameterModifier[]? modifiers) => GetMethod(name, bindingAttr, binder, CallingConventions.Any, types, modifiers);
+      // // [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods | DynamicallyAccessedMemberTypes.NonPublicMethods)]
+      // public MethodInfo? GetMethod(string name, BindingFlags bindingAttr, Binder? binder, Type[] types, ParameterModifier[]? modifiers) => GetMethod(name, bindingAttr, binder, CallingConventions.Any, types, modifiers);
 
-      // [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods | DynamicallyAccessedMemberTypes.NonPublicMethods)]
-      public MethodInfo? GetMethod(string name, BindingFlags bindingAttr, Binder? binder, CallingConventions callConvention, Type[] types, ParameterModifier[]? modifiers)
-      {
-      ArgumentNullException.ThrowIfNull(name);
-      ArgumentNullException.ThrowIfNull(types);
+      // // [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods | DynamicallyAccessedMemberTypes.NonPublicMethods)]
+      // public MethodInfo? GetMethod(string name, BindingFlags bindingAttr, Binder? binder, CallingConventions callConvention, Type[] types, ParameterModifier[]? modifiers)
+      // {
+      // ArgumentNullException.ThrowIfNull(name);
+      // ArgumentNullException.ThrowIfNull(types);
 
-      for (int i = 0; i < types.Length; i++)
-      {
-            ArgumentNullException.ThrowIfNull(types[i], nameof(types));
-      }
-      return GetMethodImpl(name, bindingAttr, binder, callConvention, types, modifiers);
-      }
+      // for (int i = 0; i < types.Length; i++)
+      // {
+      //       ArgumentNullException.ThrowIfNull(types[i], nameof(types));
+      // }
+      // return GetMethodImpl(name, bindingAttr, binder, callConvention, types, modifiers);
+      // }
 
       // [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods | DynamicallyAccessedMemberTypes.NonPublicMethods)]
       // protected abstract MethodInfo? GetMethodImpl(string name, BindingFlags bindingAttr, Binder? binder, CallingConventions callConvention, Type[]? types, ParameterModifier[]? modifiers);
 
       // [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods)]
-      public MethodInfo? GetMethod(string name, int genericParameterCount, Type[] types) => GetMethod(name, genericParameterCount, types, null);
+      // public MethodInfo? GetMethod(string name, int genericParameterCount, Type[] types) => GetMethod(name, genericParameterCount, types, null);
 
-      // [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods)]
-      public MethodInfo? GetMethod(string name, int genericParameterCount, Type[] types, ParameterModifier[]? modifiers) => GetMethod(name, genericParameterCount, DefaultLookup, null, types, modifiers);
+      // // [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods)]
+      // public MethodInfo? GetMethod(string name, int genericParameterCount, Type[] types, ParameterModifier[]? modifiers) => GetMethod(name, genericParameterCount, DefaultLookup, null, types, modifiers);
 
-      // [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods | DynamicallyAccessedMemberTypes.NonPublicMethods)]
-      public MethodInfo? GetMethod(string name, int genericParameterCount, BindingFlags bindingAttr, Binder? binder, Type[] types, ParameterModifier[]? modifiers) => GetMethod(name, genericParameterCount, bindingAttr, binder, CallingConventions.Any, types, modifiers);
+      // // [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods | DynamicallyAccessedMemberTypes.NonPublicMethods)]
+      // public MethodInfo? GetMethod(string name, int genericParameterCount, BindingFlags bindingAttr, Binder? binder, Type[] types, ParameterModifier[]? modifiers) => GetMethod(name, genericParameterCount, bindingAttr, binder, CallingConventions.Any, types, modifiers);
 
-      // [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods | DynamicallyAccessedMemberTypes.NonPublicMethods)]
-      public MethodInfo? GetMethod(string name, int genericParameterCount, BindingFlags bindingAttr, Binder? binder, CallingConventions callConvention, Type[] types, ParameterModifier[]? modifiers)
-      {
-      ArgumentNullException.ThrowIfNull(name);
-      ArgumentOutOfRangeException.ThrowIfNegative(genericParameterCount);
-      ArgumentNullException.ThrowIfNull(types);
-      for (int i = 0; i < types.Length; i++)
-      {
-            ArgumentNullException.ThrowIfNull(types[i], nameof(types));
-      }
-      return GetMethodImpl(name, genericParameterCount, bindingAttr, binder, callConvention, types, modifiers);
-      }
+      // // [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods | DynamicallyAccessedMemberTypes.NonPublicMethods)]
+      // public MethodInfo? GetMethod(string name, int genericParameterCount, BindingFlags bindingAttr, Binder? binder, CallingConventions callConvention, Type[] types, ParameterModifier[]? modifiers)
+      // {
+      // ArgumentNullException.ThrowIfNull(name);
+      // ArgumentOutOfRangeException.ThrowIfNegative(genericParameterCount);
+      // ArgumentNullException.ThrowIfNull(types);
+      // for (int i = 0; i < types.Length; i++)
+      // {
+      //       ArgumentNullException.ThrowIfNull(types[i], nameof(types));
+      // }
+      // return GetMethodImpl(name, genericParameterCount, bindingAttr, binder, callConvention, types, modifiers);
+      // }
 
-      // [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods | DynamicallyAccessedMemberTypes.NonPublicMethods)]
-      // protected virtual MethodInfo? GetMethodImpl(string name, int genericParameterCount, BindingFlags bindingAttr, Binder? binder, CallingConventions callConvention, Type[]? types, ParameterModifier[]? modifiers) => throw new NotSupportedException();
+      // // [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods | DynamicallyAccessedMemberTypes.NonPublicMethods)]
+      // // protected virtual MethodInfo? GetMethodImpl(string name, int genericParameterCount, BindingFlags bindingAttr, Binder? binder, CallingConventions callConvention, Type[]? types, ParameterModifier[]? modifiers) => throw new NotSupportedException();
 
-      // [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods)]
-      public MethodInfo[] GetMethods() => GetMethods(DefaultLookup);
+      // // [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods)]
+      // public MethodInfo[] GetMethods() => GetMethods(DefaultLookup);
 
-      // [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods | DynamicallyAccessedMemberTypes.NonPublicMethods)]
-      // public abstract MethodInfo[] GetMethods(BindingFlags bindingAttr);
+      // // [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods | DynamicallyAccessedMemberTypes.NonPublicMethods)]
+      // // public abstract MethodInfo[] GetMethods(BindingFlags bindingAttr);
 
-      // [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicNestedTypes)]
-      public Type? GetNestedType(string name) => GetNestedType(name, DefaultLookup);
+      // // [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicNestedTypes)]
+      // public Type? GetNestedType(string name) => GetNestedType(name, DefaultLookup);
 
-      // [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicNestedTypes | DynamicallyAccessedMemberTypes.NonPublicNestedTypes)]
-      // public abstract Type? GetNestedType(string name, BindingFlags bindingAttr);
+      // // [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicNestedTypes | DynamicallyAccessedMemberTypes.NonPublicNestedTypes)]
+      // // public abstract Type? GetNestedType(string name, BindingFlags bindingAttr);
 
-      // [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicNestedTypes)]
-      public Type[] GetNestedTypes() => GetNestedTypes(DefaultLookup);
+      // // [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicNestedTypes)]
+      // public Type[] GetNestedTypes() => GetNestedTypes(DefaultLookup);
 
       // [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicNestedTypes | DynamicallyAccessedMemberTypes.NonPublicNestedTypes)]
       // public abstract Type[] GetNestedTypes(BindingFlags bindingAttr);
 
       // [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)]
-      public PropertyInfo? GetProperty(string name) => GetProperty(name, DefaultLookup);
+      // public PropertyInfo? GetProperty(string name) => GetProperty(name, DefaultLookup);
 
       // [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.NonPublicProperties)]
-      public PropertyInfo? GetProperty(string name, BindingFlags bindingAttr)
+      public function GetProperty(string $name, BindingFlags $bindingAttr = null) : ?PropertyInfo
       {
-      ArgumentNullException.ThrowIfNull(name);
+            if ($name == null) throw new ArgumentNullException("name");
 
-      return GetPropertyImpl(name, bindingAttr, null, null, null, null);
+            //return GetPropertyImpl(name, bindingAttr, null, null, null, null);
+            return null;
       }
 
       // [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)]
       // [UnconditionalSuppressMessage("ReflectionAnalysis", "IL2085:UnrecognizedReflectionPattern",
       // Justification = "Linker doesn't recognize GetPropertyImpl(BindingFlags.Public) but this is what the body is doing")]
-      public PropertyInfo? GetProperty(string $name, ?Type $returnType)
-      {
-      ArgumentNullException.ThrowIfNull(name);
-
-      return GetPropertyImpl(name, DefaultLookup, null, returnType, null, null);
-      }
-
-      // [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)]
-      public PropertyInfo? GetProperty(string name, Type[] types) => GetProperty(name, null, types);
-
-      // [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)]
-      public PropertyInfo? GetProperty(string name, Type? returnType, Type[] types) => GetProperty(name, returnType, types, null);
-
-      // [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)]
-      public PropertyInfo? GetProperty(string name, Type? returnType, Type[] types, ParameterModifier[]? modifiers) => GetProperty(name, DefaultLookup, null, returnType, types, modifiers);
-
-      // [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.NonPublicProperties)]
-      public PropertyInfo? GetProperty(string name, BindingFlags bindingAttr, Binder? binder, Type? returnType, Type[] types, ParameterModifier[]? modifiers)
-      {
-      ArgumentNullException.ThrowIfNull(name);
-      ArgumentNullException.ThrowIfNull(types);
-
-      return GetPropertyImpl(name, bindingAttr, binder, returnType, types, modifiers);
-      }
-
-      // [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.NonPublicProperties)]
-      // protected abstract PropertyInfo? GetPropertyImpl(string name, BindingFlags bindingAttr, Binder? binder, Type? returnType, Type[]? types, ParameterModifier[]? modifiers);
-
-      // [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)]
-      public PropertyInfo[] GetProperties() => GetProperties(DefaultLookup);
-
-      // [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.NonPublicProperties)]
-      // public abstract PropertyInfo[] GetProperties(BindingFlags bindingAttr);
-
-      // [DynamicallyAccessedMembers(
-      // DynamicallyAccessedMemberTypes.PublicFields
-      // | DynamicallyAccessedMemberTypes.PublicMethods
-      // | DynamicallyAccessedMemberTypes.PublicEvents
-      // | DynamicallyAccessedMemberTypes.PublicProperties
-      // | DynamicallyAccessedMemberTypes.PublicConstructors
-      // | DynamicallyAccessedMemberTypes.PublicNestedTypes)]
-      // public virtual MemberInfo[] GetDefaultMembers() => throw NotImplemented.ByDesign;
-
-      // public virtual RuntimeTypeHandle TypeHandle
+      // public PropertyInfo? GetProperty(string $name, ?Type $returnType)
       // {
-      // [Intrinsic]
-      // get => throw new NotSupportedException();
+      // ArgumentNullException.ThrowIfNull(name);
+
+      // return GetPropertyImpl(name, DefaultLookup, null, returnType, null, null);
       // }
 
-      public static RuntimeTypeHandle GetTypeHandle(object o)
-      {
-      ArgumentNullException.ThrowIfNull(o);
+      // // [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)]
+      // public PropertyInfo? GetProperty(string name, Type[] types) => GetProperty(name, null, types);
 
-      return o.GetType().TypeHandle;
-      }
+      // // [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)]
+      // public PropertyInfo? GetProperty(string name, Type? returnType, Type[] types) => GetProperty(name, returnType, types, null);
 
-      public static Type[] GetTypeArray(object[] args)
-      {
-      ArgumentNullException.ThrowIfNull(args);
+      // // [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)]
+      // public PropertyInfo? GetProperty(string name, Type? returnType, Type[] types, ParameterModifier[]? modifiers) => GetProperty(name, DefaultLookup, null, returnType, types, modifiers);
 
-      Type[] cls = new Type[args.Length];
-      for (int i = 0; i < cls.Length; i++)
-      {
-            if (args[i] == null)
-                  throw new ArgumentException(SR.ArgumentNull_ArrayValue, nameof(args));
-            cls[i] = args[i].GetType();
-      }
-      return cls;
-      }
+      // // [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.NonPublicProperties)]
+      // public PropertyInfo? GetProperty(string name, BindingFlags bindingAttr, Binder? binder, Type? returnType, Type[] types, ParameterModifier[]? modifiers)
+      // {
+      // ArgumentNullException.ThrowIfNull(name);
+      // ArgumentNullException.ThrowIfNull(types);
 
-      // [MethodImpl(MethodImplOptions.AggressiveInlining)]
-      public static TypeCode GetTypeCode(Type? type)
-      {
-      if (RuntimeHelpers.IsKnownConstant(type) && type is RuntimeType)
-      {
-            return GetRuntimeTypeCode((RuntimeType)type);
-      }
-      return type?.GetTypeCodeImpl() ?? TypeCode.Empty;
-      }
+      // return GetPropertyImpl(name, bindingAttr, binder, returnType, types, modifiers);
+      // }
 
-      // [MethodImpl(MethodImplOptions.AggressiveInlining)]
-      internal static TypeCode GetRuntimeTypeCode(RuntimeType type)
-      {
-      RuntimeType underlyingType = type;
-      if (type.IsActualEnum)
-            underlyingType = (RuntimeType)type.GetEnumUnderlyingType();
+      // // [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.NonPublicProperties)]
+      // // protected abstract PropertyInfo? GetPropertyImpl(string name, BindingFlags bindingAttr, Binder? binder, Type? returnType, Type[]? types, ParameterModifier[]? modifiers);
 
-      if (underlyingType == typeof(sbyte))
-            return TypeCode.SByte;
-      else if (underlyingType == typeof(byte))
-            return TypeCode.Byte;
-      else if (underlyingType == typeof(short))
-            return TypeCode.Int16;
-      else if (underlyingType == typeof(ushort))
-            return TypeCode.UInt16;
-      else if (underlyingType == typeof(int))
-            return TypeCode.Int32;
-      else if (underlyingType == typeof(uint))
-            return TypeCode.UInt32;
-      else if (underlyingType == typeof(long))
-            return TypeCode.Int64;
-      else if (underlyingType == typeof(ulong))
-            return TypeCode.UInt64;
-      else if (underlyingType == typeof(bool))
-            return TypeCode.Boolean;
-      else if (underlyingType == typeof(char))
-            return TypeCode.Char;
-      else if (underlyingType == typeof(float))
-            return TypeCode.Single;
-      else if (underlyingType == typeof(double))
-            return TypeCode.Double;
-      else if (underlyingType == typeof(decimal))
-            return TypeCode.Decimal;
-      else if (underlyingType == typeof(DateTime))
-            return TypeCode.DateTime;
-      else if (underlyingType == typeof(string))
-            return TypeCode.String;
-      else if (underlyingType == typeof(DBNull))
-            return TypeCode.DBNull;
-      else
-            return TypeCode.Object;
-      }
+      // // [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)]
+      // public PropertyInfo[] GetProperties() => GetProperties(DefaultLookup);
 
-      // protected virtual TypeCode GetTypeCodeImpl()
+      // // [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.NonPublicProperties)]
+      // // public abstract PropertyInfo[] GetProperties(BindingFlags bindingAttr);
+
+      // // [DynamicallyAccessedMembers(
+      // // DynamicallyAccessedMemberTypes.PublicFields
+      // // | DynamicallyAccessedMemberTypes.PublicMethods
+      // // | DynamicallyAccessedMemberTypes.PublicEvents
+      // // | DynamicallyAccessedMemberTypes.PublicProperties
+      // // | DynamicallyAccessedMemberTypes.PublicConstructors
+      // // | DynamicallyAccessedMemberTypes.PublicNestedTypes)]
+      // // public virtual MemberInfo[] GetDefaultMembers() => throw NotImplemented.ByDesign;
+
+      // // public virtual RuntimeTypeHandle TypeHandle
+      // // {
+      // // [Intrinsic]
+      // // get => throw new NotSupportedException();
+      // // }
+
+      // public static RuntimeTypeHandle GetTypeHandle(object o)
+      // {
+      // ArgumentNullException.ThrowIfNull(o);
+
+      // return o.GetType().TypeHandle;
+      // }
+
+      // public static Type[] GetTypeArray(object[] args)
+      // {
+      // ArgumentNullException.ThrowIfNull(args);
+
+      // Type[] cls = new Type[args.Length];
+      // for (int i = 0; i < cls.Length; i++)
+      // {
+      //       if (args[i] == null)
+      //             throw new ArgumentException(SR.ArgumentNull_ArrayValue, nameof(args));
+      //       cls[i] = args[i].GetType();
+      // }
+      // return cls;
+      // }
+
+      // // [MethodImpl(MethodImplOptions.AggressiveInlining)]
+      // public static TypeCode GetTypeCode(Type? type)
+      // {
+      // if (RuntimeHelpers.IsKnownConstant(type) && type is RuntimeType)
+      // {
+      //       return GetRuntimeTypeCode((RuntimeType)type);
+      // }
+      // return type?.GetTypeCodeImpl() ?? TypeCode.Empty;
+      // }
+
+      // // [MethodImpl(MethodImplOptions.AggressiveInlining)]
+      // internal static TypeCode GetRuntimeTypeCode(RuntimeType type)
+      // {
+      // RuntimeType underlyingType = type;
+      // if (type.IsActualEnum)
+      //       underlyingType = (RuntimeType)type.GetEnumUnderlyingType();
+
+      // if (underlyingType == typeof(sbyte))
+      //       return TypeCode.SByte;
+      // else if (underlyingType == typeof(byte))
+      //       return TypeCode.Byte;
+      // else if (underlyingType == typeof(short))
+      //       return TypeCode.Int16;
+      // else if (underlyingType == typeof(ushort))
+      //       return TypeCode.UInt16;
+      // else if (underlyingType == typeof(int))
+      //       return TypeCode.Int32;
+      // else if (underlyingType == typeof(uint))
+      //       return TypeCode.UInt32;
+      // else if (underlyingType == typeof(long))
+      //       return TypeCode.Int64;
+      // else if (underlyingType == typeof(ulong))
+      //       return TypeCode.UInt64;
+      // else if (underlyingType == typeof(bool))
+      //       return TypeCode.Boolean;
+      // else if (underlyingType == typeof(char))
+      //       return TypeCode.Char;
+      // else if (underlyingType == typeof(float))
+      //       return TypeCode.Single;
+      // else if (underlyingType == typeof(double))
+      //       return TypeCode.Double;
+      // else if (underlyingType == typeof(decimal))
+      //       return TypeCode.Decimal;
+      // else if (underlyingType == typeof(DateTime))
+      //       return TypeCode.DateTime;
+      // else if (underlyingType == typeof(string))
+      //       return TypeCode.String;
+      // else if (underlyingType == typeof(DBNull))
+      //       return TypeCode.DBNull;
+      // else
+      //       return TypeCode.Object;
+      // }
+
+      // // protected virtual TypeCode GetTypeCodeImpl()
+      // // {
+      // // Type systemType = UnderlyingSystemType;
+      // // if (!ReferenceEquals(this, systemType) && systemType is not null)
+      // //       return GetTypeCode(systemType);
+
+      // // return TypeCode.Object;
+      // // }
+
+      // // public abstract Guid GUID { get; }
+
+      // // [SupportedOSPlatform("windows")]
+      // public static Type? GetTypeFromCLSID(Guid clsid) => GetTypeFromCLSID(clsid, null, throwOnError: false);
+      // // [SupportedOSPlatform("windows")]
+      // public static Type? GetTypeFromCLSID(Guid clsid, bool throwOnError) => GetTypeFromCLSID(clsid, null, throwOnError: throwOnError);
+      // // [SupportedOSPlatform("windows")]
+      // public static Type? GetTypeFromCLSID(Guid clsid, string? server) => GetTypeFromCLSID(clsid, server, throwOnError: false);
+      // // [SupportedOSPlatform("windows")]
+      // public static Type? GetTypeFromCLSID(Guid clsid, string? server, bool throwOnError) => Marshal.GetTypeFromCLSID(clsid, server, throwOnError);
+
+      // // [SupportedOSPlatform("windows")]
+      // public static Type? GetTypeFromProgID(string progID) => GetTypeFromProgID(progID, null, throwOnError: false);
+      // // [SupportedOSPlatform("windows")]
+      // public static Type? GetTypeFromProgID(string progID, bool throwOnError) => GetTypeFromProgID(progID, null, throwOnError: throwOnError);
+      // // [SupportedOSPlatform("windows")]
+      // public static Type? GetTypeFromProgID(string progID, string? server) => GetTypeFromProgID(progID, server, throwOnError: false);
+      // // [SupportedOSPlatform("windows")]
+      // public static Type? GetTypeFromProgID(string progID, string? server, bool throwOnError) => Marshal.GetTypeFromProgID(progID, server, throwOnError);
+
+      // // public abstract Type? BaseType { get; }
+
+      // // [DebuggerHidden]
+      // // [DebuggerStepThrough]
+      // // [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+      // public object? InvokeMember(string name, BindingFlags invokeAttr, Binder? binder, object? target, object?[]? args) => InvokeMember(name, invokeAttr, binder, target, args, null, null, null);
+
+      // // [DebuggerHidden]
+      // // [DebuggerStepThrough]
+      // // [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+      // public object? InvokeMember(string name, BindingFlags invokeAttr, Binder? binder, object? target, object?[]? args, CultureInfo? culture) => InvokeMember(name, invokeAttr, binder, target, args, null, culture, null);
+
+      // // [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+      // // public abstract object? InvokeMember(string name, BindingFlags invokeAttr, Binder? binder, object? target, object?[]? args, ParameterModifier[]? modifiers, CultureInfo? culture, string[]? namedParameters);
+
+      // // [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.Interfaces)]
+      // // [return: DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.Interfaces)]
+      // public Type? GetInterface(string name) => GetInterface(name, ignoreCase: false);
+      // // [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.Interfaces)]
+      // // [return: DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.Interfaces)]
+      // // public abstract Type? GetInterface(string name, bool ignoreCase);
+      // // [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.Interfaces)]
+      // // public abstract Type[] GetInterfaces();
+
+      // // public virtual InterfaceMapping GetInterfaceMap([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods | DynamicallyAccessedMemberTypes.NonPublicMethods)] Type interfaceType) => throw new NotSupportedException(SR.NotSupported_SubclassOverride);
+
+      // // public virtual bool IsInstanceOfType([NotNullWhen(true)] object? o) => o == null ? false : IsAssignableFrom(o.GetType());
+      // // public virtual bool IsEquivalentTo([NotNullWhen(true)] Type? other) => this == other;
+
+      // // [UnconditionalSuppressMessage("ReflectionAnalysis", "IL2085:UnrecognizedReflectionPattern",
+      // // Justification = "The single instance field on enum types is never trimmed")]
+      // // [Intrinsic]
+      // // public virtual Type GetEnumUnderlyingType()
+      // // {
+      // // if (!IsEnum)
+      // //       throw new ArgumentException(SR.Arg_MustBeEnum, "enumType");
+
+      // // FieldInfo[] fields = GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+      // // if (fields == null || fields.Length != 1)
+      // //       throw new ArgumentException(SR.Argument_InvalidEnum, "enumType");
+
+      // // return fields[0].FieldType;
+      // // }
+
+      // // [RequiresDynamicCode("It might not be possible to create an array of the enum type at runtime. Use Enum.GetValues<T> or the GetEnumValuesAsUnderlyingType method instead.")]
+      // // public virtual Array GetEnumValues()
+      // // {
+      // // if (!IsEnum)
+      // //       throw new ArgumentException(SR.Arg_MustBeEnum, "enumType");
+
+      // // // We don't support GetEnumValues in the default implementation because we cannot create an array of
+      // // // a non-runtime type. If there is strong need we can consider returning an object or int64 array.
+      // // throw NotImplemented.ByDesign;
+      // // }
+
+      // // /// <summary>
+      // // /// Retrieves an array of the values of the underlying type constants of this enumeration type.
+      // // /// </summary>
+      // // /// <remarks>
+      // // /// You can use this method to get enumeration values when it's hard to create an array of the enumeration type.
+      // // /// For example, you might use this method for the <see cref="T:System.Reflection.MetadataLoadContext" /> enumeration or on a platform where run-time code generation is not available.
+      // // /// </remarks>
+      // // /// <returns>An array that contains the values of the underlying type constants in this enumeration type.</returns>
+      // // /// <exception cref="T:System.ArgumentException">This type is not an enumeration type.</exception>
+      // // public virtual Array GetEnumValuesAsUnderlyingType() => throw new NotSupportedException(SR.NotSupported_SubclassOverride);
+
+      // // [RequiresDynamicCode("The code for an array of the specified type might not be available.")]
+      // // public virtual Type MakeArrayType() => throw new NotSupportedException();
+      // // [RequiresDynamicCode("The code for an array of the specified type might not be available.")]
+      // // public virtual Type MakeArrayType(int rank) => throw new NotSupportedException();
+      // // public virtual Type MakeByRefType() => throw new NotSupportedException();
+
+      // // [RequiresDynamicCode("The native code for this instantiation might not be available at runtime.")]
+      // // [RequiresUnreferencedCode("If some of the generic arguments are annotated (either with DynamicallyAccessedMembersAttribute, or generic constraints), trimming can't validate that the requirements of those annotations are met.")]
+      // // public virtual Type MakeGenericType(params Type[] typeArguments) => throw new NotSupportedException(SR.NotSupported_SubclassOverride);
+
+      // public virtual Type MakePointerType() => throw new NotSupportedException();
+
+      // public static Type MakeGenericSignatureType(Type genericTypeDefinition, params Type[] typeArguments) => new SignatureConstructedGenericType(genericTypeDefinition, typeArguments);
+
+      // public static Type MakeGenericMethodParameter(int position)
+      // {
+      // ArgumentOutOfRangeException.ThrowIfNegative(position);
+      // return new SignatureGenericMethodParameterType(position);
+      // }
+
+      // // // This is used by the ToString() overrides of all reflection types. The legacy behavior has the following problems:
+      // // //  1. Use only Name for nested types, which can be confused with global types and generic parameters of the same name.
+      // // //  2. Use only Name for generic parameters, which can be confused with nested types and global types of the same name.
+      // // //  3. Use only Name for all primitive types, void and TypedReference
+      // // //  4. MethodBase.ToString() use "ByRef" for byref parameters which is different than Type.ToString().
+      // // //  5. ConstructorInfo.ToString() outputs "Void" as the return type. Why Void?
+      // internal string FormatTypeName()
+      // {
+      // Type elementType = GetRootElementType();
+
+      // if (elementType.IsPrimitive ||
+      //       elementType.IsNested ||
+      //       elementType == typeof(void) ||
+      //       elementType == typeof(TypedReference))
+      //       return Name;
+
+      // return ToString();
+      // }
+
+      // public override string ToString() => "Type: " + Name;  // Why do we add the "Type: " prefix?
+
+      // public override bool Equals(object? o) => o == null ? false : Equals(o as Type);
+      // public override int GetHashCode()
       // {
       // Type systemType = UnderlyingSystemType;
-      // if (!ReferenceEquals(this, systemType) && systemType is not null)
-      //       return GetTypeCode(systemType);
-
-      // return TypeCode.Object;
+      // if (!ReferenceEquals(systemType, this))
+      //       return systemType.GetHashCode();
+      // return base.GetHashCode();
       // }
+      // // public virtual bool Equals(Type? o) => o == null ? false : ReferenceEquals(this.UnderlyingSystemType, o.UnderlyingSystemType);
 
-      // public abstract Guid GUID { get; }
-
-      // [SupportedOSPlatform("windows")]
-      public static Type? GetTypeFromCLSID(Guid clsid) => GetTypeFromCLSID(clsid, null, throwOnError: false);
-      // [SupportedOSPlatform("windows")]
-      public static Type? GetTypeFromCLSID(Guid clsid, bool throwOnError) => GetTypeFromCLSID(clsid, null, throwOnError: throwOnError);
-      // [SupportedOSPlatform("windows")]
-      public static Type? GetTypeFromCLSID(Guid clsid, string? server) => GetTypeFromCLSID(clsid, server, throwOnError: false);
-      // [SupportedOSPlatform("windows")]
-      public static Type? GetTypeFromCLSID(Guid clsid, string? server, bool throwOnError) => Marshal.GetTypeFromCLSID(clsid, server, throwOnError);
-
-      // [SupportedOSPlatform("windows")]
-      public static Type? GetTypeFromProgID(string progID) => GetTypeFromProgID(progID, null, throwOnError: false);
-      // [SupportedOSPlatform("windows")]
-      public static Type? GetTypeFromProgID(string progID, bool throwOnError) => GetTypeFromProgID(progID, null, throwOnError: throwOnError);
-      // [SupportedOSPlatform("windows")]
-      public static Type? GetTypeFromProgID(string progID, string? server) => GetTypeFromProgID(progID, server, throwOnError: false);
-      // [SupportedOSPlatform("windows")]
-      public static Type? GetTypeFromProgID(string progID, string? server, bool throwOnError) => Marshal.GetTypeFromProgID(progID, server, throwOnError);
-
-      // public abstract Type? BaseType { get; }
-
-      // [DebuggerHidden]
-      // [DebuggerStepThrough]
-      // [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
-      public object? InvokeMember(string name, BindingFlags invokeAttr, Binder? binder, object? target, object?[]? args) => InvokeMember(name, invokeAttr, binder, target, args, null, null, null);
-
-      // [DebuggerHidden]
-      // [DebuggerStepThrough]
-      // [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
-      public object? InvokeMember(string name, BindingFlags invokeAttr, Binder? binder, object? target, object?[]? args, CultureInfo? culture) => InvokeMember(name, invokeAttr, binder, target, args, null, culture, null);
-
-      // [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
-      // public abstract object? InvokeMember(string name, BindingFlags invokeAttr, Binder? binder, object? target, object?[]? args, ParameterModifier[]? modifiers, CultureInfo? culture, string[]? namedParameters);
-
-      // [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.Interfaces)]
-      // [return: DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.Interfaces)]
-      public Type? GetInterface(string name) => GetInterface(name, ignoreCase: false);
-      // [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.Interfaces)]
-      // [return: DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.Interfaces)]
-      // public abstract Type? GetInterface(string name, bool ignoreCase);
-      // [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.Interfaces)]
-      // public abstract Type[] GetInterfaces();
-
-      // public virtual InterfaceMapping GetInterfaceMap([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods | DynamicallyAccessedMemberTypes.NonPublicMethods)] Type interfaceType) => throw new NotSupportedException(SR.NotSupported_SubclassOverride);
-
-      // public virtual bool IsInstanceOfType([NotNullWhen(true)] object? o) => o == null ? false : IsAssignableFrom(o.GetType());
-      // public virtual bool IsEquivalentTo([NotNullWhen(true)] Type? other) => this == other;
-
-      // [UnconditionalSuppressMessage("ReflectionAnalysis", "IL2085:UnrecognizedReflectionPattern",
-      // Justification = "The single instance field on enum types is never trimmed")]
-      // [Intrinsic]
-      // public virtual Type GetEnumUnderlyingType()
+      // // [Intrinsic]
+      // public static bool operator ==(Type? left, Type? right)
       // {
-      // if (!IsEnum)
-      //       throw new ArgumentException(SR.Arg_MustBeEnum, "enumType");
+      // if (ReferenceEquals(left, right))
+      //       return true;
 
-      // FieldInfo[] fields = GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
-      // if (fields == null || fields.Length != 1)
-      //       throw new ArgumentException(SR.Argument_InvalidEnum, "enumType");
+      // // Runtime types are never equal to non-runtime types
+      // // If `left` is a non-runtime type with a weird Equals implementation
+      // // this is where operator `==` would differ from `Equals` call.
+      // if (left is null || right is null || left is RuntimeType || right is RuntimeType)
+      //       return false;
 
-      // return fields[0].FieldType;
+      // return left.Equals(right);
       // }
 
-      // [RequiresDynamicCode("It might not be possible to create an array of the enum type at runtime. Use Enum.GetValues<T> or the GetEnumValuesAsUnderlyingType method instead.")]
-      // public virtual Array GetEnumValues()
+      // // [Intrinsic]
+      // public static bool operator !=(Type? left, Type? right)
       // {
-      // if (!IsEnum)
-      //       throw new ArgumentException(SR.Arg_MustBeEnum, "enumType");
-
-      // // We don't support GetEnumValues in the default implementation because we cannot create an array of
-      // // a non-runtime type. If there is strong need we can consider returning an object or int64 array.
-      // throw NotImplemented.ByDesign;
+      // return !(left == right);
       // }
 
-      // /// <summary>
-      // /// Retrieves an array of the values of the underlying type constants of this enumeration type.
-      // /// </summary>
-      // /// <remarks>
-      // /// You can use this method to get enumeration values when it's hard to create an array of the enumeration type.
-      // /// For example, you might use this method for the <see cref="T:System.Reflection.MetadataLoadContext" /> enumeration or on a platform where run-time code generation is not available.
-      // /// </remarks>
-      // /// <returns>An array that contains the values of the underlying type constants in this enumeration type.</returns>
-      // /// <exception cref="T:System.ArgumentException">This type is not an enumeration type.</exception>
-      // public virtual Array GetEnumValuesAsUnderlyingType() => throw new NotSupportedException(SR.NotSupported_SubclassOverride);
+      // // [Obsolete(Obsoletions.ReflectionOnlyLoadingMessage, DiagnosticId = Obsoletions.ReflectionOnlyLoadingDiagId, UrlFormat = Obsoletions.SharedUrlFormat)]
+      // public static Type? ReflectionOnlyGetType(string typeName, bool throwIfNotFound, bool ignoreCase) => throw new PlatformNotSupportedException(SR.PlatformNotSupported_ReflectionOnly);
 
-      // [RequiresDynamicCode("The code for an array of the specified type might not be available.")]
-      // public virtual Type MakeArrayType() => throw new NotSupportedException();
-      // [RequiresDynamicCode("The code for an array of the specified type might not be available.")]
-      // public virtual Type MakeArrayType(int rank) => throw new NotSupportedException();
-      // public virtual Type MakeByRefType() => throw new NotSupportedException();
-
-      // [RequiresDynamicCode("The native code for this instantiation might not be available at runtime.")]
-      // [RequiresUnreferencedCode("If some of the generic arguments are annotated (either with DynamicallyAccessedMembersAttribute, or generic constraints), trimming can't validate that the requirements of those annotations are met.")]
-      // public virtual Type MakeGenericType(params Type[] typeArguments) => throw new NotSupportedException(SR.NotSupported_SubclassOverride);
-
-      public virtual Type MakePointerType() => throw new NotSupportedException();
-
-      public static Type MakeGenericSignatureType(Type genericTypeDefinition, params Type[] typeArguments) => new SignatureConstructedGenericType(genericTypeDefinition, typeArguments);
-
-      public static Type MakeGenericMethodParameter(int position)
-      {
-      ArgumentOutOfRangeException.ThrowIfNegative(position);
-      return new SignatureGenericMethodParameterType(position);
-      }
-
-      // // This is used by the ToString() overrides of all reflection types. The legacy behavior has the following problems:
-      // //  1. Use only Name for nested types, which can be confused with global types and generic parameters of the same name.
-      // //  2. Use only Name for generic parameters, which can be confused with nested types and global types of the same name.
-      // //  3. Use only Name for all primitive types, void and TypedReference
-      // //  4. MethodBase.ToString() use "ByRef" for byref parameters which is different than Type.ToString().
-      // //  5. ConstructorInfo.ToString() outputs "Void" as the return type. Why Void?
-      internal string FormatTypeName()
-      {
-      Type elementType = GetRootElementType();
-
-      if (elementType.IsPrimitive ||
-            elementType.IsNested ||
-            elementType == typeof(void) ||
-            elementType == typeof(TypedReference))
-            return Name;
-
-      return ToString();
-      }
-
-      public override string ToString() => "Type: " + Name;  // Why do we add the "Type: " prefix?
-
-      public override bool Equals(object? o) => o == null ? false : Equals(o as Type);
-      public override int GetHashCode()
-      {
-      Type systemType = UnderlyingSystemType;
-      if (!ReferenceEquals(systemType, this))
-            return systemType.GetHashCode();
-      return base.GetHashCode();
-      }
-      // public virtual bool Equals(Type? o) => o == null ? false : ReferenceEquals(this.UnderlyingSystemType, o.UnderlyingSystemType);
-
-      // [Intrinsic]
-      public static bool operator ==(Type? left, Type? right)
-      {
-      if (ReferenceEquals(left, right))
-            return true;
-
-      // Runtime types are never equal to non-runtime types
-      // If `left` is a non-runtime type with a weird Equals implementation
-      // this is where operator `==` would differ from `Equals` call.
-      if (left is null || right is null || left is RuntimeType || right is RuntimeType)
-            return false;
-
-      return left.Equals(right);
-      }
-
-      // [Intrinsic]
-      public static bool operator !=(Type? left, Type? right)
-      {
-      return !(left == right);
-      }
-
-      // [Obsolete(Obsoletions.ReflectionOnlyLoadingMessage, DiagnosticId = Obsoletions.ReflectionOnlyLoadingDiagId, UrlFormat = Obsoletions.SharedUrlFormat)]
-      public static Type? ReflectionOnlyGetType(string typeName, bool throwIfNotFound, bool ignoreCase) => throw new PlatformNotSupportedException(SR.PlatformNotSupported_ReflectionOnly);
-
-      public static Binder DefaultBinder
+      /*public static Binder DefaultBinder
       {
       get
       {
@@ -767,32 +783,32 @@ abstract class Type// : MemberInfo, IReflect
             }
             return s_defaultBinder!;
       }
-      }
+      }*/
 
-      private static volatile Binder? s_defaultBinder;
+      // private static volatile Binder? s_defaultBinder;
 
-      public static readonly char Delimiter = '.';
-      public static readonly Type[] EmptyTypes = Array.Empty<Type>();
-      public static readonly object Missing = Reflection.Missing.Value;
+      // public static readonly char Delimiter = '.';
+      // public static readonly Type[] EmptyTypes = Array.Empty<Type>();
+      // public static readonly object Missing = Reflection.Missing.Value;
 
-      public static readonly MemberFilter FilterAttribute = FilterAttributeImpl!;
-      public static readonly MemberFilter FilterName = (m, c) => FilterNameImpl(m, c!, StringComparison.Ordinal);
-      public static readonly MemberFilter FilterNameIgnoreCase = (m, c) => FilterNameImpl(m, c!, StringComparison.OrdinalIgnoreCase);
+      // public static readonly MemberFilter FilterAttribute = FilterAttributeImpl!;
+      // public static readonly MemberFilter FilterName = (m, c) => FilterNameImpl(m, c!, StringComparison.Ordinal);
+      // public static readonly MemberFilter FilterNameIgnoreCase = (m, c) => FilterNameImpl(m, c!, StringComparison.OrdinalIgnoreCase);
 
-      private const BindingFlags DefaultLookup = BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public;
+      // private const BindingFlags DefaultLookup = BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public;
 
-      // DynamicallyAccessedMemberTypes.All keeps more data than what a member can use:
-      // - Keeps info about interfaces
-      // - Complete Nested types (nested type body and all its members including other nested types)
-      // - Public and private base type information
-      // Instead, the GetAllMembers constant will keep:
-      // - The nested types body but not the members
-      // - Base type public information but not private information. This information should not
-      // be visible via the derived type and is ignored by reflection
-      internal const DynamicallyAccessedMemberTypes GetAllMembers = DynamicallyAccessedMemberTypes.PublicFields | DynamicallyAccessedMemberTypes.NonPublicFields |
-      DynamicallyAccessedMemberTypes.PublicMethods | DynamicallyAccessedMemberTypes.NonPublicMethods |
-      DynamicallyAccessedMemberTypes.PublicEvents | DynamicallyAccessedMemberTypes.NonPublicEvents |
-      DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.NonPublicProperties |
-      DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors |
-      DynamicallyAccessedMemberTypes.PublicNestedTypes | DynamicallyAccessedMemberTypes.NonPublicNestedTypes;
+      // // DynamicallyAccessedMemberTypes.All keeps more data than what a member can use:
+      // // - Keeps info about interfaces
+      // // - Complete Nested types (nested type body and all its members including other nested types)
+      // // - Public and private base type information
+      // // Instead, the GetAllMembers constant will keep:
+      // // - The nested types body but not the members
+      // // - Base type public information but not private information. This information should not
+      // // be visible via the derived type and is ignored by reflection
+      // internal const DynamicallyAccessedMemberTypes GetAllMembers = DynamicallyAccessedMemberTypes.PublicFields | DynamicallyAccessedMemberTypes.NonPublicFields |
+      // DynamicallyAccessedMemberTypes.PublicMethods | DynamicallyAccessedMemberTypes.NonPublicMethods |
+      // DynamicallyAccessedMemberTypes.PublicEvents | DynamicallyAccessedMemberTypes.NonPublicEvents |
+      // DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.NonPublicProperties |
+      // DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors |
+      // DynamicallyAccessedMemberTypes.PublicNestedTypes | DynamicallyAccessedMemberTypes.NonPublicNestedTypes;
 }
