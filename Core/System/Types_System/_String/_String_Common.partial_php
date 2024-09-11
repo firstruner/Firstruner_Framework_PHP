@@ -24,8 +24,10 @@
 
 namespace System;
 
+use Obselete;
 use System\Attributes\Partial;
 use System\Default\_string as DefaultString;
+use System\Default\_string as Default_string;
 
 #[Partial()]
 class _String
@@ -127,8 +129,24 @@ class _String
             return pack('C*', ...$buffer);
       }
 
+      public static function GetBytes(string $stack): array
+      {
+            return _String::ToByteArray($stack);
+      }
+
+      #[Obselete("Use GetBytes")]
       public static function ToByteArray(string $stack): array
       {
             return array_values(unpack('C*', $stack));
+      }
+
+      public static function ToBinary(string $stack) : string
+      {
+            $binary = Default_string::EmptyString;
+            
+            for ($i = 0; $i < strlen($stack); $i++)
+                  $binary .= sprintf("%08b", ord($stack[$i]));
+            
+            return $binary;
       }
 }
