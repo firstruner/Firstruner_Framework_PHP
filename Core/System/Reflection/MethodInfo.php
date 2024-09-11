@@ -43,54 +43,54 @@ abstract class MethodInfo extends MethodBase
 
     public function getReturnParameter(): ParameterInfo
     {
-        throw new \Exception(NotImplemented::ByDesign);
+        throw new \Exception(NotImplemented::ByDesign());
     }
 
     public function getReturnType(): \ReflectionType
     {
-        throw new \Exception(NotImplemented::ByDesign);
+        throw new \Exception(NotImplemented::ByDesign());
     }
 
-    public function getGenericArguments(): array
-    {
-        throw new NotSupportedException(SR::NotSupported_SubclassOverride);
-    }
+    // public function getGenericArguments(): array
+    // {
+    //     throw new NotSupportedException(SR::NotSupported_SubclassOverride);
+    // }
 
-    public function getGenericMethodDefinition(): MethodInfo
-    {
-        throw new \NotSupportedException(SR::NotSupported_SubclassOverride);
-    }
+    // public function getGenericMethodDefinition(): MethodInfo
+    // {
+    //     throw new NotSupportedException(SR::NotSupported_SubclassOverride);
+    // }
 
-    #[RequiresDynamicCode("The native code for this instantiation might not be available at runtime.")]
-    #[RequiresUnreferencedCode("If some of the generic arguments are annotated (either with DynamicallyAccessedMembersAttribute, or generic constraints), trimming can't validate that the requirements of those annotations are met.")]
-    public function makeGenericMethod(Type ...$typeArguments): MethodInfo
-    {
-        throw new \NotSupportedException(SR::NotSupported_SubclassOverride);
-    }
+    // #[RequiresDynamicCode("The native code for this instantiation might not be available at runtime.")]
+    // #[RequiresUnreferencedCode("If some of the generic arguments are annotated (either with DynamicallyAccessedMembersAttribute, or generic constraints), trimming can't validate that the requirements of those annotations are met.")]
+    // public function makeGenericMethod(Type ...$typeArguments): MethodInfo
+    // {
+    //     throw new \NotSupportedException(SR::NotSupported_SubclassOverride);
+    // }
 
     abstract public function getBaseDefinition(): MethodInfo;
 
     abstract public function getReturnTypeCustomAttributes(): ICustomAttributeProvider;
 
-    public function createDelegate(string $delegateType)
-    {
-        throw new \NotSupportedException(SR::NotSupported_SubclassOverride);
-    }
+    // public function createDelegate(string $delegateType)
+    // {
+    //     throw new \NotSupportedException(SR::NotSupported_SubclassOverride);
+    // }
 
-    public function createDelegateWithTarget(string $delegateType, ?object $target)
-    {
-        throw new \NotSupportedException(SR::NotSupported_SubclassOverride);
-    }
+    // public function createDelegateWithTarget(string $delegateType, ?object $target)
+    // {
+    //     throw new \NotSupportedException(SR::NotSupported_SubclassOverride);
+    // }
 
-    public function createDelegateGeneric(string $delegateType)
-    {
-        return $this->createDelegate($delegateType);
-    }
+    // public function createDelegateGeneric(string $delegateType)
+    // {
+    //     return $this->createDelegate($delegateType);
+    // }
 
-    public function createDelegateGenericWithTarget(string $delegateType, ?object $target)
-    {
-        return $this->createDelegateWithTarget($delegateType, $target);
-    }
+    // public function createDelegateGenericWithTarget(string $delegateType, ?object $target)
+    // {
+    //     return $this->createDelegateWithTarget($delegateType, $target);
+    // }
 
     public function equals($obj): bool
     {
@@ -102,22 +102,22 @@ abstract class MethodInfo extends MethodBase
         return parent::getHashCode();
     }
 
-    #[MethodImpl(MethodImplOptions::AggressiveInlining)]
-    public static function op_Equality(?MethodInfo $left, ?MethodInfo $right): bool
-    {
-        if ($right === null) {
-            return $left === null;
-        }
+    // #[MethodImpl(MethodImplOptions::AggressiveInlining)]
+    // public static function op_Equality(?MethodInfo $left, ?MethodInfo $right): bool
+    // {
+    //     if ($right === null) {
+    //         return $left === null;
+    //     }
 
-        if ($left === $right) {
-            return true;
-        }
+    //     if ($left === $right) {
+    //         return true;
+    //     }
 
-        return $left === null ? false : $left->equals($right);
-    }
+    //     return $left === null ? false : $left->equals($right);
+    // }
 
-    public static function op_Inequality(?MethodInfo $left, ?MethodInfo $right): bool
-    {
-        return !self::op_Equality($left, $right);
-    }
+    // public static function op_Inequality(?MethodInfo $left, ?MethodInfo $right): bool
+    // {
+    //     return !self::op_Equality($left, $right);
+    // }
 }
