@@ -24,25 +24,42 @@
 
 namespace System\Reflection;
 
+use System\Exceptions\ArgumentOutOfRangeException;
+
 class ArgumentData
 {
       private $arg0;
+
+      public function __construct($valeur = null) {
+            $this->arg0 = $valeur;
+      }
 
       // public function asSpan($length) {
       //       assert((uint)$length <= self::MaxStackAllocArgCount);
       //       return new Span($this->arg0, $length);
       // }
 
-      public function set($index, $value) {
-            assert((uint)$index < self::MaxStackAllocArgCount);
-            Unsafe::add($this->arg0, $index) = $value;
-      }
+      // public function set($index, $value) {
+      //       assert((uint)$index < self::MaxStackAllocArgCount);
+      //       Unsafe::add($this->arg0, $index) = $value;
+      // }
 
       public function __set($index, $value) {
-            if ($index < 0) throw new 
+            if (!is_int($value)) throw new ArgumentOutOfRangeException();
+            if ($index < 0) throw new ArgumentOutOfRangeException();
 
-            if ($name === 'valeur' && is_int($value)) {
-                $this->valeur = $value;
-            }
+            $this->arg0 = $value;
+      }
+
+      public function __get($name = null) {
+            return $this->arg0;
+      }
+
+      public function __invoke() {
+            return $this->arg0;
+        }
+
+      public function __toString(): string {
+            return $this->arg0;
       }
 }
