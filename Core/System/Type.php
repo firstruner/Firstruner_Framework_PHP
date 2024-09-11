@@ -787,8 +787,8 @@ abstract class Type// : MemberInfo, IReflect
 
       // private static volatile Binder? s_defaultBinder;
 
-      // public static readonly char Delimiter = '.';
-      // public static readonly Type[] EmptyTypes = Array.Empty<Type>();
+      public const Delimiter = '.';
+      public const EmptyTypes = [];
       // public static readonly object Missing = Reflection.Missing.Value;
 
       // public static readonly MemberFilter FilterAttribute = FilterAttributeImpl!;

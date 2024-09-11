@@ -142,12 +142,12 @@ class ParameterInfo implements ICustomAttributeProvider//, ISerializable
 
     public function getOptionalCustomModifiers(): array
     {
-        return Type::getEmptyTypes();
+        return Type::EmptyTypes;
     }
 
     public function getRequiredCustomModifiers(): array
     {
-        return Type::getEmptyTypes();
+        return Type::EmptyTypes;
     }
 
     public function getMetadataToken(): int

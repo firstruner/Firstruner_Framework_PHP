@@ -25,6 +25,7 @@
 namespace System\Annotations;
 
 use System\Default\_string;
+use System\Exceptions\NotImplementedException;
 
 /**
  * @Annotation
@@ -37,5 +38,18 @@ final class NotImplemented
     function __toString()
     {
         error_log("Property {$this->propertyName} is not implemented");
+    }
+
+    /// <summary>
+    /// Permanent NotImplementedException with no message shown to user.
+    /// </summary>
+    public static function ByDesign() : \Exception { return new NotImplementedException(); }
+
+    /// <summary>
+    /// Permanent NotImplementedException with localized message shown to user.
+    /// </summary>
+    public static function ByDesignWithMessage(string $message) : \Exception
+    {
+        return new NotImplementedException($message);
     }
 }
