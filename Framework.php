@@ -96,7 +96,17 @@ class Framework
                         __DIR__ . '/Core/System/IO/MemoryStream.php',
                         __DIR__ . '/Core/System/Threading',
                         __DIR__ . '/Core/System/IO',
+
+                        __DIR__ . '/Core/System/Reflection/ArgumentData.php',
+                        __DIR__ . '/Core/System/Reflection/MemberInfo.php',
+                        __DIR__ . '/Core/System/Reflection/FieldInfo.php',
+                        __DIR__ . '/Core/System/Reflection/ParameterInfo.php',
+                        __DIR__ . '/Core/System/Reflection/PropertyInfo.php',
+                        __DIR__ . '/Core/System/Reflection/MethodBase.php',
+                        __DIR__ . '/Core/System/Reflection/MethodInfo.php',
+                        __DIR__ . '/Core/System/Reflection/ConstructorInfo.php',
                         __DIR__ . '/Core/System/Reflection',
+
                         __DIR__ . '/Core/System/Security',
                         __DIR__ . '/Core/System/Net',
                         __DIR__ . '/Core/System/Text',
