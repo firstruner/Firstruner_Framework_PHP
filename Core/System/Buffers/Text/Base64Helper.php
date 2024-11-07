@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 
 /**
  * Copyright since 2024 Firstruner and Contributors
@@ -22,12 +22,15 @@
  * @version 2.0.0
  */
 
-
+ 
 namespace System\Buffers\Text;
+
+use System\Char;
+use System\Default\_string;
 
 class Base64Helper
 {
-      public static function is_base64($s) : bool
+      public static function Is_Base64(string $s) : bool
       {
             // Check if there are valid base64 characters
             if (!preg_match('/^[a-zA-Z0-9\/\r\n+]*={0,2}$/', $s)) return false;
@@ -40,5 +43,22 @@ class Base64Helper
             if(base64_encode($decoded) != $s) return false;
         
             return true;
-        }
+      }
+
+      public static function IsWhiteSpace(Char $value) : bool
+      {
+            return ($value == _string::WhiteSpace);
+      }
+      
+      public static function IsValid(string $s, ?int &$length = null) : bool
+      {
+            // Vérifie si la chaîne est bien en hexadécimal
+            if (!ctype_xdigit($s)) return false;
+            
+            // Vérifie que la longueur est paire
+            if (strlen($s) % 2 !== 0) return false;
+            
+            $length = strlen($s);
+            return true;
+      }
 }
