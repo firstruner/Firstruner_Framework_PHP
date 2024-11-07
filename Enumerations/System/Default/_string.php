@@ -28,6 +28,7 @@ class _string
 {
       public const ClassName = "string";
       public const EmptyString = "";
+      public const WhiteSpace = " ";
       public const Tabulation = "\t";
       public const NewLine = PHP_EOL;
 }
