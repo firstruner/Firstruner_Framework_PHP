@@ -522,7 +522,7 @@ final class Loader
                                     var_dump($path);
                               }*/
 
-                              require($path);
+                              if (is_file($path)) require($path);
                         }
                         //Loader::requireClassFile($path);
                   } catch (\Error $err) {
