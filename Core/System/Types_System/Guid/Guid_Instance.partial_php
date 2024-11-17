@@ -25,6 +25,8 @@
 namespace System;
 
 use System\Attributes\Partial;
+use System\Default\_array;
+use System\Default\_string;
 
 #[Partial()]
 final class Guid implements IGuid
@@ -37,10 +39,10 @@ final class Guid implements IGuid
       {
             switch (gettype($values))
             {
-                  case "string":
+                  case _string::ClassName:
                         $this->fromStringValue($values);
                         break;
-                  case 'array':
+                  case _array::ClassName:
                         if (array_filter($values, 'is_int'))
                         {
                               $this->fromByteArray($values);
@@ -99,10 +101,10 @@ final class Guid implements IGuid
             if (count($values) == 5)
             {
                   if ((strlen($values[0]) == 8)
-                        && (strlen($values[0]) == 4)
-                        && (strlen($values[0]) == 4)
-                        && (strlen($values[0]) == 4)
-                        && (strlen($values[0]) == 12))
+                        && (strlen($values[1]) == 4)
+                        && (strlen($values[2]) == 4)
+                        && (strlen($values[3]) == 4)
+                        && (strlen($values[4]) == 12))
                         {
                               array_push($normArray, substr($values[0], 0, 4));
                               array_push($normArray, substr($values[0], 4, 4));
