@@ -67,15 +67,13 @@ class Luid
             $randomPart = bin2hex(random_bytes($useHighEntropy ? 8 : 4));
       
             return new Luid(
-                  ($prefix != defaultString::EmptyString
-                        ? $prefix . '-'
-                        : defaultString::EmptyString
-                        ) . sprintf(
-                              '%08X-%s-%03X-%s',
-                              $timestamp,
-                              Luid::$processId,
-                              $counter,
-                              $randomPart
-                        ));
+                  ($prefix ? "$prefix-" : defaultString::EmptyString) .
+                  sprintf(
+                        '%08X-%s-%03X-%s',
+                        $timestamp,
+                        Luid::$processId,
+                        $counter,
+                        $randomPart
+                  ));
       }
 }

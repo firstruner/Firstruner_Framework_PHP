@@ -43,14 +43,11 @@ final class Guid implements IGuid
                         $this->fromStringValue($values);
                         break;
                   case _array::ClassName:
-                        if (array_filter($values, 'is_int'))
-                        {
-                              $this->fromByteArray($values);
-                        }
-                        else
-                        {
-                              $this->fromStringArray($values);
-                        }
+                        $method = array_filter($values, 'is_int')
+                              ? 'fromByteArray'
+                              : 'fromStringArray';
+
+                        $this->$method($values);
                         break;
                   default:
                   $this->fromStringValue($this->defaultValue);
@@ -62,26 +59,24 @@ final class Guid implements IGuid
       {
             if (strlen($value) == 32)
             {
-                  $value = substr($value, 0, 8) . '-' .
-                        substr($value, 8, 4) . '-' .
-                        substr($value, 12, 4) . '-' .
-                        substr($value, 16, 4) . '-' .
-                        substr($value, 20);
+                  $value = implode('-',
+                        [
+                              substr($value, 0, 8),
+                              substr($value, 8, 4),
+                              substr($value, 12, 4),
+                              substr($value, 16, 4),
+                              substr($value, 20)
+                        ]);
             }
 
             if (strlen(36))
             {
                   $cur_values = explode('-', $value);
-                  $this->values = array();
-
-                  array_push($this->values, hexdec(substr($cur_values[0], 0, 4)));
-                  array_push($this->values, hexdec(substr($cur_values[0], 4, 4)));
-                  array_push($this->values, hexdec($cur_values[1]));
-                  array_push($this->values, hexdec($cur_values[2]));
-                  array_push($this->values, hexdec($cur_values[3]));
-                  array_push($this->values, hexdec(substr($cur_values[4], 0, 4)));
-                  array_push($this->values, hexdec(substr($cur_values[4], 4, 4)));
-                  array_push($this->values, hexdec(substr($cur_values[4], 8, 4)));
+                  $this->values = array_merge(
+                        array_map('hexdec', str_split($cur_values[0], 4)),
+                        array_map('hexdec', array_slice($cur_values, 1, 3)),
+                        array_map('hexdec', str_split($cur_values[4], 4))
+                  );
             }
             else
             {
@@ -100,20 +95,19 @@ final class Guid implements IGuid
 
             if (count($values) == 5)
             {
-                  if ((strlen($values[0]) == 8)
-                        && (strlen($values[1]) == 4)
-                        && (strlen($values[2]) == 4)
-                        && (strlen($values[3]) == 4)
-                        && (strlen($values[4]) == 12))
+                  if ((strlen($values[0] . $values[1] . $values[2] .
+                        $values[3] . $values[4]) == 32))
                         {
-                              array_push($normArray, substr($values[0], 0, 4));
-                              array_push($normArray, substr($values[0], 4, 4));
-                              array_push($normArray, substr($values[1], 0, 4));
-                              array_push($normArray, substr($values[2], 0, 4));
-                              array_push($normArray, substr($values[3], 0, 4));
-                              array_push($normArray, substr($values[4], 0, 4));
-                              array_push($normArray, substr($values[4], 4, 4));
-                              array_push($normArray, substr($values[4], 8, 4));
+                              $normArray = array_merge($normArray, [
+                                    substr($values[0], 0, 4),
+                                    substr($values[0], 4, 4),
+                                    substr($values[1], 0, 4),
+                                    substr($values[2], 0, 4),
+                                    substr($values[3], 0, 4),
+                                    substr($values[4], 0, 4),
+                                    substr($values[4], 4, 4),
+                                    substr($values[4], 8, 4)
+                              ]);
                         }
             }
             else if (count($values) == 8)
@@ -131,15 +125,17 @@ final class Guid implements IGuid
 
       private function getString() : string
       {
-            return
-                  str_pad(dechex($this->values[0]), 4, "0", STR_PAD_LEFT) .
-                  str_pad(dechex($this->values[1]), 4, "0", STR_PAD_LEFT) . '-' .
-                  str_pad(dechex($this->values[2]), 4, "0", STR_PAD_LEFT) . '-' .
-                  str_pad(dechex($this->values[3]), 4, "0", STR_PAD_LEFT) . '-' .
-                  str_pad(dechex($this->values[4]), 4, "0", STR_PAD_LEFT) . '-' .
-                  str_pad(dechex($this->values[5]), 4, "0", STR_PAD_LEFT) .
-                  str_pad(dechex($this->values[6]), 4, "0", STR_PAD_LEFT) .
-                  str_pad(dechex($this->values[7]), 4, "0", STR_PAD_LEFT);
+            $parts = array_map(function($value) {
+                  return str_pad(dechex($value), 4, "0", STR_PAD_LEFT);
+            }, array_slice($this->values, 0, 8));
+              
+            return implode('-', [
+                  $parts[0] . $parts[1],
+                  $parts[2],
+                  $parts[3],
+                  $parts[4],
+                  $parts[5] . $parts[6] . $parts[7]
+            ]);
       }
 
       public function __toString()
