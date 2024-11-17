@@ -26,7 +26,6 @@ namespace System;
 
 use \Exception;
 use System\Attributes\Partial;
-use System\Default\_string;
 
 #[Partial()]
 final class Guid implements IGuid_Static
@@ -37,14 +36,32 @@ final class Guid implements IGuid_Static
             return new Guid();
       }
 
-      public static function NewGuid()
+      private static function generateV7() : string
       {
-            $value = _string::EmptyString;
+            $timestamp = (int) (microtime(true) * 1000);
+        
+            $time_high = ($timestamp >> 28) & 0xFFFFFFFF;
+            $time_low = $timestamp & 0x0FFFFFFF;
+        
+            $rand_high = mt_rand(0, 0x0FFF);
+            $rand_low = mt_rand(0, 0x3FFFFFFFFFFFF);
+        
+            return sprintf(
+                '%08X%04X7%03X%04X%012X',
+                $time_high,          // Timestamp partie haute
+                $time_low >> 16,     // Timestamp partie basse (bits 17-32)
+                $time_low & 0xFFFF,  // Timestamp partie basse (bits 1-16)
+                ($rand_high | 0x8000), // Aléatoire avec les 2 bits de "variant" (10xx)
+                $rand_low            // Aléatoire restant
+            );
+      }
 
+      private static function generateV4() : string
+      {
             if (function_exists('com_create_guid')) {
-                  $value = trim(com_create_guid(), '{}');
+                  return trim(com_create_guid(), '{}');
             } else {
-                  $value =
+                  return
                         sprintf(
                               '%04X%04X%04X%04X%04X%04X%04X%04X',
                               mt_rand(0, 65535),
@@ -57,8 +74,23 @@ final class Guid implements IGuid_Static
                               mt_rand(0, 65535)
                         );
             }
+      }
 
-            return new Guid($value);
+      public static function NewGuid(int $guidVersion = Guid_Type::Default) : Guid
+      {
+            switch ($guidVersion)
+            {
+                  default:
+                  case Guid_Type::V4:
+                        return new Guid(Guid::generateV4());
+                  case Guid_Type::V7:
+                        return new Guid(Guid::generateV7());
+            }
+      }
+
+      public static function CreateVersion7() : Guid
+      {
+            return new Guid(Guid::generateV7());
       }
 
       public static function Parse($value)
