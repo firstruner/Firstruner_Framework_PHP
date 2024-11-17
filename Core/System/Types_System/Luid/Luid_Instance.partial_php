@@ -43,14 +43,11 @@ final class Luid implements IGuid
                         $this->fromStringValue($values);
                         break;
                   case _array::ClassName:
-                        if (array_filter($values, 'is_int'))
-                        {
-                              $this->fromByteArray($values);
-                        }
-                        else
-                        {
-                              $this->fromStringArray($values);
-                        }
+                        $method = array_filter($values, 'is_int')
+                              ? 'fromByteArray'
+                              : 'fromStringArray';
+
+                        $this->$method($values);
                         break;
                   default:
                         $this->fromStringValue($this->defaultValue);
@@ -76,12 +73,12 @@ final class Luid implements IGuid
             if (strlen($value) >= 29)
             {
                   $cur_values = explode('-', $value);
-                  $this->values = array();
-
-                  array_push($this->values, $cur_values[0]);
-                  array_push($this->values, $cur_values[1]);
-                  array_push($this->values, $cur_values[2]);
-                  array_push($this->values, $cur_values[3]);
+                  $this->values = [
+                              $cur_values[0],
+                              $cur_values[1],
+                              $cur_values[2],
+                              $cur_values[3]
+                        ];
 
                   if (count($cur_values) == 5)
                         array_push($this->values, $cur_values[4]);
@@ -109,16 +106,18 @@ final class Luid implements IGuid
             $thirdVal = $values[$firstPartId++];
             $quadVal = $values[$firstPartId++];
 
-            if ((strlen($firstVal) == 11)
-                  && (strlen($secondVal) == 4)
-                  && (strlen($thirdVal) == 3)
-                  && (strlen($quadVal) == 8))
+            if ((strlen($firstVal . $secondVal . $thirdVal . $quadVal) == 26))
                   {
-                        if (($prefixVal != $firstVal) && ($prefixVal != _string::EmptyString)) array_push($normArray, $prefixVal);
-                        array_push($normArray, $firstVal);
-                        array_push($normArray, $secondVal);
-                        array_push($normArray, $thirdVal);
-                        array_push($normArray, $quadVal);
+                        if (($prefixVal != $firstVal) && ($prefixVal != _string::EmptyString))
+                              $normArray[0] = $prefixVal;
+                        
+                        array_merge($normArray,
+                              [
+                                    $firstVal,
+                                    $secondVal,
+                                    $thirdVal,
+                                    $quadVal
+                        ]);
                   }
 
             if (count($normArray) >= 4)
