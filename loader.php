@@ -22,10 +22,11 @@
  * @version 2.0.0
  */
 
- require_once(__DIR__ . '/Framework.php');
+require_once(__DIR__ . '/Framework.php');
 
 use Firstruner\Framework;
 
 Framework::$VendorLoading = false;
 Framework::Load();
+
 if (!Framework::IsLoaded()) { echo "FIRSTRUNER FRAMEWORK : LOADER FAILURE !"; }
