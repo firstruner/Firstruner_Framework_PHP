@@ -850,4 +850,32 @@ class LinqIterator
 
         return new self($values);
     }
+
+    /**
+     * Supprime les null de la liste
+     */
+    public function Trim(bool $through = false): void
+    {
+        $arrTemp = null;
+
+        if ($through)
+        {
+            $arrTemp = array_filter(
+                $this->ToArray(),
+                function($a) { return $a != null; }
+            );
+        }
+        else
+        {
+            $arrTemp = $this->ToArray();
+            while (
+                !empty($arrTemp)
+                && end($arrTemp) === null)
+                array_pop($arrTemp);
+        }
+
+        $this->Clear();
+        $this->AddRange($arrTemp);
+        unset($arrTemp);
+    }
 }
