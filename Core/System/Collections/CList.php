@@ -70,7 +70,7 @@ class CList extends LinqIterator
       public function AddRange(array $items): void
       {
             if (($this->count() == $this->max_capacity)
-                  || (($this->count() + count($items)) >= $this->max_capacity))
+                  || (($this->count() + \count($items)) >= $this->max_capacity))
                   throw new OverflowException("Capacity : object is full or full with items");
 
             parent::AddRange($items);
@@ -78,7 +78,7 @@ class CList extends LinqIterator
 
       /**
        * Modifie la capacité de la liste
-       * @param type $newCapacity Élément à ajouter
+       * @param int $newCapacity Élément à ajouter
        */
       public function SetCapacity(int $newCapacity, bool $shrink = false): void
       {
