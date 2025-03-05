@@ -24,7 +24,6 @@
 
 namespace System\Net\Config;
 
-use Convergence\Framework\Enumerations\System\AppDynamicsParams;
 use System\Annotations\NotImplemented;
 use System\Collections\CCollection;
 use System\Collections\KeyValuePair;
@@ -37,21 +36,21 @@ class StaticsParams extends CCollection
     public function __construct()
     {
         parent::__construct();
-        $this->Add(new KeyValuePair(AppDynamicsParams::WebParamKey_DateFormat, "Y-m-d"));
-        $this->Add(new KeyValuePair(AppDynamicsParams::WebParamKey_DateTimeFormat, "Y-m-d H:i:s")); // G,i,s <= A checker avec DB
-        $this->Add(new KeyValuePair(AppDynamicsParams::WebParamKey_SlideURL, "slides.xml"));
-        $this->Add(new KeyValuePair(AppDynamicsParams::WebParamKey_DoubleTab, "\t\t"));
-        $this->Add(new KeyValuePair(AppDynamicsParams::WebParamKey_TripleTab, "\t\t\t"));
-        $this->Add(new KeyValuePair(AppDynamicsParams::WebParamKey_ApiMode, false));
-        $this->Add(new KeyValuePair(AppDynamicsParams::WebParamKey_GoogleApi_Geoloc, "AIzaSyA35X0XDulKjyKQN5Vqq4SohBBQja-T_Ik"));
-        $this->Add(new KeyValuePair(AppDynamicsParams::WebParamKey_AccesTimeLimitation, "22:00;7:30"));
-        $this->Add(new KeyValuePair(AppDynamicsParams::WebParamKey_AccesDateTimeLimitation_LevelByPass, 6));
-        $this->Add(new KeyValuePair(AppDynamicsParams::WebParamKey_LevelManagerMenu, 6));
-        $this->Add(new KeyValuePair(AppDynamicsParams::WebParamKey_NightMode, "16:00;9:00"));
-        $this->Add(new KeyValuePair(AppDynamicsParams::WebParamKey_DateFormatAffichage, "D d M Y"));
-        $this->Add(new KeyValuePair(AppDynamicsParams::WebParamKey_AccesDayLimitation, "6;7"));
-        $this->Add(new KeyValuePair(AppDynamicsParams::WebParamKey_MaxCourtoisieVisit, 5));
-        $this->Add(new KeyValuePair(AppDynamicsParams::WebParamKey_LevelAdmin, 9));
+        $this->Add(new KeyValuePair(AppKeys::DateFormat, "Y-m-d"));
+        $this->Add(new KeyValuePair(AppKeys::DateTimeFormat, "Y-m-d H:i:s")); // G,i,s <= A checker avec DB
+        $this->Add(new KeyValuePair(AppKeys::SlideURL, "slides.xml"));
+        $this->Add(new KeyValuePair(AppKeys::DoubleTab, "\t\t"));
+        $this->Add(new KeyValuePair(AppKeys::TripleTab, "\t\t\t"));
+        $this->Add(new KeyValuePair(AppKeys::ApiMode, false));
+        $this->Add(new KeyValuePair(AppKeys::GoogleApi_Geoloc, "APIKEY INVALID - MUST BE REDEFINE"));
+        $this->Add(new KeyValuePair(AppKeys::AccesTimeLimitation, "22:00;7:30"));
+        $this->Add(new KeyValuePair(AppKeys::AccesDateTimeLimitation_LevelByPass, 6));
+        $this->Add(new KeyValuePair(AppKeys::LevelManagerMenu, 6));
+        $this->Add(new KeyValuePair(AppKeys::NightMode, "16:00;9:00"));
+        $this->Add(new KeyValuePair(AppKeys::DateFormatAffichage, "D d M Y"));
+        $this->Add(new KeyValuePair(AppKeys::AccesDayLimitation, "6;7"));
+        $this->Add(new KeyValuePair(AppKeys::MaxCourtoisieVisit, 5));
+        $this->Add(new KeyValuePair(AppKeys::LevelAdmin, 9));
 
         $this->Add(new KeyValuePair(AppKeys::DebugMode, false));
         $this->Add(new KeyValuePair(AppKeys::SimsMode, true));
@@ -90,5 +89,10 @@ class StaticsParams extends CCollection
         }
 
         $this->Add(new KeyValuePair($keyname, $value));
+    }
+
+    public function Set_GoogleAPI_GeoLoc(string $apikey)
+    {
+        $this[AppKeys::GoogleApi_Geoloc] = $apikey;
     }
 }
