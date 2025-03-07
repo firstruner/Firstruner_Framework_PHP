@@ -149,4 +149,83 @@ class _String
             
             return $binary;
       }
+
+      public static function CharacterReversePosition($haystack, $needle, $part = false)
+      {
+            if (function_exists('\mb_strrchr'))
+                  return \mb_strrchr($haystack, $needle, $part);
+            
+            return \strrchr($haystack, $needle);
+      }
+
+      public static function Length($string)
+      {
+            if (function_exists('\mb_strlen'))
+                  return \mb_strlen($string);
+
+            return \strlen($string);
+      }
+
+      public static function Position($haystack, $needle, $offset = 0)
+      {
+            if (function_exists('\mb_strpos'))
+                  return \mb_strpos($haystack, $needle, $offset);
+            
+            return \strpos($haystack, $needle, $offset);
+      }
+
+      public static function ReversePosition($haystack, $needle, $offset = 0)
+      {
+            if (function_exists('\mb_strrpos'))
+                  return \mb_strrpos($haystack, $needle, $offset);
+            
+            return \strrpos($haystack, $needle, $offset);
+      }
+
+      /**
+       * Return true when $haystack starts with $needle.
+       *
+       * @param       $haystack
+       * @param       $needle
+       * @return bool
+       */
+      public static function StartsWith($haystack, $needle) : bool
+      {
+            return self::substring($haystack, 0, self::length($needle)) === $needle;
+      }
+
+      /**
+       * Return true when $haystack ends with $needle.
+       *
+       * @param       $haystack
+       * @param       $needle
+       * @return bool
+       */
+      public static function EndWith($haystack, $needle) : bool
+      {
+            return self::substring(
+                  $haystack,
+                  \strlen($haystack) - self::length($needle),
+                  self::length($needle)) === $needle;
+      }
+
+      /**
+       * Return true when $haystack contains $needle.
+       *
+       * @param       $haystack
+       * @param       $needle
+       * @return bool
+       */
+      public static function Contains($haystack, $needle) : bool
+      {
+            return \strpos($haystack, $needle);
+      }
+
+      public static function Substring($string, $start, $length) : string
+      {
+            if (function_exists('\mb_substr'))
+                  return \mb_substr($string, $start, $length);
+            
+            return \substr($string, $start, $length);
+      }
 }
