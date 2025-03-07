@@ -45,6 +45,23 @@ abstract class ACurl
     protected $options = [];
     protected $userSetOptions = [];
 
+    abstract public function Close();
+    abstract public function SetCookie($key, $value);
+    abstract public function SetCookieFile($cookie_file);
+    abstract public function SetCookieJar($cookie_jar);
+    abstract public function SetCookieString($string);
+    abstract public function SetCookies($cookies);
+    abstract public function SetHeader($key, $value);
+    abstract public function SetHeaders($headers);
+    abstract public function SetJsonDecoder($mixed);
+    abstract public function SetOption($option, $value);
+    abstract public function SetOptions($options);
+    abstract public function SetRetry($mixed);
+    abstract public function SetUrl($url, $mixed_data = '');
+    abstract public function SetXmlDecoder($mixed);
+    abstract public function Stop();
+    abstract public function unsetHeader($key);
+
     /**
      * Before Send
      *
@@ -54,8 +71,6 @@ abstract class ACurl
     {
         $this->beforeSendCallback = $callback;
     }
-
-    abstract public function Close();
 
     /**
      * Complete
@@ -72,7 +87,7 @@ abstract class ACurl
      */
     public function DisableTimeout()
     {
-        $this->setTimeout(null);
+        $this->SetTimeout(null);
     }
 
     /**
@@ -106,7 +121,7 @@ abstract class ACurl
      */
     public function RemoveHeader($key)
     {
-        $this->setHeader($key, '');
+        $this->SetHeader($key, '');
     }
 
     /**
@@ -116,7 +131,7 @@ abstract class ACurl
      */
     public function SetAutoReferer($auto_referer = true)
     {
-        $this->setAutoReferrer($auto_referer);
+        $this->SetAutoReferrer($auto_referer);
     }
 
     /**
@@ -126,7 +141,7 @@ abstract class ACurl
      */
     public function SetAutoReferrer($auto_referrer = true)
     {
-        $this->setOpt(CURLOPT_AUTOREFERER, $auto_referrer);
+        $this->SetOption(CURLOPT_AUTOREFERER, $auto_referrer);
     }
 
     /**
@@ -137,8 +152,8 @@ abstract class ACurl
      */
     public function SetBasicAuthentication($username, $password = '')
     {
-        $this->setOpt(CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
-        $this->setOpt(CURLOPT_USERPWD, $username . ':' . $password);
+        $this->SetOption(CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+        $this->SetOption(CURLOPT_USERPWD, $username . ':' . $password);
     }
 
     /**
@@ -148,14 +163,8 @@ abstract class ACurl
      */
     public function SetConnectTimeout($seconds)
     {
-        $this->setOpt(CURLOPT_CONNECTTIMEOUT, $seconds);
+        $this->SetOption(CURLOPT_CONNECTTIMEOUT, $seconds);
     }
-
-    abstract public function SetCookie($key, $value);
-    abstract public function SetCookieFile($cookie_file);
-    abstract public function SetCookieJar($cookie_jar);
-    abstract public function SetCookieString($string);
-    abstract public function SetCookies($cookies);
 
     /**
      * Set Digest Authentication
@@ -165,8 +174,8 @@ abstract class ACurl
      */
     public function SetDigestAuthentication($username, $password = '')
     {
-        $this->setOpt(CURLOPT_HTTPAUTH, CURLAUTH_DIGEST);
-        $this->setOpt(CURLOPT_USERPWD, $username . ':' . $password);
+        $this->SetOption(CURLOPT_HTTPAUTH, CURLAUTH_DIGEST);
+        $this->SetOption(CURLOPT_USERPWD, $username . ':' . $password);
     }
 
     /**
@@ -198,12 +207,12 @@ abstract class ACurl
      */
     public function SetFile($file)
     {
-        $this->setOpt(CURLOPT_FILE, $file);
+        $this->SetOption(CURLOPT_FILE, $file);
     }
 
     protected function setFileInternal($file)
     {
-        $this->setOptInternal(CURLOPT_FILE, $file);
+        $this->SetInternalOption(CURLOPT_FILE, $file);
     }
 
     /**
@@ -214,7 +223,7 @@ abstract class ACurl
      */
     public function SetFollowLocation($follow_location = true)
     {
-        $this->setOpt(CURLOPT_FOLLOWLOCATION, $follow_location);
+        $this->SetOption(CURLOPT_FOLLOWLOCATION, $follow_location);
     }
 
     /**
@@ -224,11 +233,8 @@ abstract class ACurl
      */
     public function SetForbidReuse($forbid_reuse = true)
     {
-        $this->setOpt(CURLOPT_FORBID_REUSE, $forbid_reuse);
+        $this->SetOption(CURLOPT_FORBID_REUSE, $forbid_reuse);
     }
-
-    abstract public function SetHeader($key, $value);
-    abstract public function SetHeaders($headers);
 
     /**
      * Set Interface
@@ -240,10 +246,8 @@ abstract class ACurl
      */
     public function SetInterface($interface)
     {
-        $this->setOpt(CURLOPT_INTERFACE, $interface);
+        $this->SetOption(CURLOPT_INTERFACE, $interface);
     }
-
-    abstract public function SetJsonDecoder($mixed);
 
     /**
      * Set maximum redirects
@@ -253,16 +257,12 @@ abstract class ACurl
      */
     public function SetMaximumRedirects($maximum_redirects)
     {
-        $this->setOpt(CURLOPT_MAXREDIRS, $maximum_redirects);
+        $this->SetOption(CURLOPT_MAXREDIRS, $maximum_redirects);
     }
 
-    abstract public function SetOpt($option, $value);
-
-    protected function setOptInternal($option, $value)
+    protected function SetInternalOption($option, $value)
     {
     }
-
-    abstract public function SetOpts($options);
 
     /**
      * Set Port
@@ -271,7 +271,7 @@ abstract class ACurl
      */
     public function SetPort($port)
     {
-        $this->setOpt(CURLOPT_PORT, (int) $port);
+        $this->SetOption(CURLOPT_PORT, (int) $port);
     }
 
     /**
@@ -286,12 +286,12 @@ abstract class ACurl
      */
     public function SetProxy($proxy, $port = null, $username = null, $password = null)
     {
-        $this->setOpt(CURLOPT_PROXY, $proxy);
+        $this->SetOption(CURLOPT_PROXY, $proxy);
         if ($port !== null) {
-            $this->setOpt(CURLOPT_PROXYPORT, $port);
+            $this->SetOption(CURLOPT_PROXYPORT, $port);
         }
         if ($username !== null && $password !== null) {
-            $this->setOpt(CURLOPT_PROXYUSERPWD, $username . ':' . $password);
+            $this->SetOption(CURLOPT_PROXYUSERPWD, $username . ':' . $password);
         }
     }
 
@@ -304,7 +304,7 @@ abstract class ACurl
      */
     public function SetProxyAuth($auth)
     {
-        $this->setOpt(CURLOPT_PROXYAUTH, $auth);
+        $this->SetOption(CURLOPT_PROXYAUTH, $auth);
     }
 
     /**
@@ -316,7 +316,7 @@ abstract class ACurl
      */
     public function SetProxyTunnel($tunnel = true)
     {
-        $this->setOpt(CURLOPT_HTTPPROXYTUNNEL, $tunnel);
+        $this->SetOption(CURLOPT_HTTPPROXYTUNNEL, $tunnel);
     }
 
     /**
@@ -328,7 +328,7 @@ abstract class ACurl
      */
     public function SetProxyType($type)
     {
-        $this->setOpt(CURLOPT_PROXYTYPE, $type);
+        $this->SetOption(CURLOPT_PROXYTYPE, $type);
     }
 
     /**
@@ -338,12 +338,12 @@ abstract class ACurl
      */
     public function SetRange($range)
     {
-        $this->setOpt(CURLOPT_RANGE, $range);
+        $this->SetOption(CURLOPT_RANGE, $range);
     }
 
     protected function setRangeInternal($range)
     {
-        $this->setOptInternal(CURLOPT_RANGE, $range);
+        $this->SetInternalOption(CURLOPT_RANGE, $range);
     }
 
     /**
@@ -353,7 +353,7 @@ abstract class ACurl
      */
     public function SetReferer($referer)
     {
-        $this->setReferrer($referer);
+        $this->SetReferrer($referer);
     }
 
     /**
@@ -363,10 +363,8 @@ abstract class ACurl
      */
     public function SetReferrer($referrer)
     {
-        $this->setOpt(CURLOPT_REFERER, $referrer);
+        $this->SetOption(CURLOPT_REFERER, $referrer);
     }
-
-    abstract public function SetRetry($mixed);
 
     /**
      * Set Timeout
@@ -375,15 +373,13 @@ abstract class ACurl
      */
     public function SetTimeout($seconds)
     {
-        $this->setOpt(CURLOPT_TIMEOUT, $seconds);
+        $this->SetOption(CURLOPT_TIMEOUT, $seconds);
     }
 
     protected function setTimeoutInternal($seconds)
     {
-        $this->setOptInternal(CURLOPT_TIMEOUT, $seconds);
+        $this->SetInternalOption(CURLOPT_TIMEOUT, $seconds);
     }
-
-    abstract public function SetUrl($url, $mixed_data = '');
 
     /**
      * Set User Agent
@@ -392,16 +388,13 @@ abstract class ACurl
      */
     public function SetUserAgent($user_agent)
     {
-        $this->setOpt(CURLOPT_USERAGENT, $user_agent);
+        $this->SetOption(CURLOPT_USERAGENT, $user_agent);
     }
 
     protected function setUserAgentInternal($user_agent)
     {
-        $this->setOptInternal(CURLOPT_USERAGENT, $user_agent);
+        $this->SetInternalOption(CURLOPT_USERAGENT, $user_agent);
     }
-
-    abstract public function SetXmlDecoder($mixed);
-    abstract public function Stop();
 
     /**
      * Success
@@ -413,8 +406,6 @@ abstract class ACurl
         $this->successCallback = $callback;
     }
 
-    abstract public function unsetHeader($key);
-
     /**
      * Unset Proxy
      *
@@ -422,7 +413,7 @@ abstract class ACurl
      */
     public function UnsetProxy()
     {
-        $this->setOpt(CURLOPT_PROXY, null);
+        $this->SetOption(CURLOPT_PROXY, null);
     }
 
     /**
@@ -444,9 +435,9 @@ abstract class ACurl
         // Turn off CURLINFO_HEADER_OUT for verbose to work. This has the side
         // effect of causing Curl::requestHeaders to be empty.
         if ($on) {
-            $this->setOpt(CURLINFO_HEADER_OUT, false);
+            $this->SetOption(CURLINFO_HEADER_OUT, false);
         }
-        $this->setOpt(CURLOPT_VERBOSE, $on);
-        $this->setOpt(CURLOPT_STDERR, $output);
+        $this->SetOption(CURLOPT_VERBOSE, $on);
+        $this->SetOption(CURLOPT_STDERR, $output);
     }
 }
