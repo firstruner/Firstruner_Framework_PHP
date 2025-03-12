@@ -47,15 +47,6 @@ class Blockchain
       public bool $MiningWithGuid = false;
       public bool $AutoMining = false;
 
-      private function toOutput() : string
-      {
-            return
-                  ($this->MiningWithGuid ? _boolean::TrueTextValue : _boolean::FalseTextValue) + ";"
-                  + ($this->AutoMining ? _boolean::TrueTextValue : _boolean::FalseTextValue) + ";" 
-                  + ($this->Control ?? _string::EmptyString) + ";"
-                  + ($this->signature ?? _string::EmptyString) + ";" 
-                  + $this->bC_Guid;
-      }
 
       /// <summary>
       /// Constructeur
@@ -97,109 +88,129 @@ class Blockchain
             }
       }
 
+      
+      private function toOutput() : string
+      {
+            return
+                  ($this->MiningWithGuid ? _boolean::TrueTextValue : _boolean::FalseTextValue) + ";"
+                  + ($this->AutoMining ? _boolean::TrueTextValue : _boolean::FalseTextValue) + ";" 
+                  + ($this->Control ?? _string::EmptyString) + ";"
+                  + ($this->signature ?? _string::EmptyString) + ";" 
+                  + $this->bC_Guid;
+      }
+
       #region Events des certificats
 
-      private void ToolsOnCertificateOverCount(int count)
+      private function ToolsOnCertificateOverCount(int $count) : void
       {
-            throw new Exception("Il y a plus d'un certificat (" + count.ToString("#0") + ")");
+            throw new \Exception("Il y a plus d'un certificat (" + $count + ")");
       }
 
-      private void ToolsOnCertificateNotFind()
+      private function ToolsOnCertificateNotFind() : void
       {
-            throw new Exception("Certificat introuvable");
+            throw new \Exception("Certificat introuvable");
       }
 
-      private void ToolsOnCertificateExpired(DateTime dateTime)
+      private function ToolsOnCertificateExpired(\DateTime $dateTime) : void
       {
-            throw new Exception("Le certificat a expiré");
+            throw new \Exception("Le certificat a expiré");
       }
 
       #endregion
 
-      private void InitializeChain()
+      private function InitializeChain() : void
       {
-          Chain = new List<Block>();
+          $this->Chain = new CCollection(type:gettype(Block));
       }
 
-      private Block CreateGenesisBlock(string data)
+      private function CreateGenesisBlock(string $data) : Block
       {
-          Block GenesisBlock = new Block(null, data, Sign: Signature, ControlFormat: Control) { autoMining = autoMining };
-          GenesisBlock.Mine();
-          return GenesisBlock;
+          $GenesisBlock = new Block(null, data, Sign: Signature, ControlFormat: Control);
+          $GenesisBlock->SetAutoMining($this->autoMining);
+
+          $GenesisBlock->Mine();
+
+          return $GenesisBlock;
       }
 
-      private void AddGenesisBlock(string data)
+      private function AddGenesisBlock(string $data) : void
       {
-          Chain.Add(CreateGenesisBlock(data));
+          $this->Chain->Add($this->CreateGenesisBlock($data));
       }
 
-      public Block Last()
+      public function Last() : Block
       {
-          return Chain.Last();
+          return $this->Chain->Last();
       }
 
-      public void AddBlock(string data)
+      public function AddBlock(string $data) : void
       {
-          Block latestBlock = Last();
+            $latestBlock = $this->Last();
 
-          if (!latestBlock.isLock && !autoMining)
-              throw new Exception("Le block précédent n'est pas miné");
+            if (!$latestBlock.isLock && !autoMining)
+                  throw new \Exception("Le block précédent n'est pas miné");
 
-          if (!latestBlock.isLock)
-              Mine();
+            if (!$latestBlock->IsLock())
+                  $this->Mine();
 
-          Chain.Add(new Block(latestBlock.Hash, data, latestBlock.Index + 1, Signature, Control)
+            $tempBlock = new Block(
+                  $latestBlock->Hash(),
+                  $data,
+                  $latestBlock->Index + 1,
+                  $this->signature,
+                  $this->Control);
+
+            $tempBlock->SetMineIncludeGuid($this->MiningWithGuid);
+            $tempBlock->SetAutoMining($this->AutoMining);
+      }
+
+      public function IsValid() : bool
+      {
+          for ($i = 1; $i < $this->Chain->count(); $i++)
           {
-              MineIncludeGuid = MiningWithGuid,
-              autoMining = autoMining
-          });
-      }
+              $currentBlock = $this->ChainChain[$i];
+              $previousBlock = $this->ChainChain[$i - 1];
 
-      public bool IsValid()
-      {
-          for (int i = 1; i < Chain.Count; i++)
-          {
-              Block currentBlock = Chain[i];
-              Block previousBlock = Chain[i - 1];
-
-              if ((currentBlock.Hash != currentBlock.ComputeHash()) ||
-                  (currentBlock.PreviousHash != previousBlock.Hash))
+              if (($currentBlock->Hash() != $currentBlock.ComputeHash()) ||
+                  ($currentBlock->GetPreviousHash() != $previousBlock->Hash()))
                   return false;
           }
 
           return true;
       }
 
-      public async void Mine()
+      public function Mine() : void
       {
-          Block last = Last();
-          bool b = false;
+          $last = $this->Last();
+          $b = false;
 
-          if (last.isLock)
+          if ($last->IsLock())
           {
-              if (Mined != null)
-                  Mined(last.Index, last.Hash);
+              if (isset($this->Mined))
+                  $this->Mined($last->Index, $last->Hash());
 
               return;
           }
 
-          await last.Mine();
+          $last->Mine();
 
-          if (Mined != null)
-              Mined(last.Index, last.Hash);
+          if ($this->Mined != null)
+            $this->Mined($last->Index, $last->Hash());
       }
       
-      public async Task<bool> Load(string DirectoryName, bool Encryption = false)
+      public function Load(string $directoryName, bool $encryption = false) : bool
       {
           Firstruner.Tools.Cryptography.EncryptDecryptModule EDModule =
               new EncryptDecryptModule(null);
           
-          if (Encryption && (cert == null))
-              Encryption = false;
+          if ($encryption && (cert == null))
+            $encryption = false;
 
-          string head1 = string.Empty, head2 = String.Empty;
+          $head1 = _string::EmptyString;
+          $head2 = _string::EmptyString;
+
           Enumerations.StockageMethod method = Enumerations.StockageMethod.ByBlock;
-          int size = 0;
+          $size = 0;
 
           using (StreamReader srheader = new StreamReader(DirectoryName + "\\fbc.header"))
           {
@@ -208,9 +219,9 @@ class Blockchain
               srheader.Close();
           }
 
-          string[] header = head1.Split(';');
-          method = (Enumerations.StockageMethod)int.Parse(header[0]);
-          size = int.Parse(header[1]);
+          $header = explode(';', $head1);
+          $method = (Enumerations.StockageMethod)int.Parse(header[0]);
+          $size = intval($header[1]);
 
           try
           {
@@ -227,12 +238,12 @@ class Blockchain
               return false;
           }
 
-          header = (Encryption ? EDModule.Decrypt(cert, head2) : head2).Split(';');
-          MiningWithGuid = bool.Parse(header[0]);
-          autoMining = bool.Parse(header[1]);
-          Control = (header[2] == string.Empty ? null : header[2]);
-          Signature = (header[3] == string.Empty ? null : header[3]);
-          BC_Guid = new Guid(header[4]);
+          $header = ($encryption ? EDModule.Decrypt(cert, $head2) : $head2).Split(';');
+          MiningWithGuid = bool.Parse($header[0]);
+          autoMining = bool.Parse($header[1]);
+          Control = ($header[2] == string.Empty ? null : $header[2]);
+          Signature = ($header[3] == string.Empty ? null : $header[3]);
+          BC_Guid = new Guid($header[4]);
 
           switch (method)
           {
@@ -296,9 +307,9 @@ class Blockchain
           }
       }
 
-      public async Task<bool> Save(string DirectoryName,
+      public function Save(string DirectoryName,
           Enumerations.StockageMethod method = Enumerations.StockageMethod.ByBlock, int size = 0,
-          bool Encryption = false, Enumerations.BackupMethod backupMethod = Enumerations.BackupMethod.Standard)
+          bool Encryption = false, Enumerations.BackupMethod backupMethod = Enumerations.BackupMethod.Standard) : Task<bool>
       {
           Firstruner.Tools.Cryptography.EncryptDecryptModule EDModule =
               new EncryptDecryptModule(null);
@@ -448,12 +459,12 @@ class Blockchain
           }
       }
 
-      private void CreateCert()
+      private function CreateCert() : void
       {
           SelfCert.Create(CertificateName:"Firstruner_BlockChain", ValidationRange:1);
       }
 
-      private void loadCert()
+      private function loadCert() : void
       {
           cert = Firstruner.Tools.Cryptography.Tools.getStoredCertificate(
               "Firstruner_BlockChain",
