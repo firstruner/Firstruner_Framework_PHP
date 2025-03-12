@@ -22,5 +22,12 @@
 * @version 2.0.0
 */
 
-namespace System\Data;
+namespace System\Data\Blockchain;
 
+//[Flags]
+abstract class LoadingCert
+{
+    public const Ignore = 0;
+    public const Load = 1;
+    public const Create = 2;
+}

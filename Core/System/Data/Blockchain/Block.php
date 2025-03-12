@@ -22,7 +22,7 @@
 * @version 2.0.0
 */
 
-namespace System\Data;
+namespace System\Data\Blockchain;
 
 use Serializable;
 use System\_String as System_String;
