@@ -22,15 +22,16 @@
 * @version 2.0.0
 */
 
+namespace System;
 
-namespace System\Diagnostics;
-
-interface ILogger
-{
-      static function WriteInConsole(mixed $element, int $messageType);
-      static function Clear();
-
-      function Write(string $element, string $context);
-      function Load(string $path);
-      function __toString();
+interface IConsole {
+    public static function Write($message); // ok
+    public static function WriteLine($message); // ok
+    public static function WriteError($message);
+    public static function WriteWarning($message);
+    public static function WriteArray($array);
+    public static function Clear(); // ok
+    public static function ReadLine(); // ok
+    public static function SetForegroundColor(string $named_Color); // ok
+    public static function ResetColor(); // ok
 }

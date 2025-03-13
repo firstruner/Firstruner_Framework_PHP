@@ -44,15 +44,15 @@ enum EMessageType
 
 abstract class MessageType
 {
-    const Warning = 48;
-    const Error = 16;
-    const Exclamation = 48;
-    const Asterisk = 64;
-    const Hand = 16;
-    const Information = 64;
     const None = 0;
-    const Question = 32;
+    const Error = 16;
+    const Hand = 16;
     const Stop = 16;
+    const Question = 32;
+    const Exclamation = 48;
+    const Warning = 48;
+    const Asterisk = 64;
+    const Information = 64;
     const Debug = 1024;
     const Log = 2048;
 }
