@@ -25,20 +25,24 @@
 namespace System\Drawing;
 
 class Color {
-    private int $r;
-    private int $g;
-    private int $b;
-    private int $a;
+    public readonly int $Red;
+    public readonly int $Green;
+    public readonly int $Blue;
+    public readonly int $Alpha;
 
-    private function __construct(int $r, int $g, int $b, int $a = 255) {
-        $this->r = max(0, min(255, $r));
-        $this->g = max(0, min(255, $g));
-        $this->b = max(0, min(255, $b));
-        $this->a = max(0, min(255, $a));
+    private function __construct(int $Red, int $Green, int $Blue, int $Alpha = 255) {
+        $this->Red = max(0, min(255, $Red));
+        $this->Green = max(0, min(255, $Green));
+        $this->Blue = max(0, min(255, $Blue));
+        $this->Alpha = max(0, min(255, $Alpha));
     }
   
-    public static function FromArgb(int $a, int $r, int $g, int $b): Color {
-        return new self($r, $g, $b, $a);
+    public static function FromArgb(int $Alpha, int $Red, int $Green, int $Blue): Color {
+        return new self($Red, $Green, $Blue, $Alpha);
+    }
+
+    public static function FromRGB(int $Red, int $Green, int $Blue): Color {
+        return new self($Red, $Green, $Blue);
     }
   
     public static function FromName(string $name): ?Color {
@@ -52,7 +56,7 @@ class Color {
     }
 
     public function ToHex(): string {
-        return sprintf("#%02X%02X%02X", $this->r, $this->g, $this->b);
+        return sprintf("#%02X%02X%02X", $this->Red, $this->Green, $this->Blue);
     }
 }
   

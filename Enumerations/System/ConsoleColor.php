@@ -24,32 +24,29 @@
 
 namespace System;
 
+use System\Drawing\Named_Color;
+
 abstract class ConsoleColor {
-    private static array $colors = [
-        "Black" => "\033[30m",
-        "DarkBlue" => "\033[34m",
-        "DarkGreen" => "\033[32m",
-        "DarkCyan" => "\033[36m",
-        "DarkRed" => "\033[31m",
-        "DarkMagenta" => "\033[35m",
-        "DarkYellow" => "\033[33m",
-        "Gray" => "\033[37m",
-        "DarkGray" => "\033[90m",
-        "Blue" => "\033[94m",
-        "Green" => "\033[92m",
-        "Cyan" => "\033[96m",
-        "Red" => "\033[91m",
-        "Magenta" => "\033[95m",
-        "Yellow" => "\033[93m",
-        "White" => "\033[97m",
-        "Reset" => "\033[0m"
-    ];
+      public const BLACK = "\033[30m";
+      public const DARK_BLUE = "\033[34m";
+      public const DARK_GREEN = "\033[32m";
+      public const DARK_CYAN = "\033[36m";
+      public const DARK_RED = "\033[31m";
+      public const DARK_MAGENTA = "\033[35m";
+      public const DARK_YELLOW = "\033[33m";
+      public const GRAY = "\033[37m";
+      public const DARK_GRAY = "\033[90m";
+      public const BLUE = "\033[94m";
+      public const GREEN = "\033[92m";
+      public const CYAN = "\033[96m";
+      public const RED = "\033[91m";
+      public const MAGENTA = "\033[95m";
+      public const YELLOW = "\033[93m";
+      public const WHITE = "\033[97m";
+      public const DEFAULT = "\033[0m";
 
-    public static function GetColor(string $name): ?string {
-        return self::$colors[$name] ?? null;
-    }
-
-    public static function ListColors(): array {
-        return array_keys(self::$colors);
-    }
+      public static function ListColors(): array {
+            $reflection = new \ReflectionClass(ConsoleColor::class);
+            return $reflection->getConstants();        
+      }
 }

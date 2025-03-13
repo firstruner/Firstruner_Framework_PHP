@@ -56,6 +56,7 @@ abstract class Named_Color {
     public const DARK_OLIVE_GREEN = ["Name" => "DarkOliveGreen", "Hex" => "#556B2F", "RGB" => "rgb(85, 107, 47)"];
     public const DARK_ORANGE = ["Name" => "DarkOrange", "Hex" => "#FF8C00", "RGB" => "rgb(255, 140, 0)"];
     public const DARK_ORCHID = ["Name" => "DarkOrchid", "Hex" => "#9932CC", "RGB" => "rgb(153, 50, 204)"];
+    public const DARK_YELLOW = ["Name" => "DarkYellow", "Hex" => "#8B8000", "RGB" => "rgb(139, 128, 0)"];
     public const DARK_RED = ["Name" => "DarkRed", "Hex" => "#8B0000", "RGB" => "rgb(139, 0, 0)"];
     public const DARK_SALMON = ["Name" => "DarkSalmon", "Hex" => "#E9967A", "RGB" => "rgb(233, 150, 122)"];
     public const DARK_SEA_GREEN = ["Name" => "DarkSeaGreen", "Hex" => "#8FBC8F", "RGB" => "rgb(143, 188, 143)"];
