@@ -24,9 +24,10 @@
 
 namespace System;
 
-use System\Drawing\Named_Color;
+use System\Attributes\Partial;
 
-abstract class ConsoleColor {
+#[Partial()]
+abstract class Console_Color {
       public const BLACK = "\033[30m";
       public const DARK_BLUE = "\033[34m";
       public const DARK_GREEN = "\033[32m";
@@ -44,9 +45,4 @@ abstract class ConsoleColor {
       public const YELLOW = "\033[93m";
       public const WHITE = "\033[97m";
       public const DEFAULT = "\033[0m";
-
-      public static function ListColors(): array {
-            $reflection = new \ReflectionClass(ConsoleColor::class);
-            return $reflection->getConstants();        
-      }
 }

@@ -24,14 +24,12 @@
 
 namespace System;
 
-interface IConsole {
-    public static function Write(string $message) : void; // ok
-    public static function WriteLine(string $message) : void; // ok
-    public static function WriteError(string $message) : void;
-    public static function WriteWarning(string $message) : void;
-    public static function WriteArray(array $array) : void;
-    public static function Clear() : void; // ok
-    public static function ReadLine() : string|false; // ok
-    public static function SetForegroundColor(string $named_Color) : void; // ok
-    public static function ResetColor() : void; // ok
+use System\Attributes\Partial;
+
+#[Partial()]
+abstract class Console_Color {
+      public static function ListColors(): array {
+            $reflection = new \ReflectionClass(Console_Color::class);
+            return $reflection->getConstants();        
+      }
 }

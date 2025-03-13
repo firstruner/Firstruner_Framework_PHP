@@ -24,12 +24,24 @@
 
 namespace System\Data\Blockchain;
 
+use Firstruner\Langages\Alphabetics;
+use System\_String as System_String;
 use System\Collections\CCollection;
+use System\Console;
 use System\Data\Blockchain\LoadingCert;
+use System\Default\_array;
 use System\Default\_boolean;
 use System\Default\_string;
+use System\Exceptions\ArgumentOutOfRangeException;
+use System\Exceptions\NeedAdministratorAccesException;
+use System\Exceptions\NotImplementedException;
+use System\Exceptions\PrivateKeyUnavailableException;
 use System\Guid;
+use System\IO\AccessMode;
+use System\IO\FileStream;
 use System\IO\StreamReader;
+use System\IO\StreamWriter;
+use System\Security\Cryptography\Encryption;
 
 class Blockchain
 {
@@ -39,7 +51,7 @@ class Blockchain
     public ?\Closure $Mined = null;
 
     private string $blockSep = "[_BLOCK_SEP_]";
-    private ?X509Certificate2 $cert = null;
+    private /*?X509Certificate2*/ $cert = null; // TODO : cert !!!
     private ?string $signature = null;
     private ?Guid $bC_Guid = null;
 
@@ -48,6 +60,8 @@ class Blockchain
     public bool $MiningWithGuid = false;
     public bool $AutoMining = false;
 
+    private ?string $provider = null;
+    private int $storageProvider = null;
 
     /// <summary>
     /// Constructeur
@@ -83,9 +97,10 @@ class Blockchain
 
         if ($eventManagement)
         {
-            Firstruner.Tools.Cryptography.Tools.Certificate_Expired += ToolsOnCertificateExpired;
-            Firstruner.Tools.Cryptography.Tools.Certificate_NotFind += ToolsOnCertificateNotFind;
-            Firstruner.Tools.Cryptography.Tools.Certificate_OverCount += ToolsOnCertificateOverCount;
+            // TODO : cert !!!
+            // Firstruner.Tools.Cryptography.Tools.Certificate_Expired += ToolsOnCertificateExpired;
+            // Firstruner.Tools.Cryptography.Tools.Certificate_NotFind += ToolsOnCertificateNotFind;
+            // Firstruner.Tools.Cryptography.Tools.Certificate_OverCount += ToolsOnCertificateOverCount;
         }
     }
 
@@ -121,7 +136,7 @@ class Blockchain
 
     private function InitializeChain() : void
     {
-        $this->Chain = new CCollection(type:gettype(Block));
+        $this->Chain = new CCollection(Block::class);
     }
 
     private function CreateGenesisBlock(string $data) : Block
@@ -148,7 +163,7 @@ class Blockchain
     {
         $latestBlock = $this->Last();
 
-        if (!$latestBlock.isLock && !autoMining)
+        if (!$latestBlock->IsLock() && !$this->AutoMining)
                 throw new \Exception("Le block précédent n'est pas miné");
 
         if (!$latestBlock->IsLock())
@@ -199,199 +214,229 @@ class Blockchain
         $this->Mined($last->Index, $last->Hash());
     }
     
-    public function Load(string $directoryName, bool $encryption = false) : bool
+    public function Load(int $storageProvider, string $provider, bool $encryption = false) : bool
     {
-        Firstruner.Tools.Cryptography.EncryptDecryptModule EDModule =
-            new EncryptDecryptModule(null);
-        
-        if ($encryption && (cert == null))
-        $encryption = false;
+        if ($storageProvider != StorageProvider::File)
+            throw new NotImplementedException();
+       
+        if ($encryption && ($cert == null))
+            $encryption = false;
 
         $head1 = _string::EmptyString;
         $head2 = _string::EmptyString;
 
-        Enumerations.StockageMethod method = Enumerations.StockageMethod.ByBlock;
+        $method = StorageMethod::ByBlock;
         $size = 0;
 
-        $srheader = new StreamReader($directoryName + "\\fbc.header");
+        // Lecture du Header
+        $this->provider = $provider;
+        $srheader = new StreamReader($provider + "\\fbc.header");
 
         $head1 = $srheader->ReadLine(); //((int)method).ToString("0") + ";" + size.ToString("0"));
         $head2 = $srheader->ReadLine(); //(Encryption ? EDModule.Encrypt(cert, toOutput()).Value : toOutput()));
+
         $srheader->Close();
 
+        // Traitement du header
         $header = explode(';', $head1);
-        $method = (Enumerations.StockageMethod)int.Parse($header[0]);
+        $method = intval($header[0]);
         $size = intval($header[1]);
 
         try
         {
-            EDModule.Decrypt(cert, $head2);
+            // TODO : cert !!!
+            Encryption::decrypt("$cert", $head2);
+            //EDModule.Decrypt($cert, $head2);
         }
-        catch (Firstruner.Exceptions.NeedAdministratorAccesException eAdmin)
+        catch (NeedAdministratorAccesException $eAdmin)
         {
-            Console.WriteLine("Accès administrateur nécessaire");
+            Console::WriteError("Accès administrateur nécessaire");
             return false;
         }
-        catch (Firstruner.Exceptions.PrivateKeyUnavailableException ePK)
+        catch (PrivateKeyUnavailableException $ePK)
         {
-            Console.WriteLine("Clé non disponible");
+            Console::WriteError("Clé non disponible");
             return false;
         }
 
-        $header = ($encryption ? EDModule.Decrypt(cert, $head2) : $head2).Split(';');
-        MiningWithGuid = bool.Parse($header[0]);
-        autoMining = bool.Parse($header[1]);
-        Control = ($header[2] == string.Empty ? null : $header[2]);
-        Signature = ($header[3] == string.Empty ? null : $header[3]);
-        BC_Guid = new Guid($header[4]);
+        // TODO : cert !!!
+        //$header = ($encryption ? EDModule.Decrypt($cert, $head2) : $head2).Split(';');
+        $header = ($encryption ? Encryption::decrypt("$cert", $head2) : $head2).Split(';');
 
-        switch (method)
+        // Affectation des valeurs lues
+        $this->MiningWithGuid = bool.Parse($header[0]);
+        $this->AutoMining = bool.Parse($header[1]);
+        $this->Control = ($header[2] == _string::EmptyString ? null : $header[2]);
+        $this->signature = ($header[3] == _string::EmptyString ? null : $header[3]);
+        $this->bC_Guid = new Guid($header[4]);
+
+        switch ($method)
         {
-            case Enumerations.StockageMethod.ByBlock:
-            case Enumerations.StockageMethod.By5Block:
-            case Enumerations.StockageMethod.By10Block:
-            case Enumerations.StockageMethod.ByNbBlock:
-                Chain = new List<Block>();
+            case StorageMethod::ByBlock:
+            case StorageMethod::By5Block:
+            case StorageMethod::By10Block:
+            case StorageMethod::ByNbBlock:
+                $this->Chain = new CCollection(type: Block::class);
 
-                foreach (string file in System.IO.Directory.GetFiles(DirectoryName, "*.fbc"))
+                foreach (glob($this->Provider . "/*.fbc") as $file)
                 {
-                    List<string> datasC = new List<string>();
-                    List<string> datasU = new List<string>();
-                    string srLine = string.Empty;
-                    StreamReader sr = new StreamReader(file);
+                    $datasC = new CCollection(type::class);
+                    $datasU = new CCollection(type::class);
+                    $srLine = _string::EmptyString;
+
+                    $sr = new StreamReader($file);
                     do
                     {
-                        srLine = sr.ReadLine();
+                        $srLine = sr->ReadLine();
 
-                        if (srLine.IsNull())
+                        if ($srLine->IsNull())
                             break;
 
-                        datasC.Add(
-                            srLine.Split(Firstruner.Enumerations.Langages.Alphabetics.HidedChar.ToCharArray()[0])[0]);
-                    } while (!srLine.IsNull());
-                    sr.Close();
+                        $datasC->Add(
+                            $srLine.Split(Alphabetics::HidedChar.ToCharArray()[0])[0]);
+                    } while (!$srLine->IsNull());
 
-                    foreach (string data in datasC)
-                        datasU.Add(EDModule.Decrypt(cert, data));
+                    $sr->Close();
 
-                    string final = string.Empty, temp = null;
+                    foreach ($datasC as $data)
+                        // TODO : cert !!!
+                        //$datasU->Add(EDModule.Decrypt($cert, $data));
+                        $datasU->Add(Encryption::decrypt("$cert", $data));
 
-                    for (int b = 0; b < datasU.Count; b++)
+                    $final = _string::EmptyString;
+                    $temp = null;
+
+                    for ($b = 0; $b < $datasU->count(); $b++)
                     {
-                        int end = (datasU[b] + ((b < (datasU.Count - 1)) ? datasU[b + 1] : string.Empty)).IndexOf(BlockSep);
+                        $end = strpos($datasU[$b] + (
+                            ($b < ($datasU->count() - 1)) 
+                                ? $datasU[$b + 1] 
+                                : _string::EmptyString), $BlockSep);
 
-                        if (!temp.IsNull() || ((end < 0) && (temp.IsNull())))
+                        if (isset($temp) || (($end < 0) && (!isset($temp))))
                         {
-                            final += temp ?? datasU[b];
-                            temp = null;
+                            $final += $temp ?? $datasU[$b];
+                            $temp = null;
                         }
                         else
                         {
-                            final +=
-                                (datasU[b] + ((b < (datasU.Count - 1)) ? datasU[b + 1] : string.Empty)).Substring(
-                                    0, end);
+                            $final +=
+                                substr($datasU[$b] + (
+                                    ($b < ($datasU->count() - 1))
+                                        ? $datasU[$b + 1]
+                                        : _string::EmptyString),
+                                            0,
+                                            $end);
                             
-                            Chain.Add(new Block(final));
-                            final = string.Empty;
-                            temp =
-                                (datasU[b] + ((b < (datasU.Count - 1)) ? datasU[b + 1] : string.Empty)).Substring(
-                                    end + BlockSep.Length);
+                            $this->Chain.Add(new Block($final));
+                            $final = _string::EmptyString;
+                            $temp =
+                                substr($datasU[$b] + (
+                                    ($b < ($datasU.Count - 1)) 
+                                        ? $datasU[$b + 1] 
+                                        : _string::EmptyString),
+                                            $end + strlen($BlockSep));
                         }
                     }
                 }
                 return true;
-            case Enumerations.StockageMethod.ByFileSize:
+            case StorageMethod::ByFileSize:
                 return false;
             default:
-                throw new ArgumentOutOfRangeException(nameof(method), method, null);
+                throw new ArgumentOutOfRangeException("method");
         }
     }
 
-    public function Save(string DirectoryName,
-        Enumerations.StockageMethod method = Enumerations.StockageMethod.ByBlock, int size = 0,
-        bool Encryption = false, Enumerations.BackupMethod backupMethod = Enumerations.BackupMethod.Standard) : Task<bool>
+    public function Save(int $storageProvider, string $provider,
+        int $method = StorageMethod::ByBlock, int $size = 0,
+        bool $encryption = false, int $backupMethod = BackupMethod::Standard) : bool
     {
-        Firstruner.Tools.Cryptography.EncryptDecryptModule EDModule =
-            new EncryptDecryptModule(null);
+        // TODO : cert !!!
+        // Firstruner.Tools.Cryptography.EncryptDecryptModule EDModule =
+        //     new EncryptDecryptModule(null);
+
+        if ($storageProvider != StorageProvider::File)
+            throw new NotImplementedException();
         
         try
         {
-            foreach (string file in System.IO.Directory.GetFiles(DirectoryName))
-                System.IO.File.Delete(file);
+            foreach (glob($provider) as $file)
+                unlink($file);
         }
-        catch (Exception e)
+        catch (\Exception $e)
         {
-            throw e;
-        }
-
-        if (Encryption && (cert == null))
-            Encryption = false;
-
-        size = (method == Enumerations.StockageMethod.By5Block
-            ? 5
-            : (method == Enumerations.StockageMethod.By10Block
-                ? 10
-                : (method == Enumerations.StockageMethod.ByBlock
-                    ? 1
-                    : size)));
-
-        using (StreamWriter swheader = new StreamWriter(DirectoryName + "\\fbc.header"))
-        {
-            swheader.WriteLine(((int)method).ToString("0") + ";" + size.ToString("0"));
-            swheader.WriteLine((Encryption ? EDModule.Encrypt(cert, toOutput()).Value : toOutput()));
-            swheader.Flush();
-            swheader.Close();
+            throw $e;
         }
 
-        switch (method)
+        // TODO : cert !!!
+        // if ($encryption && (cert == null))
+        //     $encryption = false;
+
+        switch ($method)
         {
-            case Enumerations.StockageMethod.ByBlock:
-            case Enumerations.StockageMethod.By5Block:
-            case Enumerations.StockageMethod.By10Block:
-            case Enumerations.StockageMethod.ByNbBlock:
+            case StorageMethod::ByBlock:
+                $size = StorageMethod::ByBlock_Value;
+            case StorageMethod::By5Block:
+                $size = StorageMethod::By5Block_Value;
+            case StorageMethod::By10Block:
+                $size = StorageMethod::By10Block_Value;            
+        }
+
+        $swHeader = new StreamWriter($provider + "\\fbc.header");
+        $swheader->WriteLine(strval($method) . ";" . strval($size));
+        // TODO : cert !!!
+        //$swheader->WriteLine(($encryption ? EDModule.Encrypt(cert, toOutput()).Value : toOutput()));
+        $swheader->WriteLine(($encryption ? Encryption::encrypt("cert", $this->toOutput())->Value : $this->toOutput()));
+        $swheader->Flush();
+        $swheader->Close();
+
+        switch ($method)
+        {
+            case StorageMethod::ByBlock:
+            case StorageMethod::By5Block:
+            case StorageMethod::By10Block:
+            case StorageMethod::ByNbBlock:
                 #region Ecriture des fichiers client
 
-                if ((backupMethod == Enumerations.BackupMethod.Standard) || (backupMethod == Enumerations.BackupMethod.Full))
+                if (($backupMethod == BackupMethod::Standard) || ($backupMethod == BackupMethod::Full))
                 {
-                    for (int i = 0; i < Chain.Count; i += size)
+                    for ($i = 0; $i < $this->Chain->count(); $i += $size)
                     {
-                        string[] xml_blocks = new string[size];
+                        $xml_blocks = array_fill(0, $size, _string::EmptyString);
 
-                        for (int j = 0; j < size; j++)
+                        for ($j = 0; $j < $size; $j++)
                         {
-                            string xml = Chain[i].Serialize();
-                            xml_blocks[j] = xml + BlockSep;
+                            $xml = serialize($this->Chain[$i]);
+                            $xml_blocks[$j] = $xml . $BlockSep;
                         }
 
-                        using (
-                            StreamWriter fileout =
-                                new StreamWriter(DirectoryName + "\\" + Guid.NewGuid().ToString() + ".fbc"))
+                        $fileout = new StreamWriter($provider + "\\" + Guid::NewGuid() + ".fbc");
+                        for ($z = 0; $z < count($xml_blocks); $z++)
                         {
-                            for (int z = 0; z < xml_blocks.Length; z++)
+                            if (($xml_blocks[$z] != null) && ($xml_blocks[$z] != _string::EmptyString))
                             {
-                                if ((xml_blocks[z] != null) && (xml_blocks[z] != String.Empty))
+                                if ($encryption)
                                 {
-                                    if (Encryption)
+                                    $cuttedStrings = $xml_blocks[z].Cut(65);
+                                    for ($cs = 0; $cs < count($cuttedStrings); $cs++)
                                     {
-                                        string[] cuttedStrings = cuttedStrings = xml_blocks[z].Cut(65);
-                                        for (int cs = 0; cs < cuttedStrings.Length; cs++)
-                                        {
-                                            fileout.WriteLine(EDModule.Encrypt(cert, cuttedStrings[cs]).Value +
-                                                            Langages.Alphabetics.HidedChar);
-                                            fileout.Flush();
-                                        }
+                                        $fileout->WriteLine(
+                                            EDModule.Encrypt(
+                                                cert,
+                                                cuttedStrings[cs]).Value . Alphabetics::HidedChar);
+                                        $fileout->Flush();
                                     }
-                                    else
-                                    {
-                                        fileout.WriteLine(xml_blocks[z]);
-                                    }
-
-                                    fileout.Flush();
                                 }
-                            }
+                                else
+                                {
+                                    $fileout->WriteLine(xml_blocks[z]);
+                                }
 
-                            fileout.Close();
+                                $fileout->Flush();
+                            }
                         }
+
+                        $fileout->Close();
                     }
                 }
                 #endregion
@@ -400,16 +445,18 @@ class Blockchain
 
                 if ((int) backupMethod >= 1)
                 {
-                    int secIDFile = 1;
-                    FileStream fs = new FileStream(DirectoryName + "\\fbc.1.security", FileMode.Create,
-                        FileAccess.Write);
+                    $secIDFile = 1;
+                    $fs = new FileStream(
+                        $provider + "\\fbc.1.security",
+                        AccessMode::WriteOnly_CreateIfNotExists,
+                        true);
 
-                    List<string[]> full = new List<string[]>();
-                    List<byte[]> finalByteses = new List<byte[]>();
+                    $full = new CCollection(type:_array::ClassName); // String[]
+                    $finalByteses = new CCollection(type:_array::ClassName); // Byte[]
 
-                    foreach (Block block in Chain)
-                        full.Add(
-                            (block.Serialize() + Firstruner.Enumerations.Langages.Alphabetics.HidedChar).Cut(200));
+                    foreach ($this->Chain as $block)
+                        $full->Add(
+                            System_String::Chunk(serialize($block) . Alphabetics::HidedChar, 200));
 
                     for (int fullID = 0; fullID < full.Count; fullID++)
                     {
@@ -433,12 +480,12 @@ class Blockchain
                                 Firstruner.Enumerations.OctetsRange.SizeSuffixes[
                                     (int) Firstruner.Enumerations.SizeSuffixesEnumeration.Mega]))
                             {
-                                fs.Flush();
-                                fs.Close();
-                                i++;
+                                $fs->Flush();
+                                $fs->Close();
+                                $i++;
 
                                 fName = DirectoryName + "\\fbc." + secIDFile.ToString() + ".security";
-                                fs = new FileStream(fName, FileMode.Create, FileAccess.Write);
+                                $fs = new FileStream(fName, FileMode.Create, FileAccess.Write);
                             }
                         }
 
@@ -452,10 +499,10 @@ class Blockchain
                 #endregion
 
                 return true;
-            case Enumerations.StockageMethod.ByFileSize:
+            case StorageMethod::ByFileSize:
                 return false;
             default:
-                throw new ArgumentOutOfRangeException(nameof(method), method, null);
+                throw new ArgumentOutOfRangeException("method");
         }
     }
 

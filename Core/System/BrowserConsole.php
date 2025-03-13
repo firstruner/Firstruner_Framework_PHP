@@ -24,6 +24,7 @@
 
 namespace System;
 
+use System\Default\_string;
 use System\Diagnostics\Webbrowser_Logger;
 use System\Forms\MessageType;
 
@@ -31,42 +32,42 @@ final class BrowserConsole extends Console {
       /**
        * Affiche un message dans la console du navigateur (sans saut de ligne).
        */
-      public static function Write($message) {
+      public static function Write(string $message) : void {
             Webbrowser_Logger::WriteInConsole($message);
       }
 
       /**
        * Affiche un message suivi d'un saut de ligne (équivalent à WriteLine en C#).
        */
-      public static function WriteLine($message = "") {
+      public static function WriteLine(string $message = _string::EmptyString) : void {
             self::Write($message); // Même comportement que Write()
       }
 
       /**
        * Affiche un message en tant qu'erreur dans la console.
        */
-      public static function WriteError($message) {
+      public static function WriteError(string $message) : void {
             Webbrowser_Logger::WriteInConsole($message, MessageType::Error);
       }
 
       /**
        * Affiche un message en tant qu'avertissement dans la console.
        */
-      public static function WriteWarning($message) {
+      public static function WriteWarning(string $message) : void {
             Webbrowser_Logger::WriteInConsole($message, MessageType::Warning);
       }
 
       /**
        * Affiche un objet ou une variable sous forme d'un tableau dans la console.
        */
-      public static function WriteTable($array) {
+      public static function WriteTable(array $array) : void {
             Webbrowser_Logger::WriteInConsole($array);
       }
 
       /**
        * Efface la console du navigateur.
        */
-      public static function Clear() {
+      public static function Clear() : void {
             Webbrowser_Logger::Clear();
       }
 }

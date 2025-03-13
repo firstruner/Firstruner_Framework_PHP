@@ -45,11 +45,11 @@ class Color {
         return new self($Red, $Green, $Blue);
     }
   
-    public static function FromName(string $name): ?Color {
-        $constantName = "Named_Color::" . ucfirst(strtoupper($name));
+    public static function FromName(string $named_name): ?Color {
+        $constantName = Named_Color::class . "::" . ucfirst(strtoupper($named_name));
 
         if (!defined($constantName))
-            throw new \Exception("Unknown color");
+            throw new \Exception("Unknown named color");
 
         $constantColor = new self(...(constant($constantName))["RGB"]);
         return $constantColor;

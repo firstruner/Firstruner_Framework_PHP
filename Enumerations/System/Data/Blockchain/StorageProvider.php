@@ -22,16 +22,11 @@
 * @version 2.0.0
 */
 
-namespace System;
+namespace System\Data\Blockchain;
 
-interface IConsole {
-    public static function Write(string $message) : void; // ok
-    public static function WriteLine(string $message) : void; // ok
-    public static function WriteError(string $message) : void;
-    public static function WriteWarning(string $message) : void;
-    public static function WriteArray(array $array) : void;
-    public static function Clear() : void; // ok
-    public static function ReadLine() : string|false; // ok
-    public static function SetForegroundColor(string $named_Color) : void; // ok
-    public static function ResetColor() : void; // ok
+//[Flags]
+abstract class StorageProvider
+{
+    public const File = 0;
+    public const DB = 1;
 }

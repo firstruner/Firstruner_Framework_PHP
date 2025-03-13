@@ -259,4 +259,9 @@ class _String
         
             return $randomString;
       }
+
+      public static function Chunk(string $haystack, int $lenght) : array
+      {
+            return str_split($haystack, $lenght);
+      }
 }
