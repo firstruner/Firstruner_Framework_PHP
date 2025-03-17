@@ -47,7 +47,7 @@ final class Encoder
      * @return string
      * @throws \ErrorException
      */
-    public static function encodeJson()
+    public static function EncodeJson()
     {
         $args = func_get_args();
         $value = call_user_func_array('json_encode', $args);

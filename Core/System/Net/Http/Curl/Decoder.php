@@ -44,7 +44,7 @@ final class Decoder
      * @param $depth
      * @param $options
      */
-    public static function decodeJson()
+    public static function DecodeJson()
     {
         $args = func_get_args();
         $response = call_user_func_array('json_decode', $args);
@@ -63,7 +63,7 @@ final class Decoder
      * @param $ns
      * @param $is_prefix
      */
-    public static function decodeXml()
+    public static function DecodeXml()
     {
         $args = func_get_args();
         $response = @call_user_func_array('simplexml_load_string', $args);

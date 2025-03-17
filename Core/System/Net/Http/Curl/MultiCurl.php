@@ -34,6 +34,10 @@
 
 namespace System\Net\Http\Curl;
 
+use System\_Array;
+use System\Collections\CaseInsensitiveArray;
+use System\Uri;
+
 final class MultiCurl extends ACurl
 {
     public $baseUrl = null;
@@ -104,8 +108,8 @@ final class MultiCurl extends ACurl
         $this->queueHandle($curl);
         $this->setUrl($url, $query_parameters);
         $curl->setUrl($url, $query_parameters);
-        $curl->setOpt(CURLOPT_CUSTOMREQUEST, 'DELETE');
-        $curl->setOpt(CURLOPT_POSTFIELDS, $curl->buildPostData($data));
+        $curl->SetOption(CURLOPT_CUSTOMREQUEST, 'DELETE');
+        $curl->SetOption(CURLOPT_POSTFIELDS, $curl->buildPostData($data));
         return $curl;
     }
 
@@ -166,8 +170,8 @@ final class MultiCurl extends ACurl
         }
 
         $curl->setFile($curl->fileHandle);
-        $curl->setOpt(CURLOPT_CUSTOMREQUEST, 'GET');
-        $curl->setOpt(CURLOPT_HTTPGET, true);
+        $curl->SetOption(CURLOPT_CUSTOMREQUEST, 'GET');
+        $curl->SetOption(CURLOPT_HTTPGET, true);
         return $curl;
     }
 
@@ -189,8 +193,8 @@ final class MultiCurl extends ACurl
         $this->queueHandle($curl);
         $this->setUrl($url, $data);
         $curl->setUrl($url, $data);
-        $curl->setOpt(CURLOPT_CUSTOMREQUEST, 'GET');
-        $curl->setOpt(CURLOPT_HTTPGET, true);
+        $curl->SetOption(CURLOPT_CUSTOMREQUEST, 'GET');
+        $curl->SetOption(CURLOPT_HTTPGET, true);
         return $curl;
     }
 
@@ -212,8 +216,8 @@ final class MultiCurl extends ACurl
         $this->queueHandle($curl);
         $this->setUrl($url, $data);
         $curl->setUrl($url, $data);
-        $curl->setOpt(CURLOPT_CUSTOMREQUEST, 'HEAD');
-        $curl->setOpt(CURLOPT_NOBODY, true);
+        $curl->SetOption(CURLOPT_CUSTOMREQUEST, 'HEAD');
+        $curl->SetOption(CURLOPT_NOBODY, true);
         return $curl;
     }
 
@@ -236,7 +240,7 @@ final class MultiCurl extends ACurl
         $this->setUrl($url, $data);
         $curl->setUrl($url, $data);
         $curl->removeHeader('Content-Length');
-        $curl->setOpt(CURLOPT_CUSTOMREQUEST, 'OPTIONS');
+        $curl->SetOption(CURLOPT_CUSTOMREQUEST, 'OPTIONS');
         return $curl;
     }
 
@@ -263,8 +267,8 @@ final class MultiCurl extends ACurl
         $this->queueHandle($curl);
         $this->setUrl($url);
         $curl->setUrl($url);
-        $curl->setOpt(CURLOPT_CUSTOMREQUEST, 'PATCH');
-        $curl->setOpt(CURLOPT_POSTFIELDS, $curl->buildPostData($data));
+        $curl->SetOption(CURLOPT_CUSTOMREQUEST, 'PATCH');
+        $curl->SetOption(CURLOPT_POSTFIELDS, $curl->buildPostData($data));
         return $curl;
     }
 
@@ -302,11 +306,11 @@ final class MultiCurl extends ACurl
         // the -X, --request command line option where curl won't change the
         // request method according to the HTTP 30x response code.
         if ($follow_303_with_post) {
-            $curl->setOpt(CURLOPT_CUSTOMREQUEST, 'POST');
+            $curl->SetOption(CURLOPT_CUSTOMREQUEST, 'POST');
         }
 
-        $curl->setOpt(CURLOPT_POST, true);
-        $curl->setOpt(CURLOPT_POSTFIELDS, $curl->buildPostData($data));
+        $curl->SetOption(CURLOPT_POST, true);
+        $curl->SetOption(CURLOPT_POSTFIELDS, $curl->buildPostData($data));
         return $curl;
     }
 
@@ -328,12 +332,12 @@ final class MultiCurl extends ACurl
         $this->queueHandle($curl);
         $this->setUrl($url);
         $curl->setUrl($url);
-        $curl->setOpt(CURLOPT_CUSTOMREQUEST, 'PUT');
+        $curl->SetOption(CURLOPT_CUSTOMREQUEST, 'PUT');
         $put_data = $curl->buildPostData($data);
         if (is_string($put_data)) {
             $curl->setHeader('Content-Length', strlen($put_data));
         }
-        $curl->setOpt(CURLOPT_POSTFIELDS, $put_data);
+        $curl->SetOption(CURLOPT_POSTFIELDS, $put_data);
         return $curl;
     }
 
@@ -355,12 +359,12 @@ final class MultiCurl extends ACurl
         $this->queueHandle($curl);
         $this->setUrl($url);
         $curl->setUrl($url);
-        $curl->setOpt(CURLOPT_CUSTOMREQUEST, 'SEARCH');
+        $curl->SetOption(CURLOPT_CUSTOMREQUEST, 'SEARCH');
         $put_data = $curl->buildPostData($data);
         if (is_string($put_data)) {
             $curl->setHeader('Content-Length', strlen($put_data));
         }
-        $curl->setOpt(CURLOPT_POSTFIELDS, $put_data);
+        $curl->SetOption(CURLOPT_POSTFIELDS, $put_data);
         return $curl;
     }
 
@@ -437,7 +441,7 @@ final class MultiCurl extends ACurl
     #[\Override]
     public function setCookieString($string)
     {
-        $this->setOpt(CURLOPT_COOKIE, $string);
+        $this->SetOption(CURLOPT_COOKIE, $string);
     }
 
     /**
@@ -448,7 +452,7 @@ final class MultiCurl extends ACurl
     #[\Override]
     public function setCookieFile($cookie_file)
     {
-        $this->setOpt(CURLOPT_COOKIEFILE, $cookie_file);
+        $this->SetOption(CURLOPT_COOKIEFILE, $cookie_file);
     }
 
     /**
@@ -459,7 +463,7 @@ final class MultiCurl extends ACurl
     #[\Override]
     public function setCookieJar($cookie_jar)
     {
-        $this->setOpt(CURLOPT_COOKIEJAR, $cookie_jar);
+        $this->SetOption(CURLOPT_COOKIEJAR, $cookie_jar);
     }
 
     /**
@@ -487,7 +491,7 @@ final class MultiCurl extends ACurl
     #[\Override]
     public function setHeaders($headers)
     {
-        if (ArrayUtil::isArrayAssoc($headers)) {
+        if (_Array::isArrayAssoc($headers)) {
             foreach ($headers as $key => $value) {
                 $key = trim($key);
                 $value = trim($value);
@@ -556,7 +560,7 @@ final class MultiCurl extends ACurl
      * @param $value
      */
     #[\Override]
-    public function setOpt($option, $value)
+    public function SetOption($option, $value)
     {
         $this->options[$option] = $value;
 
@@ -581,10 +585,10 @@ final class MultiCurl extends ACurl
      * @param $options
      */
     #[\Override]
-    public function setOpts($options)
+    public function SetOptions($options)
     {
         foreach ($options as $option => $value) {
-            $this->setOpt($option, $value);
+            $this->SetOption($option, $value);
         }
     }
 
@@ -668,15 +672,15 @@ final class MultiCurl extends ACurl
     #[\Override]
     public function setUrl($url, $mixed_data = '')
     {
-        $built_url = Url::buildUrl($url, $mixed_data);
+        $built_url = Uri::buildUrl($url, $mixed_data);
 
         if ($this->baseUrl === null) {
-            $this->baseUrl = (string)new Url($built_url);
+            $this->baseUrl = (string)new Uri($built_url);
         } else {
-            $this->baseUrl = (string)new Url($this->baseUrl, $built_url);
+            $this->baseUrl = (string)new Uri($this->baseUrl, $built_url);
         }
 
-        $this->setOpt(CURLOPT_URL, $this->baseUrl);
+        $this->SetOption(CURLOPT_URL, $this->baseUrl);
     }
 
     /**
@@ -917,7 +921,7 @@ final class MultiCurl extends ACurl
 
         // Set instance-specific options on the Curl instance when present.
         if (isset($this->instanceSpecificOptions[$curl->id])) {
-            $curl->setOpts($this->instanceSpecificOptions[$curl->id]);
+            $curl->SetOptions($this->instanceSpecificOptions[$curl->id]);
         }
 
         $curl->setRetry($this->retry);
@@ -926,7 +930,7 @@ final class MultiCurl extends ACurl
         // Use a random proxy for the curl instance when proxies have been set
         // and the curl instance doesn't already have a proxy set.
         if (is_array($this->proxies) && $curl->getOpt(CURLOPT_PROXY) === null) {
-            $random_proxy = ArrayUtil::arrayRandom($this->proxies);
+            $random_proxy = _Array::arrayRandom($this->proxies);
             $curl->setProxy($random_proxy);
         }
 

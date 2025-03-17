@@ -32,7 +32,7 @@
 * @Update on : 20/06/2024 by : Patience KORIBIRAM
 */
 
-namespace System\Net\Http\Curl;
+namespace System\Collections;
 
 /**
  * @psalm-suppress MissingTemplateParam

@@ -34,7 +34,9 @@
 
 namespace System\Net\Http\Curl;
 
-abstract class ACurl
+use System\Net\Http\ICurl;
+
+abstract class ACurl implements ICurl
 {
     public $beforeSendCallback = null;
     public $afterSendCallback = null;

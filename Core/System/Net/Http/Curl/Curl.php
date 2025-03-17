@@ -34,6 +34,10 @@
 
 namespace System\Net\Http\Curl;
 
+use System\_Array;
+use System\Collections\CaseInsensitiveArray;
+use System\Globalization\RFC\RFC2616;
+use System\Globalization\RFC\RFC6265;
 use System\Uri;
 
 final class Curl extends ACurl
@@ -87,39 +91,6 @@ final class Curl extends ACurl
     private $xmlDecoderArgs = [];
     private $xmlPattern = '~^(?:text/|application/(?:atom\+|rss\+|soap\+)?)xml~i';
     private $defaultDecoder = null;
-
-    public static $RFC2616 = [
-        // RFC 2616: "any CHAR except CTLs or separators".
-        // CHAR           = <any US-ASCII character (octets 0 - 127)>
-        // CTL            = <any US-ASCII control character
-        //                  (octets 0 - 31) and DEL (127)>
-        // separators     = "(" | ")" | "<" | ">" | "@"
-        //                | "," | ";" | ":" | "\" | <">
-        //                | "/" | "[" | "]" | "?" | "="
-        //                | "{" | "}" | SP | HT
-        // SP             = <US-ASCII SP, space (32)>
-        // HT             = <US-ASCII HT, horizontal-tab (9)>
-        // <">            = <US-ASCII double-quote mark (34)>
-        '!', '#', '$', '%', '&', "'", '*', '+', '-', '.', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B',
-        'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X',
-        'Y', 'Z', '^', '_', '`', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q',
-        'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '|', '~',
-    ];
-    public static $RFC6265 = [
-        // RFC 6265: "US-ASCII characters excluding CTLs, whitespace DQUOTE, comma, semicolon, and backslash".
-        // %x21
-        '!',
-        // %x23-2B
-        '#', '$', '%', '&', "'", '(', ')', '*', '+',
-        // %x2D-3A
-        '-', '.', '/', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', ':',
-        // %x3C-5B
-        '<', '=', '>', '?', '@', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q',
-        'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '[',
-        // %x5D-7E
-        ']', '^', '_', '`', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r',
-        's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '{', '|', '}', '~',
-    ];
 
     public $curlErrorCodeConstant;
     public $curlErrorCodeConstants;
@@ -193,8 +164,8 @@ final class Curl extends ACurl
             // Manually build a single-dimensional array from a multi-dimensional array as using curl_setopt($ch,
             // CURLOPT_POSTFIELDS, $data) doesn't correctly handle multi-dimensional arrays when files are
             // referenced.
-            if (ArrayUtil::isArrayMultidim($data)) {
-                $data = ArrayUtil::arrayFlattenMultidim($data);
+            if (_Array::isArrayMultidim($data)) {
+                $data = _Array::arrayFlattenMultidim($data);
             }
 
             // Modify array values to ensure any referenced files are properly handled depending on the support of
@@ -292,14 +263,14 @@ final class Curl extends ACurl
      */
     public function Progress($callback)
     {
-        $this->setOpt(CURLOPT_PROGRESSFUNCTION, $callback);
-        $this->setOpt(CURLOPT_NOPROGRESS, false);
+        $this->SetOption(CURLOPT_PROGRESSFUNCTION, $callback);
+        $this->SetOption(CURLOPT_NOPROGRESS, false);
     }
 
     private function progressInternal($callback)
     {
-        $this->setOptInternal(CURLOPT_PROGRESSFUNCTION, $callback);
-        $this->setOptInternal(CURLOPT_NOPROGRESS, false);
+        $this->SetInternalOption(CURLOPT_PROGRESSFUNCTION, $callback);
+        $this->SetInternalOption(CURLOPT_NOPROGRESS, false);
     }
 
     /**
@@ -319,7 +290,7 @@ final class Curl extends ACurl
         }
 
         $this->setUrl($url, $query_parameters);
-        $this->setOpt(CURLOPT_CUSTOMREQUEST, 'DELETE');
+        $this->SetOption(CURLOPT_CUSTOMREQUEST, 'DELETE');
 
         // Avoid including a content-length header in DELETE requests unless there is a message body. The following
         // would include "Content-Length: 0" in the request header:
@@ -329,7 +300,7 @@ final class Curl extends ACurl
         //   inclusion of a Content-Length or Transfer-Encoding header field in
         //   the request's message-headers.
         if (!empty($data)) {
-            $this->setOpt(CURLOPT_POSTFIELDS, $this->buildPostData($data));
+            $this->SetOption(CURLOPT_POSTFIELDS, $this->buildPostData($data));
         }
         return $this->exec();
     }
@@ -399,7 +370,7 @@ final class Curl extends ACurl
         // to download. Use an HTTP GET request without a body instead of a HEAD
         // request because not all hosts support HEAD requests.
         $curl = new Curl();
-        $curl->setOptInternal(CURLOPT_NOBODY, true);
+        $curl->SetInternalOption(CURLOPT_NOBODY, true);
 
         // Pass user-specified options to the instance checking for content-length.
         $curl->setOpts($this->userSetOptions);
@@ -454,8 +425,8 @@ final class Curl extends ACurl
             // Pass user-specified options to the instance downloading a part.
             $curl->setOpts($this->userSetOptions);
 
-            $curl->setOptInternal(CURLOPT_CUSTOMREQUEST, 'GET');
-            $curl->setOptInternal(CURLOPT_HTTPGET, true);
+            $curl->SetInternalOption(CURLOPT_CUSTOMREQUEST, 'GET');
+            $curl->SetInternalOption(CURLOPT_HTTPGET, true);
             $curl->setRangeInternal($range);
             $curl->setFileInternal($file_handle);
             $curl->fileHandle = $file_handle;
@@ -565,8 +536,8 @@ final class Curl extends ACurl
         }
 
         // NOTE: CURLINFO_HEADER_OUT set to true is required for requestHeaders
-        // to not be empty (e.g. $curl->setOpt(CURLINFO_HEADER_OUT, true);).
-        if ($this->getOpt(CURLINFO_HEADER_OUT) === true) {
+        // to not be empty (e.g. $curl->SetOption(CURLINFO_HEADER_OUT, true);).
+        if ($this->GetOption(CURLINFO_HEADER_OUT) === true) {
             $this->requestHeaders = $this->parseRequestHeaders($this->getInfo(CURLINFO_HEADER_OUT));
         }
         $this->responseHeaders = $this->parseResponseHeaders($this->rawResponseHeaders);
@@ -601,7 +572,7 @@ final class Curl extends ACurl
         $this->unsetHeader('Content-Length');
 
         // Reset nobody setting possibly set from a HEAD request.
-        $this->setOptInternal(CURLOPT_NOBODY, false);
+        $this->SetInternalOption(CURLOPT_NOBODY, false);
 
         // Allow multicurl to attempt retry as needed.
         if ($this->isChildOfMultiCurl()) {
@@ -647,8 +618,8 @@ final class Curl extends ACurl
             $url = (string)$this->url;
         }
         $this->setUrl($url, $data);
-        $this->setOptInternal(CURLOPT_CUSTOMREQUEST, 'GET');
-        $this->setOptInternal(CURLOPT_HTTPGET, true);
+        $this->SetInternalOption(CURLOPT_CUSTOMREQUEST, 'GET');
+        $this->SetInternalOption(CURLOPT_HTTPGET, true);
         return $this->exec();
     }
 
@@ -684,8 +655,8 @@ final class Curl extends ACurl
             $url = (string)$this->url;
         }
         $this->setUrl($url, $data);
-        $this->setOpt(CURLOPT_CUSTOMREQUEST, 'HEAD');
-        $this->setOpt(CURLOPT_NOBODY, true);
+        $this->SetOption(CURLOPT_CUSTOMREQUEST, 'HEAD');
+        $this->SetOption(CURLOPT_NOBODY, true);
         return $this->exec();
     }
 
@@ -696,14 +667,14 @@ final class Curl extends ACurl
      * @param        $data
      * @return mixed Returns the value provided by exec.
      */
-    public function Options($url, $data = [])
+    public function SetOptions($url, $data = [])
     {
         if (is_array($url)) {
             $data = $url;
             $url = (string)$this->url;
         }
         $this->setUrl($url, $data);
-        $this->setOpt(CURLOPT_CUSTOMREQUEST, 'OPTIONS');
+        $this->SetOption(CURLOPT_CUSTOMREQUEST, 'OPTIONS');
         return $this->exec();
     }
 
@@ -726,8 +697,8 @@ final class Curl extends ACurl
         }
 
         $this->setUrl($url);
-        $this->setOpt(CURLOPT_CUSTOMREQUEST, 'PATCH');
-        $this->setOpt(CURLOPT_POSTFIELDS, $this->buildPostData($data));
+        $this->SetOption(CURLOPT_CUSTOMREQUEST, 'PATCH');
+        $this->SetOption(CURLOPT_POSTFIELDS, $this->buildPostData($data));
         return $this->exec();
     }
 
@@ -772,16 +743,16 @@ final class Curl extends ACurl
         // the -X, --request command line option where curl won't change the
         // request method according to the HTTP 30x response code.
         if ($follow_303_with_post) {
-            $this->setOpt(CURLOPT_CUSTOMREQUEST, 'POST');
+            $this->SetOption(CURLOPT_CUSTOMREQUEST, 'POST');
         } elseif (isset($this->options[CURLOPT_CUSTOMREQUEST])) {
             // Unset the CURLOPT_CUSTOMREQUEST option so that curl does not use
             // a POST request after a post/redirect/get redirection. Without
             // this, curl will use the method string specified for all requests.
-            $this->setOpt(CURLOPT_CUSTOMREQUEST, null);
+            $this->SetOption(CURLOPT_CUSTOMREQUEST, null);
         }
 
-        $this->setOpt(CURLOPT_POST, true);
-        $this->setOpt(CURLOPT_POSTFIELDS, $this->buildPostData($data));
+        $this->SetOption(CURLOPT_POST, true);
+        $this->SetOption(CURLOPT_POSTFIELDS, $this->buildPostData($data));
         return $this->exec();
     }
 
@@ -799,7 +770,7 @@ final class Curl extends ACurl
             $url = (string)$this->url;
         }
         $this->setUrl($url);
-        $this->setOpt(CURLOPT_CUSTOMREQUEST, 'PUT');
+        $this->SetOption(CURLOPT_CUSTOMREQUEST, 'PUT');
         $put_data = $this->buildPostData($data);
         if (empty($this->options[CURLOPT_INFILE]) && empty($this->options[CURLOPT_INFILESIZE])) {
             if (is_string($put_data)) {
@@ -807,7 +778,7 @@ final class Curl extends ACurl
             }
         }
         if (!empty($put_data)) {
-            $this->setOpt(CURLOPT_POSTFIELDS, $put_data);
+            $this->SetOption(CURLOPT_POSTFIELDS, $put_data);
         }
         return $this->exec();
     }
@@ -826,7 +797,7 @@ final class Curl extends ACurl
             $url = (string)$this->url;
         }
         $this->setUrl($url);
-        $this->setOpt(CURLOPT_CUSTOMREQUEST, 'SEARCH');
+        $this->SetOption(CURLOPT_CUSTOMREQUEST, 'SEARCH');
         $put_data = $this->buildPostData($data);
         if (empty($this->options[CURLOPT_INFILE]) && empty($this->options[CURLOPT_INFILESIZE])) {
             if (is_string($put_data)) {
@@ -834,7 +805,7 @@ final class Curl extends ACurl
             }
         }
         if (!empty($put_data)) {
-            $this->setOpt(CURLOPT_POSTFIELDS, $put_data);
+            $this->SetOption(CURLOPT_POSTFIELDS, $put_data);
         }
         return $this->exec();
     }
@@ -911,7 +882,7 @@ final class Curl extends ACurl
     #[\Override]
     public function SetCookieString($string)
     {
-        return $this->setOpt(CURLOPT_COOKIE, $string);
+        return $this->SetOption(CURLOPT_COOKIE, $string);
     }
 
     /**
@@ -923,7 +894,7 @@ final class Curl extends ACurl
     #[\Override]
     public function SetCookieFile($cookie_file)
     {
-        return $this->setOpt(CURLOPT_COOKIEFILE, $cookie_file);
+        return $this->SetOption(CURLOPT_COOKIEFILE, $cookie_file);
     }
 
     /**
@@ -935,7 +906,7 @@ final class Curl extends ACurl
     #[\Override]
     public function SetCookieJar($cookie_jar)
     {
-        return $this->setOpt(CURLOPT_COOKIEJAR, $cookie_jar);
+        return $this->SetOption(CURLOPT_COOKIEJAR, $cookie_jar);
     }
 
     /**
@@ -988,12 +959,12 @@ final class Curl extends ACurl
      */
     public function SetDefaultHeaderOut()
     {
-        $this->setOpt(CURLINFO_HEADER_OUT, true);
+        $this->SetOption(CURLINFO_HEADER_OUT, true);
     }
 
     private function setDefaultHeaderOutInternal()
     {
-        $this->setOptInternal(CURLINFO_HEADER_OUT, true);
+        $this->SetInternalOption(CURLINFO_HEADER_OUT, true);
     }
 
     /**
@@ -1047,7 +1018,7 @@ final class Curl extends ACurl
         foreach ($this->headers as $key => $value) {
             $headers[] = $key . ': ' . $value;
         }
-        $this->setOpt(CURLOPT_HTTPHEADER, $headers);
+        $this->SetOption(CURLOPT_HTTPHEADER, $headers);
     }
 
     /**
@@ -1060,7 +1031,7 @@ final class Curl extends ACurl
     #[\Override]
     public function SetHeaders($headers)
     {
-        if (ArrayUtil::isArrayAssoc($headers)) {
+        if (_Array::isArrayAssoc($headers)) {
             foreach ($headers as $key => $value) {
                 $key = trim($key);
                 $value = trim($value);
@@ -1080,7 +1051,7 @@ final class Curl extends ACurl
             $headers[] = $key . ': ' . $value;
         }
 
-        $this->setOpt(CURLOPT_HTTPHEADER, $headers);
+        $this->SetOption(CURLOPT_HTTPHEADER, $headers);
     }
 
     /**
@@ -1119,7 +1090,7 @@ final class Curl extends ACurl
      * @return bool
      */
     #[\Override]
-    public function SetOpt($option, $value)
+    public function SetOption($option, $value)
     {
         $required_options = [
             CURLOPT_RETURNTRANSFER => 'CURLOPT_RETURNTRANSFER',
@@ -1145,7 +1116,7 @@ final class Curl extends ACurl
      * @return bool
      */
     #[\Override]
-    protected function setOptInternal($option, $value)
+    protected function SetInternalOption($option, $value)
     {
         $success = curl_setopt($this->curl, $option, $value);
         if ($success) {
@@ -1171,7 +1142,7 @@ final class Curl extends ACurl
             return true;
         }
         foreach ($options as $option => $value) {
-            if (!$this->setOpt($option, $value)) {
+            if (!$this->SetOption($option, $value)) {
                 return false;
             }
         }
@@ -1188,12 +1159,12 @@ final class Curl extends ACurl
      */
     public function SetProtocols($protocols)
     {
-        $this->setOpt(CURLOPT_PROTOCOLS, $protocols);
+        $this->SetOption(CURLOPT_PROTOCOLS, $protocols);
     }
 
     private function setProtocolsInternal($protocols)
     {
-        $this->setOptInternal(CURLOPT_PROTOCOLS, $protocols);
+        $this->SetInternalOption(CURLOPT_PROTOCOLS, $protocols);
     }
 
     /**
@@ -1230,12 +1201,12 @@ final class Curl extends ACurl
      */
     public function SetRedirectProtocols($redirect_protocols)
     {
-        $this->setOpt(CURLOPT_REDIR_PROTOCOLS, $redirect_protocols);
+        $this->SetOption(CURLOPT_REDIR_PROTOCOLS, $redirect_protocols);
     }
 
     private function setRedirectProtocolsInternal($redirect_protocols)
     {
-        $this->setOptInternal(CURLOPT_REDIR_PROTOCOLS, $redirect_protocols);
+        $this->SetInternalOption(CURLOPT_REDIR_PROTOCOLS, $redirect_protocols);
     }
 
     /**
@@ -1253,7 +1224,7 @@ final class Curl extends ACurl
             ? (string)new Uri($built_url)
             : (string)new Uri($this->url, $built_url);
 
-        $this->setOpt(CURLOPT_URL, $this->url);
+        $this->SetOption(CURLOPT_URL, $this->url);
     }
 
     /**
@@ -1292,7 +1263,7 @@ final class Curl extends ACurl
         foreach ($this->headers as $key => $value) {
             $headers[] = $key . ': ' . $value;
         }
-        $this->setOpt(CURLOPT_HTTPHEADER, $headers);
+        $this->SetOption(CURLOPT_HTTPHEADER, $headers);
     }
 
     /**
@@ -1318,14 +1289,14 @@ final class Curl extends ACurl
             echo 'No HTTP requests have been made.' . "\n";
         } else {
             $request_types = [
-                'DELETE' => $this->getOpt(CURLOPT_CUSTOMREQUEST) === 'DELETE',
-                'GET' => $this->getOpt(CURLOPT_CUSTOMREQUEST) === 'GET' || $this->getOpt(CURLOPT_HTTPGET),
-                'HEAD' => $this->getOpt(CURLOPT_CUSTOMREQUEST) === 'HEAD',
-                'OPTIONS' => $this->getOpt(CURLOPT_CUSTOMREQUEST) === 'OPTIONS',
-                'PATCH' => $this->getOpt(CURLOPT_CUSTOMREQUEST) === 'PATCH',
-                'POST' => $this->getOpt(CURLOPT_CUSTOMREQUEST) === 'POST' || $this->getOpt(CURLOPT_POST),
-                'PUT' => $this->getOpt(CURLOPT_CUSTOMREQUEST) === 'PUT',
-                'SEARCH' => $this->getOpt(CURLOPT_CUSTOMREQUEST) === 'SEARCH',
+                'DELETE' => $this->GetOption(CURLOPT_CUSTOMREQUEST) === 'DELETE',
+                'GET' => $this->GetOption(CURLOPT_CUSTOMREQUEST) === 'GET' || $this->GetOption(CURLOPT_HTTPGET),
+                'HEAD' => $this->GetOption(CURLOPT_CUSTOMREQUEST) === 'HEAD',
+                'OPTIONS' => $this->GetOption(CURLOPT_CUSTOMREQUEST) === 'OPTIONS',
+                'PATCH' => $this->GetOption(CURLOPT_CUSTOMREQUEST) === 'PATCH',
+                'POST' => $this->GetOption(CURLOPT_CUSTOMREQUEST) === 'POST' || $this->GetOption(CURLOPT_POST),
+                'PUT' => $this->GetOption(CURLOPT_CUSTOMREQUEST) === 'PUT',
+                'SEARCH' => $this->GetOption(CURLOPT_CUSTOMREQUEST) === 'SEARCH',
             ];
             $request_method = '';
             foreach ($request_types as $http_method_name => $http_method_used) {
@@ -1334,10 +1305,10 @@ final class Curl extends ACurl
                     break;
                 }
             }
-            $request_url = $this->getOpt(CURLOPT_URL);
+            $request_url = $this->GetOption(CURLOPT_URL);
             $request_options_count = count($this->options);
             $request_headers_count = count($this->requestHeaders);
-            $request_body_empty = empty($this->getOpt(CURLOPT_POSTFIELDS));
+            $request_body_empty = empty($this->GetOption(CURLOPT_POSTFIELDS));
             $response_header_length = $this->responseHeaders['Content-Length'] ?? '(not specified in response header)';
             $response_calculated_length = is_string($this->rawResponse) ?
                 strlen($this->rawResponse) : '(' . var_export($this->rawResponse, true) . ')';
@@ -1373,8 +1344,8 @@ final class Curl extends ACurl
 
             if (
                 $request_headers_count === 0 && (
-                $this->getOpt(CURLOPT_VERBOSE) ||
-                !$this->getOpt(CURLINFO_HEADER_OUT)
+                $this->GetOption(CURLOPT_VERBOSE) ||
+                !$this->GetOption(CURLINFO_HEADER_OUT)
                 )
             ) {
                 echo
@@ -1752,7 +1723,7 @@ final class Curl extends ACurl
     public function DisplayCurlOptionValue($option, $value = null)
     {
         if ($value === null) {
-            $value = $this->getOpt($option);
+            $value = $this->GetOption($option);
         }
 
         if (isset($this->curlOptionCodeConstants[$option])) {
@@ -1835,7 +1806,7 @@ final class Curl extends ACurl
      */
     private function getRfc2616()
     {
-        return array_fill_keys(self::$RFC2616, true);
+        return array_fill_keys(RFC2616::Series(), true);
     }
 
     /**
@@ -1843,7 +1814,7 @@ final class Curl extends ACurl
      */
     private function getRfc6265()
     {
-        return array_fill_keys(self::$RFC6265, true);
+        return array_fill_keys(RFC6265::Series(), true);
     }
 
     /**
@@ -1867,7 +1838,7 @@ final class Curl extends ACurl
             foreach ($this->cookies as $key => $value) {
                 $cookies[] = $key . '=' . $value;
             }
-            $this->setOpt(CURLOPT_COOKIE, implode('; ', $cookies));
+            $this->SetOption(CURLOPT_COOKIE, implode('; ', $cookies));
         }
     }
 
@@ -1906,7 +1877,7 @@ final class Curl extends ACurl
         // Reset CURLOPT_RETURNTRANSFER to tell cURL to return subsequent
         // responses as the return value of curl_exec(). Without this,
         // curl_exec() will revert to returning boolean values.
-        $this->setOpt(CURLOPT_RETURNTRANSFER, true);
+        $this->SetOption(CURLOPT_RETURNTRANSFER, true);
     }
 
     /**
@@ -2133,9 +2104,9 @@ final class Curl extends ACurl
         $header_callback_data->stopRequest = false;
         $this->headerCallbackData = $header_callback_data;
         $this->setStopInternal();
-        $this->setOptInternal(CURLOPT_HEADERFUNCTION, createHeaderCallback($header_callback_data));
+        $this->SetInternalOption(CURLOPT_HEADERFUNCTION, $this->CreateHeaderCallback($header_callback_data));
 
-        $this->setOptInternal(CURLOPT_RETURNTRANSFER, true);
+        $this->SetInternalOption(CURLOPT_RETURNTRANSFER, true);
         $this->headers = new CaseInsensitiveArray();
 
         if ($base_url !== null) {
@@ -2168,7 +2139,7 @@ final class Curl extends ACurl
         $this->headerCallbackData->stopRequest = false;
 
         $header_callback_data = $this->headerCallbackData;
-        $this->progress(createStopRequestFunction($header_callback_data));
+        $this->progress($this->CreateStopRequestFunction($header_callback_data));
     }
 
     private function setStopInternal($callback = null)
@@ -2177,7 +2148,7 @@ final class Curl extends ACurl
         $this->headerCallbackData->stopRequest = false;
 
         $header_callback_data = $this->headerCallbackData;
-        $this->progressInternal(createStopRequestFunction($header_callback_data));
+        $this->progressInternal($this->CreateStopRequestFunction($header_callback_data));
     }
 
     /**
@@ -2192,59 +2163,60 @@ final class Curl extends ACurl
     {
         $this->headerCallbackData->stopRequest = true;
     }
-}
-// --------------------------
-/**
- * Create Header Callback
- *
- * Gather headers and parse cookies as response headers are received. Keep this function separate from the class so that
- * unset($curl) automatically calls __destruct() as expected. Otherwise, manually calling $curl->close() will be
- * necessary to prevent a memory leak.
- *
- * @param           $header_callback_data
- * @return callable
- */
-function createHeaderCallback($header_callback_data)
-{
-    return function ($ch, $header) use ($header_callback_data) {
-        if (preg_match('/^Set-Cookie:\s*([^=]+)=([^;]+)/mi', $header, $cookie) === 1) {
-            $header_callback_data->responseCookies[$cookie[1]] = trim($cookie[2], " \n\r\t\0\x0B");
-        }
 
-        if ($header_callback_data->stopRequestDecider !== null) {
-            $stop_request_decider = $header_callback_data->stopRequestDecider;
-            if ($stop_request_decider($ch, $header)) {
-                $header_callback_data->stopRequest = true;
+    // --------------------------
+    /**
+     * Create Header Callback
+     *
+     * Gather headers and parse cookies as response headers are received. Keep this function separate from the class so that
+     * unset($curl) automatically calls __destruct() as expected. Otherwise, manually calling $curl->close() will be
+     * necessary to prevent a memory leak.
+     *
+     * @param           $header_callback_data
+     * @return callable
+     */
+    public function CreateHeaderCallback($header_callback_data)
+    {
+        return function ($ch, $header) use ($header_callback_data) {
+            if (preg_match('/^Set-Cookie:\s*([^=]+)=([^;]+)/mi', $header, $cookie) === 1) {
+                $header_callback_data->responseCookies[$cookie[1]] = trim($cookie[2], " \n\r\t\0\x0B");
             }
-        }
 
-        $header_callback_data->rawResponseHeaders .= $header;
-        return strlen($header);
-    };
-}
+            if ($header_callback_data->stopRequestDecider !== null) {
+                $stop_request_decider = $header_callback_data->stopRequestDecider;
+                if ($stop_request_decider($ch, $header)) {
+                    $header_callback_data->stopRequest = true;
+                }
+            }
 
-/**
- * Create Stop Request Function
- *
- * Create a function for Curl::progress() that stops a request early when the
- * stopRequest flag is on. Keep this function separate from the class to prevent
- * a memory leak.
- *
- * @param           $header_callback_data
- * @return callable
- */
-function createStopRequestFunction($header_callback_data)
-{
-    return function (
-        $resource,
-        $download_size,
-        $downloaded,
-        $upload_size,
-        $uploaded
-    ) use (
-        $header_callback_data
-    ) {
-        // Abort the transfer when the stop request flag has been set by returning a non-zero value.
-        return $header_callback_data->stopRequest ? 1 : 0;
-    };
+            $header_callback_data->rawResponseHeaders .= $header;
+            return strlen($header);
+        };
+    }
+
+    /**
+     * Create Stop Request Function
+     *
+     * Create a function for Curl::progress() that stops a request early when the
+     * stopRequest flag is on. Keep this function separate from the class to prevent
+     * a memory leak.
+     *
+     * @param           $header_callback_data
+     * @return callable
+     */
+    public function CreateStopRequestFunction($header_callback_data)
+    {
+        return function (
+            $resource,
+            $download_size,
+            $downloaded,
+            $upload_size,
+            $uploaded
+        ) use (
+            $header_callback_data
+        ) {
+            // Abort the transfer when the stop request flag has been set by returning a non-zero value.
+            return $header_callback_data->stopRequest ? 1 : 0;
+        };
+    }
 }
