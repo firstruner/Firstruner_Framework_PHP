@@ -49,6 +49,7 @@ final class Long
 
       public function __get($name = "Value") : float {
             if ($name === 'Value') return $this->valeur;
+            return 0;
       }
 
       public function __invoke() {
