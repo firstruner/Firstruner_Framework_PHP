@@ -38,6 +38,8 @@ use System\Exceptions\NotImplementedException;
 use System\Exceptions\PrivateKeyUnavailableException;
 use System\Guid;
 use System\IO\AccessMode;
+use System\IO\File;
+use System\IO\FileInfo;
 use System\IO\FileStream;
 use System\IO\StreamReader;
 use System\IO\StreamWriter;
@@ -458,25 +460,25 @@ class Blockchain
                         $full->Add(
                             System_String::Chunk(serialize($block) . Alphabetics::HidedChar, 200));
 
-                    for (int fullID = 0; fullID < full.Count; fullID++)
+                    for ($fullID = 0; $fullID < $full->count(); $fullID++)
                     {
-                        string[] items = full[fullID];
-                        for (int strs = 0; strs < items.Length; strs++)
-                            finalByteses.Add(
+                        $items = $full[$fullID];
+                        for ($strs = 0; $strs < count($items); $strs++)
+                            $finalByteses->Add(
                                 EDModule.Encrypt(items[strs], Cryptography.RSA_EncryptionType.PreCalculate,
                                     ECSize: Cryptography.EncryptionSize.enc2048).ByteValue);
                     }
 
-                    for (int i = 0; i < finalByteses.Count; i++)
+                    for ($i = 0; $i < $finalByteses->count(); $i++)
                     {
-                        string fName = DirectoryName + "\\fbc." + secIDFile.ToString() + ".security";
+                        $fName = $provider + "\\fbc." + $secIDFile + ".security";
 
-                        if (System.IO.File.Exists(fName))
+                        if (File::Exists($fName))
                         {
-                            FileInfo fi = new FileInfo(fName);
+                            $fi = new FileInfo($fName);
 
-                            if ((fi.PrettyOctetsPhysicalSize().Item1 >= 10) &&
-                                (fi.PrettyBytesPhysicalSize().Item2 ==
+                            if (($fi->PrettyOctetsPhysicalSize().Item1 >= 10) &&
+                                ($fi->PrettyBytesPhysicalSize().Item2 ==
                                 Firstruner.Enumerations.OctetsRange.SizeSuffixes[
                                     (int) Firstruner.Enumerations.SizeSuffixesEnumeration.Mega]))
                             {

@@ -75,4 +75,15 @@ class File
             }
       }
 
+      public static function Exists(string $path) : bool
+      {
+            try
+            {
+                  return file_exists($path);
+            }
+            catch (\Exception $ex)
+            {
+                  throw new IOException($ex->getMessage(), $ex->getCode(), $ex);
+            }
+      }
 }
