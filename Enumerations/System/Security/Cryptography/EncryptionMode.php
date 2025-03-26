@@ -26,19 +26,30 @@ namespace System\Security\Cryptography;
 
 class EncryptionMode
 {
-    const Caesar = "caesar";
-    const Framework_V1 = "V1";
-    const Framework_V2 = "V2";
-    const Framework_V3 = "V3";
+    public const Caesar = "caesar";
+    public const Framework_V1 = "V1";
+    public const Framework_V2 = "V2";
+    public const Framework_V3 = "V3";
 
-    const AES = "aes";
-    const AES_128 = "aes128";
-    const AES_256 = "aes256";
-    const SHA = "aes";
-    const SHA_128 = "sha128";
-    const SHA_256 = "sha256";
-    const MD5 = "md5";
+    public const AES = "aes";
+    public const AES_128 = "aes128";
+    public const AES_256 = "aes256";
+    public const SHA = "aes";
+    public const SHA_128 = "sha128";
+    public const SHA_256 = "sha256";
+    public const MD5 = "md5";
+    public const Base64 = "B64";
+    public const Hex = "HEX";
 
-    const Base64 = "B64";
-    const Hex = "HEX";
+    public const MD5_Value = 0x10;
+    public const RSA_Value = 0x20;
+    public const SHA256_Value = 0x30;
+    public const SHA512_Value = 0x40;
+    public const X509_Value = 0x50;
+    public const SHA1_Value = 0x70;
+    public const AES_Value = 0x80;
+    public const Caesar_Value = 0x90;
+    public const PlayFair_Value = 0x91;
+
+    public const AES_256_ProtocolName = "AES-256-CBC";
 }

@@ -24,7 +24,7 @@
 
 namespace System\Exceptions;
 
-abstract class Code
+abstract class RequestCode
 {
       const Session_GetInvalid = 10001;
       const Session_SetInvalid = 10002;
