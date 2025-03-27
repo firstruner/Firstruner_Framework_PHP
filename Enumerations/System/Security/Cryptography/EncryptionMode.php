@@ -24,7 +24,7 @@
 
 namespace System\Security\Cryptography;
 
-class EncryptionMode
+abstract class EncryptionMode
 {
     public const Caesar = "caesar";
     public const Framework_V1 = "V1";
@@ -34,9 +34,11 @@ class EncryptionMode
     public const AES = "aes";
     public const AES_128 = "aes128";
     public const AES_256 = "aes256";
-    public const SHA = "aes";
+    public const SHA = "sha";
+    public const SHA_1 = "sha1";
     public const SHA_128 = "sha128";
     public const SHA_256 = "sha256";
+    public const SHA_512 = "sha512";
     public const MD5 = "md5";
     public const Base64 = "B64";
     public const Hex = "HEX";
@@ -52,4 +54,5 @@ class EncryptionMode
     public const PlayFair_Value = 0x91;
 
     public const AES_256_ProtocolName = "AES-256-CBC";
+    public const DES_ProtocolName = "des-ede3-cbc";
 }

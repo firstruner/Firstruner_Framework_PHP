@@ -24,15 +24,45 @@
 
 namespace Firstruner\Cryptography;
 
+use System\_String as System_String;
 use System\Default\_array;
 use System\Default\_string;
+use System\Exceptions\ArgumentNullException;
+use System\Exceptions\ArgumentOutOfRangeException;
+use System\Exceptions\NeedAdministratorAccesException;
+use System\Exceptions\NotImplementedException;
+use System\Exceptions\PrivateKeyUnavailableException;
+use System\IO\File;
+use System\IO\MemoryStream;
+use System\IO\StreamReader;
+use System\IO\StreamWriter;
+use System\ObjectExtension;
 use System\Random;
-use System\Security\Cryptography\Encryption;
+use System\Runtime\InteropService\Marshal;
+use System\Security\Cryptography\CipherMode;
+use System\Security\Cryptography\CryptoStream;
+use System\Security\Cryptography\CryptoStreamMode;
+use System\Security\Cryptography\CspParameters;
 use System\Security\Cryptography\EncryptionMode;
+use System\Security\Cryptography\EncryptionSize;
+use System\Security\Cryptography\MD5CryptoServiceProvider;
+use System\Security\Cryptography\PaddingMode;
+use System\Security\Cryptography\RijndaelManaged;
 use System\Security\Cryptography\RSACryptoServiceProvider;
+use System\Security\Cryptography\RsaEncryptionType;
+use System\Security\Cryptography\SHA1Managed;
+use System\Security\Cryptography\SHA256Managed;
+use System\Security\Cryptography\SHA512Managed;
+use System\Security\Cryptography\TripleDESCryptoServiceProvider;
 use System\Security\Cryptography\X509Certificates\X509Certificate2;
 use System\Security\SecureString;
-use System\Text\Encoding;
+use System\Text\Encoding\ASCII;
+use System\Text\Encoding\ASCIIEncoding;
+use System\Text\Encoding\Unicode;
+use System\Text\Encoding\UnicodeEncoding;
+use System\Text\Encoding\UTF8;
+use System\Text\StringBuilder;
+use System\Tuple;
 
 final class EncryptDecryptModule
 {
@@ -82,7 +112,7 @@ final class EncryptDecryptModule
       }
 
       // Constructor / Deconstructor
-      public function init_ByKeys(?string $PublicKey = null, ?string $PrivateKey = null) : void
+      private function init_ByKeys(?string $PublicKey = null, ?string $PrivateKey = null) : void
       {
             $this->init_publicKey = $PublicKey;
             $this->init_privateKey = $PrivateKey;
@@ -122,41 +152,41 @@ final class EncryptDecryptModule
             }
       }
 
-      private function Private_Decrypt(CryptedValue $CValue, bool $RSAMode, string $privateKey) : string
+      private function Private_Decrypt_RSA(CryptedValue $CValue, bool $RSAMode, string $privateKey) : string
       {
             if (!$RSAMode)
-                  return Private_Decrypt($CValue, EncryptionMode::RSA_Value);
+                  return $this->Private_Decrypt_Main($CValue, EncryptionMode::RSA_Value);
 
-            return RSA_Decrypt($CValue->ByteValue, $privateKey);
+            return $this->RSA_DecryptFromByteArray($CValue->ByteValue(), $privateKey);
       }
 
-      private function Private_Decrypt(CryptedValue $CValue, int $mode, string $specKey = _string::EmptyString) : string|null
+      private function Private_Decrypt_Main(CryptedValue $CValue, int $mode, string $specKey = _string::EmptyString) : string|null
       {
-            $index = $CValue->ID_Key;
+            $index = $CValue->ID_Key();
 
             try
             {
                   switch ($mode)
                   {
-                        case EncryptionMode::MD5:
-                              return $this->MD5_Decrypt($CValue->Value, $index, true);
+                        case EncryptionMode::MD5_Value:
+                              return $this->MD5_Decrypt($CValue->Value(), $index, true);
 
-                        case EncryptionMode::SHA1:
-                        case EncryptionMode::SHA256:
-                        case EncryptionMode::SHA512:
+                        case EncryptionMode::SHA1_Value:
+                        case EncryptionMode::SHA256_Value:
+                        case EncryptionMode::SHA512_Value:
                               throw new \Exception("No SHA decryption possible"); //Cannot Decrypt SHA value
 
-                        case EncryptionMode::RSA:
-                              return $this->RSA_Decrypt($CValue->Value());
-                        case EncryptionMode::X509:
-                              return $this->X509_Decrypt($CValue->ByteValue());
-                        case EncryptionMode::AES:
+                        case EncryptionMode::RSA_Value:
+                              return $this->RSA_DecryptFromString($CValue->Value());
+                        case EncryptionMode::X509_Value:
+                              return $this->X509_DecryptFromArray($CValue->ByteValue());
+                        case EncryptionMode::AES_Value:
                               return $this->AES_Decrypt($CValue->ByteValue());
 
-                        case EncryptionMode::Caesar:
-                              return $this->Caesar_EncryptDecrypt($CValue->Value, -$CValue->ID_Key)->Value;
-                        case EncryptionMode::PlayFair:
-                              return $this->PlayFair_Decrypt($CValue->Value, $specKey ?? $this->CryptoKeys[0]);
+                        case EncryptionMode::Caesar_Value:
+                              return $this->Caesar_EncryptDecrypt($CValue->Value(), -$CValue->ID_Key())->Value();
+                        case EncryptionMode::PlayFair_Value:
+                              return $this->PlayFair_Decrypt($CValue->Value(), $specKey ?? $this->CryptoKeys[0]);
                   }
 
                   return null;
@@ -173,7 +203,7 @@ final class EncryptDecryptModule
             if (!$RSAMode)
                   return $this->Private_EncryptMain($value, EncryptionMode::RSA_Value);
 
-            return RSA_Encrypt(value, publicKey);
+            return $this->RSA_EncryptFromStringPublicKey($value, $publicKey);
       }
 
       private function Private_EncryptByKey(string $value, int $key, int $mode) : CryptedValue
@@ -202,7 +232,7 @@ final class EncryptDecryptModule
 
             try
             {
-                  switch (mode)
+                  switch ($mode)
                   {
                         case EncryptionMode::AES_Value:
                               return new CryptedValue($this->AES_Encrypt($value));
@@ -211,10 +241,10 @@ final class EncryptDecryptModule
                               return new CryptedValue($this->MD5_Encrypt($value, $i, true), $i);
 
                         case EncryptionMode::RSA_Value:
-                              return new CryptedValue($this->RSA_Encrypt($value), 0);
+                              return new CryptedValue($this->RSA_EncryptFromString($value), 0);
 
                         case EncryptionMode::X509_Value:
-                              return new CryptedValue($this->X509_Decrypt(Encoding.Unicode.GetBytes($value)), 0);
+                              return new CryptedValue($this->X509_DecryptFromArray(Unicode::GetBytes($value)), 0);
 
                         case EncryptionMode::SHA1_Value:
                         case EncryptionMode::SHA256_Value:
@@ -239,7 +269,7 @@ final class EncryptDecryptModule
 
       private function Private_AES_GenerateNewKeys(int $size) : void
       {
-            $this->myRijndael->KeySize = (size > 256 ? 256 : size);
+            $this->myRijndael->KeySize($size > 256 ? 256 : $size);
             $this->myRijndael->GenerateKey();
             $this->myRijndael->GenerateIV();
       }
@@ -250,128 +280,206 @@ final class EncryptDecryptModule
       {
             $this->k = -1;
             $this->_LockKey = false;
-            $this->CryptoKeys = null;
-            $this->init_privateKey = null;
-            $this->init_publicKey = null;
-            $this->certX509 = null;
-            $this->myRijndael = null;
-            //_encoder = null;
-            $this->rsa = null;
+            unset($this->CryptoKeys);
+            unset($this->init_privateKey);
+            unset($this->init_publicKey);
+            unset($this->certX509);
+            unset($this->myRijndael);
+            //unset(_encoder);
+            unset($this->rsa);
       }
 
       // Methods
 
       #region DecryptCallMethods
+      public function Decrypt() : ?string
+      {
+            $args = func_get_args();
+            $numArgs = func_num_args();
+
+            if (($numArgs == 2)
+                  && ($args[0] instanceof CryptedValue)
+                  && (is_int($args[1])))
+                  return $this->Decrypt_A($args[0], $args[1]);
+            
+            if (($numArgs == 3)
+                  && ($args[0] instanceof CryptedValue)
+                  && (is_bool($args[1]))
+                  && (is_string($args[2])))
+                  return $this->Decrypt_B($args[0], $args[1], $args[2]);
+
+            if (($numArgs == 2)
+                  && (is_string($args[0]))
+                  && (is_int($args[1])))
+                  return $this->Decrypt_C($args[0], $args[1]);
+
+            if (($numArgs == 3)
+                  && (is_string($args[0]))
+                  && (is_int($args[1]))
+                  && (is_int($args[2])))
+                  return $this->Decrypt_D($args[0], $args[1], $args[2]);
+
+            if (($numArgs == 2)
+                  && (is_string($args[0]))
+                  && ($args[1] instanceof Tuple))
+                  return $this->Decrypt_E($args[0], $args[1]);
+
+            if (($numArgs == 3)
+                  && (is_string($args[0]))
+                  && ($args[1] instanceof RsaEncryptionType)
+                  && (is_string($args[2])))
+                  return $this->Decrypt_RSA($args[0], $args[1], $args[2]);
+
+            if (($numArgs == 2)
+                  && ($args[0] instanceof X509Certificate2)
+                  && (is_string($args[1])))
+                  return $this->Decrypt_Cert($args[0], $args[1]);
+
+            return null;
+      }
 
       /// <summary>
       /// Décryptage de valeur
       /// </summary>
       /// <param name="mode">SHA non disponible</param>
       /// <returns></returns>
-      public function Decrypt(CryptedValue $CValue, int $mode) : string
+      private function Decrypt_A(CryptedValue $CValue, int $mode) : string
       {
-            return $this->Private_Decrypt(CValue, mode);
+            return $this->Private_Decrypt_Main($CValue, $mode);
       }
 
-      public function Decrypt(CryptedValue $CValue, bool $RSAkey, string $privateKey) : string
+      public function Decrypt_B(CryptedValue $CValue, bool $RSAkey, string $privateKey) : string
       {
             if (!$RSAkey)
-                  return $this->Decrypt($CValue, EncryptionMode::RSA_Value);
+                  return $this->Decrypt_A($CValue, EncryptionMode::RSA_Value);
 
-            return $this->Private_Decrypt($CValue, $RSAkey, $privateKey);
+            return $this->Private_Decrypt_RSA($CValue, $RSAkey, $privateKey);
       }
 
-      public function Decrypt(string $CValue, EncryptMode $mode) : string
+      public function Decrypt_C(string $CValue, int $mode) : string
       {
-            return $this->Decrypt(new CryptedValue($CValue), mode: $mode);
+            return $this->Decrypt_A(new CryptedValue($CValue), $mode);
       }
 
-      public function Decrypt3(string $CValue, EncryptMode $mode, int $keyCode) : string
+      public function Decrypt_D(string $CValue, int $mode, int $keyCode) : string
       {
-            return Decrypt(new CryptedValue($CValue, $keyCode), mode: $mode);
+            return $this->Decrypt_A(new CryptedValue($CValue, $keyCode), $mode);
       }
 
-      public function Decrypt2(string $CValue, Tuple $MethodKey) : string
+      public function Decrypt_E(string $CValue, Tuple $MethodKey) : string
       {
-            if ($MethodKey->Item1 == EncryptionMode::PlayFair_Value)
-                  return $this->PlayFair_Decrypt($CValue, $MethodKey->Item2);
+            if ($MethodKey->Item1() == EncryptionMode::PlayFair_Value)
+                  return $this->PlayFair_Decrypt($CValue, $MethodKey->Item2());
 
-            return Decrypt($CValue, $MethodKey->Item1);
+            return $this->Decrypt_C($CValue, $MethodKey->Item1());
       }
 
-      /// <summary>
-      ///
-      /// </summary>
-      /// <param name="CValue">Valeur à crypter</param>
-      /// <param name="RSA_EncryptionType">Type d'encryptage RSA<remarks>
-      /// Init : Utilise la clé fournie à l'instanciation,
-      /// User : Utilise la clé fournie dans la méthode,
-      /// Auto : Non utilisable,
-      /// Default : Non utilisate,
-      /// PreCalculate : Utilise une clé standard
-      /// </remarks></param>
-      /// <param name="_privateKey">Clé public fourni par l'utilisateur</param>
-      /// <returns></returns>
-      public function Decrypt(string $CValue, RsaEncryptionType $RSA_EncryptionType, string $_privateKey = null) : string
+      /** <summary>
+      *
+      * </summary>
+      * <param name="CValue">Valeur à crypter</param>
+      * <param name="RSA_EncryptionType">Type d'encryptage RSA<remarks>
+      * Init : Utilise la clé fournie à l'instanciation,
+      * User : Utilise la clé fournie dans la méthode,
+      * Auto : Non utilisable,
+      * Default : Non utilisate,
+      * PreCalculate : Utilise une clé standard
+      * </remarks></param>
+      * <param name="_privateKey">Clé public fourni par l'utilisateur</param>
+      * <returns></returns>
+      */
+      public function Decrypt_RSA(string $CValue, RsaEncryptionType $RSA_EncryptionType, ?string $_privateKey = null) : string
       {
             switch ($RSA_EncryptionType)
             {
-                  case RsaEncryptionType.Init:
-                        return Decrypt(new CryptedValue(CValue), true, init_privateKey);
+                  case RsaEncryptionType::Init:
+                        return $this->Decrypt(new CryptedValue($CValue), true, $this->init_privateKey);
 
-                  case RsaEncryptionType.User:
-                        if (_privateKey.IsNull())
-                        throw new Exception("Clé indiponible");
+                  case RsaEncryptionType::User:
+                        if (is_null($_privateKey))
+                        throw new \Exception("Clé indiponible");
 
-                        return Decrypt(new CryptedValue(CValue), true, _privateKey);
+                        return $this->Decrypt(new CryptedValue($CValue), true, $_privateKey);
 
-                  case RsaEncryptionType.Auto:
-                  case RsaEncryptionType.PreCalculate:
-                  case RsaEncryptionType.Default:
-                        throw new Exception("Non disponible");
+                  case RsaEncryptionType::Auto:
+                  case RsaEncryptionType::PreCalculate:
+                  case RsaEncryptionType::Default:
+                        throw new \Exception("Non disponible");
                   default:
-                        throw new ArgumentOutOfRangeException(nameof(RSA_EncryptionType), RSA_EncryptionType, null);
+                        throw new ArgumentOutOfRangeException("$RSA_EncryptionType", 0, null);
             }
       }
 
-      public string Decrypt(X509Certificate2 cert, string value)
+      public function Decrypt_Cert(X509Certificate2 $cert, string $value) : string
       {
-            if (!cert.HasPrivateKey)
+            if (!$cert->HasPrivateKey())
                   throw new PrivateKeyUnavailableException();
 
             try
             {
-                  ObjectExtension.IsNull(cert.PrivateKey);
+                  ObjectExtension::IsNull($cert->PrivateKey());
             }
-            catch (Exception e)
+            catch (\Exception $e)
             {
-                  if (Marshal.GetHRForException(e) == -2146893802) // Clé indisponible car non admin
-                        throw new NeedAdministratorAccesException(e.Message);
+                  if (Marshal::GetHRForException($e) == -2146893802) // Clé indisponible car non admin
+                        throw new NeedAdministratorAccesException($e->getMessage());
             }
 
-            return X509_Decrypt(cert, value);
+            return $this->X509_Decrypt($cert, $value);
       }
 
       #endregion DecryptCallMethods
 
       #region EncryptCallMethods
 
-      public CryptedValue Encrypt(string value, EncryptMode mode)
+      public function Encrypt() : ?CryptedValue
       {
-      return Private_Encrypt(value, mode);
+            $args = func_get_args();
+            $numArgs = func_num_args();
+
+            if (($numArgs == 2)
+                  && (is_string($args[0]))
+                  && (is_int($args[1])))
+                  return $this->Encrypt_A($args[0], $args[1]);
+
+            if (($numArgs == 3)
+                  && (is_string($args[0]))
+                  && (is_int($args[1]))
+                  && (is_int($args[2])))
+                  return $this->Encrypt_B($args[0], $args[1], $args[2]);
+
+            if (($numArgs == 4)
+                  && (is_string($args[0]))
+                  && ($args[1] instanceof RsaEncryptionType)
+                  && (is_string($args[2]))
+                  && (is_int($args[3])))
+                  return $this->Encrypt_RSA($args[0], (int)$args[1], $args[2], $args[3]);
+
+            
+            if (($numArgs == 2)
+                  && ($args[0] instanceof X509Certificate2)
+                  && (is_string($args[1])))
+                  return $this->Encrypt_Cert($args[0], $args[1]);
+
+            return null;
       }
 
-      public CryptedValue Encrypt3(string value, EncryptMode mode, int keyCode)
+      private function Encrypt_A(string $value, int $mode) : CryptedValue
       {
-      return Private_Encrypt(value, keyCode, mode);
+            return $this->Private_EncryptMain($value, $mode);
       }
 
-      public CryptedValue Encrypt2(string CValue, Tuple<EncryptMode, string> MethodKey)
+      private function Encrypt_B(string $value, int $mode, int $keyCode) : CryptedValue
       {
-      if (MethodKey.Item1 == EncryptionMode::PlayFair)
-            return new CryptedValue(PlayFair_Encrypt(CValue, MethodKey.Item2));
+            return $this->Private_EncryptByKey($value, $keyCode, $mode);
+      }
 
-      return Encrypt(CValue, MethodKey.Item1);
+      private function Encrypt_C(string $CValue, Tuple $MethodKey) : CryptedValue
+      {
+            if ($MethodKey->Item1() == EncryptionMode::PlayFair_Value)
+                  return new CryptedValue($this->PlayFair_Encrypt($CValue, $MethodKey->Item2()));
+
+            return $this->Encrypt_A($CValue, $MethodKey->Item1());
       }
 
       /// <summary>
@@ -388,43 +496,46 @@ final class EncryptDecryptModule
       /// <param name="_publicKey">Clé public fourni par l'utilisateur</param>
       /// <param name="ECSize">Clé précalculée</param>
       /// <returns></returns>
-      public CryptedValue Encrypt(string value, RsaEncryptionType RSA_EncryptionType,
-      string _publicKey = null,
-      EncryptionSize ECSize = EncryptionSize.encAuto)
+      private function Encrypt_RSA(
+            string $value,
+            int $RSA_EncryptionType,
+            string $_publicKey = null,
+            int $ECSize = EncryptionSize::encAuto) : CryptedValue
       {
-      switch (RSA_EncryptionType)
-      {
-            case RsaEncryptionType.PreCalculate:
-                  return RSA_Encrypt(value, ECSize);
+            switch ($RSA_EncryptionType)
+            {
+                  case RsaEncryptionType::PreCalculate:
+                        return $this->RSA_EncryptFromStringEncryptionSize($value, $ECSize);
 
-            case RsaEncryptionType.Auto:
-                  return RSA_Encrypt(value, EncryptionSize.encAuto);
+                  case RsaEncryptionType::Auto:
+                        return $this->RSA_EncryptFromStringEncryptionSize($value, EncryptionSize::encAuto);
 
-            case RsaEncryptionType.Default:
-                  return Private_Encrypt(value, true, Firstruner.Security.Keys.PublicKey_1024);
+                  case RsaEncryptionType::Default:
+                        //return $this->Private_Encrypt($value, true, Firstruner.Security.Keys.PublicKey_1024);
+                        throw new NotImplementedException("Fonction non disponible dans ce langage");
 
-            case RsaEncryptionType.Init:
-                  return Private_Encrypt(value, true, init_publicKey);
+                  case RsaEncryptionType::Init:
+                        return $this->Private_EncryptRSAByPublicKey($value, true, $this->init_publicKey);
 
-            case RsaEncryptionType.User:
-                  if (_publicKey.IsNull())
-                  throw new Exception("Clé non définie");
+                  case RsaEncryptionType::User:
+                        if (is_null($_publicKey))
+                              throw new \Exception("Clé non définie");
 
-                  return Private_Encrypt(value, true, _publicKey);
+                        return $this->Private_EncryptRSAByPublicKey($value, true, $_publicKey);
 
-            default:
-                  throw new ArgumentOutOfRangeException(nameof(RSA_EncryptionType), RSA_EncryptionType, null);
-      }
-      }
-
-      public CryptedValue Encrypt(string value, int key, EncryptMode mode)
-      {
-      return Private_Encrypt(value, key, mode);
+                  default:
+                        throw new ArgumentOutOfRangeException("$RSA_EncryptionType", $RSA_EncryptionType, null);
+            }
       }
 
-      public CryptedValue Encrypt(X509Certificate2 cert, string value)
+      // public function Encrypt(string $value, int $key, EncryptMode mode) : CryptedValue
+      // {
+      //       return $this->Private_Encrypt(value, key, mode);
+      // }
+
+      private function Encrypt_Cert(X509Certificate2 $cert, string $value) : CryptedValue
       {
-      return X509_Encrypt(cert, value);
+            return $this->X509_Encrypt($cert, $value);
       }
 
       #endregion EncryptCallMethods
@@ -556,293 +667,295 @@ final class EncryptDecryptModule
 
       #region MD5
 
-      private void MD5_LoadKeysFile(string path)
+      private function MD5_LoadKeysFile(string $path) : void
       {
-      System.IO.StreamReader sr = new StreamReader(path);
-      string content = sr.ReadToEnd();
-      sr.Close();
+            $sr = new StreamReader($path);
+            $content = $sr->ReadToEnd();
+            $sr->Close();
 
-      CryptoKeys = content.Replace("\r", string.Empty).Split('\n');
-      }
-
-      private string MD5_Encrypt(string toEncrypt, int IDCrypto, bool useHashing)
-      {
-      byte[] buffer;
-      byte[] bytes = Encoding.UTF8.GetBytes(toEncrypt);
-      //AppSettingsReader reader = new AppSettingsReader();
-      string s = CryptoKeys[IDCrypto];
-
-      if (useHashing)
-      {
-            MD5CryptoServiceProvider provider = new MD5CryptoServiceProvider();
-            buffer = provider.ComputeHash(Encoding.UTF8.GetBytes(s));
-            provider.Clear();
-      }
-      else
-      {
-            buffer = Encoding.UTF8.GetBytes(s);
+            $this->CryptoKeys = explode('\n', str_replace("\r", _string::EmptyString, $content));
       }
 
-      TripleDESCryptoServiceProvider provider2 = new TripleDESCryptoServiceProvider
+      private function MD5_Encrypt(string $toEncrypt, int $IDCrypto, bool $useHashing) : string
       {
-            Key = buffer,
-            Mode = CipherMode.ECB,
-            Padding = PaddingMode.PKCS7
-      };
-      byte[] inArray = provider2.CreateEncryptor().TransformFinalBlock(bytes, 0, bytes.Length);
-      provider2.Clear();
-      return Convert.ToBase64String(inArray, 0, inArray.Length);
+            $buffer = [];
+            $bytes = UTF8::GetBytes($toEncrypt);
+            //AppSettingsReader reader = new AppSettingsReader();
+            $s = $this->CryptoKeys[$IDCrypto];
+
+            if ($useHashing)
+            {
+                  $provider = new MD5CryptoServiceProvider();
+                  $buffer = $provider->ComputeHash($s);
+                  $provider->Clear();
+            }
+            else
+            {
+                  $buffer = UTF8::GetBytes($s);
+            }
+
+            $provider2 = new TripleDESCryptoServiceProvider();
+            $provider2->Key($buffer);
+            $provider2->Mode(CipherMode::ECB);
+            $provider2->Padding(PaddingMode::PKCS7);
+
+            $inBase64 = System_String::ToBase64((string)$provider2->CreateEncryptor());
+            $provider2->Clear();
+            return $inBase64;
       }
 
-      private string MD5_Decrypt(string cipherString, int IDCrypto, bool useHashing)
+      private function MD5_Decrypt(string $cipherString, int $IDCrypto, bool $useHashing) : string
       {
-      byte[] buffer;
-      byte[] inputBuffer = Convert.FromBase64String(cipherString);
-      //AppSettingsReader reader = new AppSettingsReader();
-      string s = CryptoKeys[IDCrypto];
-      if (useHashing)
-      {
-            MD5CryptoServiceProvider provider = new MD5CryptoServiceProvider();
-            buffer = provider.ComputeHash(Encoding.UTF8.GetBytes(s));
-            provider.Clear();
-      }
-      else
-      {
-            buffer = Encoding.UTF8.GetBytes(s);
-      }
-      TripleDESCryptoServiceProvider provider2 = new TripleDESCryptoServiceProvider
-      {
-            Key = buffer,
-            Mode = CipherMode.ECB,
-            Padding = PaddingMode.PKCS7
-      };
-      byte[] bytes = provider2.CreateDecryptor().TransformFinalBlock(inputBuffer, 0, inputBuffer.Length);
-      provider2.Clear();
-      return Encoding.UTF8.GetString(bytes);
+            $buffer = [];
+            $inputBuffer = System_String::FromBase64($cipherString);
+            //AppSettingsReader reader = new AppSettingsReader();
+            $s = $this->CryptoKeys[$IDCrypto];
+
+            if ($useHashing)
+            {
+                  $provider = new MD5CryptoServiceProvider();
+                  $buffer = $provider->ComputeHash($s);
+                  $provider->Clear();
+            }
+            else
+            {
+                  $buffer = UTF8::GetBytes($s);
+            }
+
+            $provider2 = new TripleDESCryptoServiceProvider();
+            $provider2->Key($buffer);
+            $provider2->Mode(CipherMode::ECB);
+            $provider2->Padding(PaddingMode::PKCS7);
+
+            $bytes = $provider2->CreateDecryptorByKeyIV()->Transform($inputBuffer);
+            $provider2->Clear();
+            return UTF8::GetString(System_String::ToByteArray($bytes));
       }
 
       #endregion MD5
 
       #region RSA
 
-      private string RSA_Decrypt(string data)
+      private function RSA_DecryptFromString(string $data) : string
       {
-      var dataArray = data.Split(new char[] { ',' });
-      byte[] dataByte = new byte[dataArray.Length];
-      for (int i = 0; i < dataArray.Length; i++)
-      {
-            dataByte[i] = Convert.ToByte(dataArray[i]);
+            //$dataArray = explode($data, ',');
+            $dataByte = System_String::ToByteArray($data);
+
+            $decryptedByte = $this->rsa->Decrypt($dataByte, false);
+            return (new UnicodeEncoding())->GetString($decryptedByte);
       }
 
-      var decryptedByte = rsa.Decrypt(dataByte, false);
-      return new UnicodeEncoding().GetString(decryptedByte);
+      private function RSA_DecryptFromByteArray(array $encryptBytes, string $privateKey) : string
+      {
+            $cspParams = new CspParameters();
+            $cspParams->ProviderType(1);
+            $rsaProvider = new RSACryptoServiceProvider($cspParams);
+
+            $rsaProvider->ImportCspBlob(System_String::FromBase64($privateKey));
+
+            $plainBytes = $rsaProvider->Decrypt($encryptBytes, false);
+
+            $plainText = UTF8::GetString(System_String::ToByteArray($plainBytes));
+
+            return $plainText;
       }
 
-      private string RSA_Encrypt(string data)
+      private function RSA_EncryptFromString(string $data) : string
       {
-      var dataToEncrypt = new UnicodeEncoding().GetBytes(data);
-      var encryptedByteArray = rsa.Encrypt(dataToEncrypt, false).ToArray();
-      var length = encryptedByteArray.Count();
-      var item = 0;
-      var sb = new StringBuilder();
-      foreach (var x in encryptedByteArray)
-      {
-            item++;
-            sb.Append(x);
+            $dataToEncrypt = (new UnicodeEncoding())->GetBytes($data);
+            $encryptedByteArray = System_String::ToByteArray($this->rsa->Encrypt($dataToEncrypt, false));
+            $length = count($encryptedByteArray);
+            $item = 0;
+            $sb = new StringBuilder();
 
-            if (item < length)
-                  sb.Append(",");
-      }
-
-      return sb.ToString();
-      }
-
-      private CryptedValue RSA_Encrypt(string data, EncryptionSize size)
-      {
-      int dataSize = Encoding.UTF8.GetBytes(data).Length;
-      int maxSize = (((int)size - 384) / 8) + 37;
-
-      string k = string.Empty;
-
-      if (size == EncryptionSize.encAuto)
-      {
-            bool notEnouth = true;
-            int valK = 512;
-
-            do
+            foreach ($encryptedByteArray as $x)
             {
-                  size = (EncryptionSize)valK;
-                  maxSize = (((int)size - 384) / 8) + 37;
+                  $item++;
+                  $sb->Append($x);
 
-                  if (maxSize < dataSize)
+                  if ($item < $length)
+                        $sb->Append(",");
+            }
+
+            return $sb->ToString();
+      }
+
+      private function RSA_EncryptFromStringEncryptionSize(string $data, int $size) : CryptedValue
+      {
+            $dataSize = count(UTF8::GetBytes($data));
+            $maxSize = (((int)$size - 384) / 8) + 37;
+
+            $k = _string::EmptyString;
+
+            if ($size == EncryptionSize::encAuto)
+            {
+                  $notEnouth = true;
+                  $valK = 512;
+
+                  do
                   {
-                  valK *= 2;
-                  }
-                  else
-                  {
-                  notEnouth = false;
-                  break;
-                  }
+                        $size = $valK;
+                        $maxSize = (((int)$size - 384) / 8) + 37;
 
-                  if ((valK > 4096) && notEnouth)
-                  throw new Exception("Taille de cryptage indisponible");
-            } while (notEnouth);
+                        if ($maxSize < $dataSize)
+                        {
+                              $valK *= 2;
+                        }
+                        else
+                        {
+                              $notEnouth = false;
+                              break;
+                        }
+
+                        if (($valK > 4096) && $notEnouth)
+                              throw new \Exception("Taille de cryptage indisponible");
+                  } while ($notEnouth);
+            }
+            else
+            {
+                  if ($maxSize < $dataSize)
+                        throw new \Exception("Taille de cryptage invalide");
+            }
+
+            switch ($size)
+            {
+                  // case EncryptionSize::enc512:
+                  //       k = Firstruner.Security.Keys.PublicKey_512;
+                  //       break;
+
+                  // case EncryptionSize::enc1024:
+                  //       k = Firstruner.Security.Keys.PublicKey_1024;
+                  //       break;
+
+                  // case EncryptionSize::enc2048:
+                  //       k = Firstruner.Security.Keys.PublicKey_2048;
+                  //       break;
+
+                  // case EncryptionSize::enc4096:
+                  //       k = Firstruner.Security.Keys.PublicKey_4096;
+                  //       break;
+                  default:
+                        throw new NotImplementedException("Non disponible dans ce langage");
+                  
+            }
+
+            $cv = $this->RSA_EncryptFromStringPublicKey($data, $k);
+            $cv->ID_Key = (int)$size;
+            return $cv;
       }
-      else
+
+      private function RSA_EncryptFromStringPublicKey(string $data, string $publicKey) : CryptedValue
       {
-            if (maxSize < dataSize)
-                  throw new Exception("Taille de cryptage invalide");
+            $cspParams = new CspParameters();
+            $cspParams->ProviderType(1);
+            $rsaProvider = new RSACryptoServiceProvider($cspParams);
+
+            $rsaProvider->ImportCspBlob(System_String::FromBase64($publicKey));
+
+            $plainBytes = UTF8::GetBytes($data);
+            $encryptedBytes = $rsaProvider->Encrypt($plainBytes, false);
+
+            return new CryptedValue($encryptedBytes);
       }
 
-      switch (size)
+      private function RSA_loadKeyFromFile(string $filename) : void
       {
-            case EncryptionSize.enc512:
-                  k = Firstruner.Security.Keys.PublicKey_512;
-                  break;
+            $sr = new StreamReader($filename);
+            $value = $sr->ReadToEnd();
+            $sr->Close();
 
-            case EncryptionSize.enc1024:
-                  k = Firstruner.Security.Keys.PublicKey_1024;
-                  break;
-
-            case EncryptionSize.enc2048:
-                  k = Firstruner.Security.Keys.PublicKey_2048;
-                  break;
-
-            case EncryptionSize.enc4096:
-                  k = Firstruner.Security.Keys.PublicKey_4096;
-                  break;
-      }
-
-      CryptedValue cv = RSA_Encrypt(data, k);
-      cv.ID_Key = (int)size;
-      return cv;
-      }
-
-      private CryptedValue RSA_Encrypt(string data, string publicKey)
-      {
-      CspParameters cspParams = new CspParameters { ProviderType = 1 };
-      RSACryptoServiceProvider rsaProvider = new RSACryptoServiceProvider(cspParams);
-
-      rsaProvider.ImportCspBlob(Convert.FromBase64String(publicKey));
-
-      byte[] plainBytes = Encoding.UTF8.GetBytes(data);
-      byte[] encryptedBytes = rsaProvider.Encrypt(plainBytes, false);
-
-      return new CryptedValue(encryptedBytes);
-      }
-
-      private string RSA_Decrypt(byte[] encryptBytes, string privateKey)
-      {
-      CspParameters cspParams = new CspParameters { ProviderType = 1 };
-      RSACryptoServiceProvider rsaProvider = new RSACryptoServiceProvider(cspParams);
-
-      rsaProvider.ImportCspBlob(Convert.FromBase64String(privateKey));
-
-      byte[] plainBytes = rsaProvider.Decrypt(encryptBytes, false);
-
-      string plainText = Encoding.UTF8.GetString(plainBytes, 0, plainBytes.Length);
-
-      return plainText;
-      }
-
-      private void RSA_loadKeyFromFile(string filename)
-      {
-      StreamReader sr = new StreamReader(filename);
-      string value = sr.ReadToEnd();
-      sr.Close();
-
-      rsa.FromXmlString(value);
+            $this->rsa->FromXmlString($value);
       }
 
       #endregion RSA
 
       #region SHA1/SHA256/SHA512
 
-      private CryptedValue SHA_Encrypt(EncryptMode mode, string value)
+      private function SHA_Encrypt(int $mode, string $value) : CryptedValue
       {
-      HashAlgorithm algorithm = new SHA1Managed();
-      switch (mode)
-      {
-            case EncryptionMode::SHA1:
-                  algorithm = new SHA1Managed();
-                  break;
+            $algorithm = new SHA1Managed();
+            switch ($mode)
+            {
+                  case EncryptionMode::SHA1_Value:
+                        $algorithm = new SHA1Managed();
+                        break;
 
-            case EncryptionMode::SHA256:
-                  algorithm = new SHA256Managed();
-                  break;
+                  case EncryptionMode::SHA256_Value:
+                        $algorithm = new SHA256Managed();
+                        break;
 
-            case EncryptionMode::SHA512:
-                  algorithm = new SHA512Managed();
-                  break;
-      }
+                  case EncryptionMode::SHA512_Value:
+                        $algorithm = new SHA512Managed();
+                        break;
+            }
 
-      byte[] bytes = Encoding.UTF8.GetBytes(value);
-      return new CryptedValue(Convert.ToBase64String(algorithm.ComputeHash(bytes)), 0);
+            $bytes = UTF8::GetBytes($value);
+            return new CryptedValue(System_String::ToBase64($algorithm->ComputeHash(System_String::FromByteArray($bytes))), 0);
       }
 
       #endregion SHA1/SHA256/SHA512
 
       #region X509
 
-      private void X509_LoadKeyFromFile(string path, SecureString password)
+      private function X509_LoadKeyFromFile(string $path, SecureString $password) : void
       {
-      certX509 = new X509Certificate2(path, password.ToString());
+            $this->certX509 = new X509Certificate2($path, $password->ToString());
       }
 
-      private byte[] X509_Encrypt(string value)
+      private function X509_EncryptFromString(string $value) : array
       {
-      RSACryptoServiceProvider publicKey = (RSACryptoServiceProvider)certX509.PublicKey.Key;
-      return publicKey.Encrypt(new ASCIIEncoding().GetBytes(value), false);
+            $publicKey = $this->certX509->PublicKey()->Key();
+            return $publicKey->Encrypt((new ASCIIEncoding())->GetBytes($value), false);
       }
 
-      private string X509_Decrypt(byte[] datas)
+      private function X509_DecryptFromArray(array $datas) : string
       {
-      if (!certX509.HasPrivateKey)
-            throw new Exception("Not privateKey");
+            if (!$this->certX509->HasPrivateKey())
+                  throw new \Exception("Not privateKey");
 
-      RSACryptoServiceProvider privateKey = (RSACryptoServiceProvider)certX509.PrivateKey;
-      return Encoding.UTF8.GetString(privateKey.Decrypt(datas, false));
+            $privateKey = $this->certX509->PrivateKey();
+            return UTF8::GetString($privateKey->Decrypt($datas, false));
       }
 
-      private byte[] X509_GetSignature(string value, EncryptMode mode)
+      private function X509_GetSignature(string $value, int $mode) : array
       {
-      if (!certX509.HasPrivateKey)
-            throw new Exception("Not privateKey");
+            if (!$this->certX509->HasPrivateKey())
+                  throw new \Exception("Not privateKey");
 
-      RSACryptoServiceProvider privateKey = (RSACryptoServiceProvider)certX509.PrivateKey;
-      return privateKey.SignData(new ASCIIEncoding().GetBytes(value), mode.ToString());
+            $privateKey = $this->certX509->PrivateKey();
+            return $privateKey->SignData((new ASCIIEncoding())->GetBytes($value), strval($mode));
       }
 
-      private bool X509_CheckSignature(string value, EncryptMode mode, byte[] sign)
+      private function X509_CheckSignature(string $value, int $mode, array $sign) : bool
       {
-      RSACryptoServiceProvider publicKey = (RSACryptoServiceProvider)certX509.PublicKey.Key;
-      return publicKey.VerifyData(new ASCIIEncoding().GetBytes(value), mode.ToString(), sign);
+            $publicKey = $this->certX509->PublicKey()->Key;
+            return $publicKey->VerifyData((new ASCIIEncoding())->GetBytes($value), strval($mode), $sign);
       }
 
-      private CryptedValue X509_Encrypt(X509Certificate2 x509, string value)
+      private function X509_Encrypt(X509Certificate2 $x509, string $value) : CryptedValue
       {
-      if (x509.IsNull() || string.IsNullOrEmpty(value))
-            throw new Exception("A x509 certificate and string for encryption must be provided");
+            if (is_null($x509) || System_String::IsNullOrEmpty($value))
+                  throw new \Exception("A x509 certificate and string for encryption must be provided");
 
-      RSACryptoServiceProvider rsa = (RSACryptoServiceProvider)x509.PublicKey.Key;
-      byte[] bytestoEncrypt = Encoding.ASCII.GetBytes(value);
-      byte[] encryptedBytes = rsa.Encrypt(bytestoEncrypt, false);
-      return new CryptedValue(Convert.ToBase64String(encryptedBytes));
+            $rsa = $x509->PublicKey()->Key;
+            $bytestoEncrypt = ASCII::GetBytes($value);
+            $encryptedBytes = $rsa->Encrypt($bytestoEncrypt, false);
+            return new CryptedValue(System_String::ToBase64($encryptedBytes));
       }
 
-      private string X509_Decrypt(X509Certificate2 x509, string value)
+      private function X509_Decrypt(X509Certificate2 $x509, string $value) : string
       {
-      if (x509.IsNull() || string.IsNullOrEmpty(value))
-            throw new Exception("A x509 certificate and string for decryption must be provided");
+            if (is_null($x509) || System_String::IsNullOrEmpty($value))
+                  throw new \Exception("A x509 certificate and string for decryption must be provided");
 
-      if (!x509.HasPrivateKey)
-            throw new Exception("x509 certicate does not contain a private key for decryption");
+            if (!$x509->HasPrivateKey())
+                  throw new \Exception("x509 certicate does not contain a private key for decryption");
 
-      RSACryptoServiceProvider rsa = (RSACryptoServiceProvider)x509.PrivateKey;
-      byte[] bytestodecrypt = Convert.FromBase64String(value);
-      byte[] plainbytes = rsa.Decrypt(bytestodecrypt, false);
-      System.Text.ASCIIEncoding enc = new System.Text.ASCIIEncoding();
-      return enc.GetString(plainbytes);
+            $rsa = $x509->PrivateKey();
+            $bytestodecrypt = System_String::FromBase64($value);
+            $plainbytes = $rsa->Decrypt($bytestodecrypt, false);
+            $enc = new ASCIIEncoding();
+            return $enc->GetString($plainbytes);
       }
 
       #endregion X509
@@ -850,342 +963,271 @@ final class EncryptDecryptModule
       #region AES
 
       /// <param name="size">Maximum size : 256</param>
-      public void AES_GenerateNewKeys(int size = 256)
+      public function AES_GenerateNewKeys(int $size = 256) : void
       {
-      Private_AES_GenerateNewKeys(size);
+            $this->Private_AES_GenerateNewKeys($size);
       }
 
-      private void AES_LoadKeysFromFile(string pkFile, string IVFile)
+      private function AES_LoadKeysFromFile(string $pkFile, string $IVFile) : void
       {
-      myRijndael.Key = File.ReadAllBytes(pkFile);
-      myRijndael.IV = File.ReadAllBytes(IVFile);
+            $this->myRijndael->Key(File::ReadAllText($pkFile));
+            $this->myRijndael->IV(File::ReadAllText($IVFile));
       }
 
-      private byte[] AES_Encrypt(string plainText)
+      private function AES_Encrypt(string $plainText) : array
       {
-      // Check arguments.
-      if (plainText.IsNull() || plainText.Length <= 0)
-            throw new ArgumentNullException("plainText");
+            // Check arguments.
+            if (is_null($plainText) || strlen($plainText) <= 0)
+                  throw new ArgumentNullException("plainText");
 
-      byte[] Key = myRijndael.Key;
-      byte[] IV = myRijndael.IV;
+            $Key = $this->myRijndael->Key();
+            $IV = $this->myRijndael->IV();
 
-      byte[] encrypted;
-      // Create an RijndaelManaged object
-      // with the specified key and IV.
-      using (RijndaelManaged rijAlg = new RijndaelManaged())
-      {
-            rijAlg.Key = Key;
-            rijAlg.IV = IV;
+            $encrypted = [];
+            // Create an RijndaelManaged object
+            // with the specified key and IV.
+            $rijAlg = new RijndaelManaged();
+            $rijAlg->Key($Key);
+            $rijAlg->IV($IV);
 
             // Create a decryptor to perform the stream transform.
-            ICryptoTransform encryptor = rijAlg.CreateEncryptor(rijAlg.Key, rijAlg.IV);
+            $encryptor = $rijAlg->CreateEncryptor($rijAlg->Key(), $rijAlg->IV());
 
             // Create the streams used for encryption.
-            using (MemoryStream msEncrypt = new MemoryStream())
-            {
-                  using (CryptoStream csEncrypt = new CryptoStream(msEncrypt, encryptor, CryptoStreamMode.Write))
-                  {
-                  using (StreamWriter swEncrypt = new StreamWriter(csEncrypt))
-                  {
-                        //Write all data to the stream.
-                        swEncrypt.Write(plainText);
-                  }
-                  encrypted = msEncrypt.ToArray();
-                  }
-            }
+            $msEncrypt = new MemoryStream();
+            $csEncrypt = new CryptoStream($msEncrypt->ReadToString(), $encryptor->Key(), $encryptor->IV(), CryptoStreamMode::Write);
+            $swEncrypt = new StreamWriter($csEncrypt->Read());
+
+            $swEncrypt->Write($plainText);
+            $encrypted = $msEncrypt->ToArray();
+
+            unset($msEncrypt);
+            unset($csEncrypt);
+            unset($swEncrypt);
+
+            // Return the encrypted bytes from the memory stream.
+            return $encrypted;
       }
 
-      // Return the encrypted bytes from the memory stream.
-      return encrypted;
-      }
-
-      private string AES_Decrypt(byte[] cipherText)
+      private function AES_Decrypt(array $cipherText) : string
       {
-      // Check arguments.
-      if (cipherText.IsNull() || cipherText.Length <= 0)
-            throw new ArgumentNullException("cipherText");
+            // Check arguments.
+            if (is_null($cipherText) || strlen(System_String::FromByteArray($cipherText)) <= 0)
+                  throw new ArgumentNullException("cipherText");
 
-      byte[] Key = myRijndael.Key, IV = myRijndael.IV;
+            $Key = $this->myRijndael->Key();
+            $IV = $this->myRijndael->IV();
 
-      // Declare the string used to hold
-      // the decrypted text.
-      string plaintext = null;
+            // Declare the string used to hold
+            // the decrypted text.
+            $plaintext = null;
 
-      // Create an RijndaelManaged object
-      // with the specified key and IV.
-      using (RijndaelManaged rijAlg = new RijndaelManaged())
-      {
-            rijAlg.Key = Key;
-            rijAlg.IV = IV;
+            // Create an RijndaelManaged object
+            // with the specified key and IV.
+            $rijAlg = new RijndaelManaged();
+            $rijAlg->Key($Key);
+            $rijAlg->IV($IV);
 
             // Create a decrytor to perform the stream transform.
-            ICryptoTransform decryptor = rijAlg.CreateDecryptor(rijAlg.Key, rijAlg.IV);
+            $decryptor = $rijAlg->CreateDecryptor($rijAlg->Key(), $rijAlg->IV());
 
             // Create the streams used for decryption.
-            using (
-                  StreamReader srDecrypt =
-                  new StreamReader(new CryptoStream(new MemoryStream(cipherText), decryptor, CryptoStreamMode.Read))
-            )
-            {
-                  // Read the decrypted bytes from the decrypting stream
-                  // and place them in a string.
-                  plaintext = srDecrypt.ReadToEnd();
-            }
-      }
+            $srDecrypt = new CryptoStream(
+                        System_String::FromByteArray($cipherText),
+                        $decryptor->Key(),
+                        $decryptor->IV(),
+                        CryptoStreamMode::Read);
 
-      return plaintext;
+            // Read the decrypted bytes from the decrypting stream
+            // and place them in a string.
+            $plaintext = $srDecrypt->Read();
+
+            unset($rijAlg);
+            unset($decryptor);
+            unset($srDecrypt);
+
+            return $plaintext;
       }
 
       #endregion AES
 
       #region Caesar
 
-      private CryptedValue Caesar_EncryptDecrypt(string value, int decal)
+      // Décalage d'un caractère
+      private function shiftChar(string $char, int $shift): string
       {
-      if (decal == 0)
-            decal = new Random().Next(3, 26);
+            $isLower = ctype_lower($char);  // Vérifie si le caractère est une minuscule
+            $base = $isLower ? ord('a') : ord('A');  // Définit la base (soit 'a' soit 'A')
+            
+            $newChar = chr(($ord = ord($char)) - $base + $shift) % 26 + $base;  // Applique le décalage
 
-      int mod(int val, int m) => val % m + (val < 0 ? m : 0);
-
-      char[] chars = value.ToCharArray();
-      for (int i = 0; i < value.Length; i++)
-      {
-            int c = chars[i];
-            if ('a' <= c && c <= 'z')
-                  c = 'a' + mod(c - 'a' + decal, 26);
-            else if ('A' <= c && c <= 'Z')
-                  c = 'A' + mod(c - 'A' + decal, 26);
-            else if ('0' <= c && c <= '9')
-                  c = '0' + mod(c - '9' + decal, 10);
-            chars[i] = (char)c;
+            return $newChar;
       }
 
-      return new CryptedValue(new string(chars), decal);
+      private function Caesar_EncryptDecrypt(string $value, int $decal) : CryptedValue
+      {
+            $result = '';
+            
+            foreach (str_split($value) as $char) {
+                if (ctype_alpha($char)) {
+                    $shiftedChar = $this->shiftChar($char, $decal);
+                    $result .= $shiftedChar;
+                } else {
+                    $result .= $char; // On conserve les autres caractères tels quels (espace, ponctuation)
+                }
+            }
+
+            return new CryptedValue($result, $decal);
       }
 
       #endregion Caesar
 
       #region PlayFair
-      /*
-      'Prepare' removes all characters that are not letters i.e. all numbers, punctuation,
-      spaces etc. are removed (uppercase is also converted to lowercase).
-
-      If the second letter of a pair is the same as the first letter, an 'x' is inserted.
-
-      Also, if the length of the string is odd, an 'x' is appended to make it an even length
-      as Playfair can only encrypt even length strings.
-
-      If you want numbers, punctuation etc. you must spell it out e.g.
-      'stop' for period, 'one', 'two' etc.
-      */
-      private static string PlayFair_Prepare(string originalText)
+      // Chiffrement d'un texte avec la méthode Playfair
+      private function PlayFair_Encrypt(string $text, string $key): string
       {
-      int length = originalText.Length;
-      originalText = originalText.ToLower();
-      StringBuilder sb = new StringBuilder();
+            $keySquare = $this->createKeySquare($key);
+            $text = $this->prepareText($text);
+            $pairs = $this->createPairs($text, $keySquare);
+            $ciphertext = '';
 
-      for (int i = 0; i < length; i++)
-      {
-            char c = originalText[i];
-            if (c >= 97 && c <= 122)
-            {
-                  // If the second letter of a pair is the same as the first, insert an 'x'
-                  if (sb.Length % 2 == 1 && sb[sb.Length - 1] == c)
-                  {
-                  sb.Append('x');
-                  }
-                  sb.Append(c);
-            }
-      }
+            foreach ($pairs as $pair) {
+                  $row1 = $pair[0]['row'];
+                  $col1 = $pair[0]['col'];
+                  $row2 = $pair[1]['row'];
+                  $col2 = $pair[1]['col'];
 
-      // If the string is an odd length, append an 'x'
-      if (sb.Length % 2 == 1)
-      {
-            sb.Append('x');
-      }
-
-      return sb.ToString();
-      }
-
-      private static string PlayFair_PrepareKey(string key)
-      {
-      string skipLetter = "w";
-      key = key.Replace(" ", string.Empty);
-
-      if (!Config.AppCulture.IsNull())
-            if (!Config.AppCulture.Name.ToLower().Contains("fr"))
-                  skipLetter = "j";
-
-      key = key.Replace(skipLetter, string.Empty);
-
-      string finalK = key.Substring(0, 1);
-
-      for (int i = 1; i < key.Length; i++)
-      {
-            string l = key.Substring(i, 1);
-            if (!finalK.Contains(l) && !l.Equals(skipLetter))
-                  finalK += l;
-      }
-
-      for (int i = 0; i < Languages.Alphabets.Letters_Lower.Length; i++)
-      {
-            string l = Languages.Alphabets.Letters_Lower.Substring(i, 1);
-            if (!finalK.Contains(l) && !l.Equals(skipLetter))
-                  finalK += l;
-      }
-
-      return finalK;
-      }
-
-      private static string PlayFair_PreparePlainText(string plainText, string key)
-      {
-      if (plainText.Length.Parité() == System.Common.Math.EPairImpair.Impair)
-            return plainText + key.Substring(0, 1);
-
-      return plainText;
-      }
-
-      /*
-      'Encipher' uses the Playfair cipher to encipher some text.
-      The key is a string containing all 26 letters in the alphabet, except one'.
-      */
-      private static string PlayFair_Encrypt(string plainText, string key)
-      {
-      key = PlayFair_PrepareKey(key.ToLower());
-      plainText = PlayFair_PreparePlainText(plainText.ToLower(), key);
-
-      int length = plainText.Length;
-      char a, b;
-      int a_ind, b_ind, a_row, b_row, a_col, b_col;
-      StringBuilder sb = new StringBuilder();
-
-      for (int i = 0; i < length; i += 2)
-      {
-            a = plainText[i];
-            b = plainText[i + 1];
-
-            a_ind = key.IndexOf(a);
-            b_ind = key.IndexOf(b);
-            a_row = a_ind / 5;
-            b_row = b_ind / 5;
-            a_col = a_ind % 5;
-            b_col = b_ind % 5;
-
-            if (a_row == b_row)
-            {
-                  if (a_col == 4)
-                  {
-                  sb.Append(key[a_ind - 4]);
-                  sb.Append(key[b_ind + 1]);
-                  }
-                  else if (b_col == 4)
-                  {
-                  sb.Append(key[a_ind + 1]);
-                  sb.Append(key[b_ind - 4]);
-                  }
-                  else
-                  {
-                  sb.Append(key[a_ind + 1]);
-                  sb.Append(key[b_ind + 1]);
+                  if ($row1 == $row2) {
+                        // Même ligne : décaler les colonnes
+                        $ciphertext .= $keySquare[$row1][$this->mod($col1 + 1)] . $keySquare[$row2][$this->mod($col2 + 1)];
+                  } elseif ($col1 == $col2) {
+                        // Même colonne : décaler les lignes
+                        $ciphertext .= $keySquare[$this->mod($row1 + 1)][$col1] . $keySquare[$this->mod($row2 + 1)][$col2];
+                  } else {
+                        // Différents lignes et colonnes : former un rectangle
+                        $ciphertext .= $keySquare[$row1][$col2] . $keySquare[$row2][$col1];
                   }
             }
-            else if (a_col == b_col)
-            {
-                  if (a_row == 4)
-                  {
-                  sb.Append(key[a_ind - 20]);
-                  sb.Append(key[b_ind + 5]);
-                  }
-                  else if (b_row == 4)
-                  {
-                  sb.Append(key[a_ind + 5]);
-                  sb.Append(key[b_ind - 20]);
-                  }
-                  else
-                  {
-                  sb.Append(key[a_ind + 5]);
-                  sb.Append(key[b_ind + 5]);
-                  }
-            }
-            else
-            {
-                  sb.Append(key[5 * a_row + b_col]);
-                  sb.Append(key[5 * b_row + a_col]);
-            }
-      }
-      return sb.ToString();
+
+            return $ciphertext;
       }
 
-      /*
-      'Decipher' uses the Playfair cipher to decipher some text.
-      The key is a string containing all 26 letters of the alphabet, except one.
-      */
-      private static string PlayFair_Decrypt(string cipherText, string key)
+      // Déchiffrement d'un texte avec la méthode Playfair
+      public function PlayFair_Decrypt(string $text, string $key): string
       {
-      key = PlayFair_PrepareKey(key.ToLower());
-      cipherText = cipherText.ToLower();
+            $keySquare = $this->createKeySquare($key);
+            $pairs = $this->createPairs($text, $keySquare);
+            $plaintext = '';
 
-      int length = cipherText.Length;
-      char a, b;
-      int a_ind, b_ind, a_row, b_row, a_col, b_col;
-      StringBuilder sb = new StringBuilder();
+            foreach ($pairs as $pair) {
+                  $row1 = $pair[0]['row'];
+                  $col1 = $pair[0]['col'];
+                  $row2 = $pair[1]['row'];
+                  $col2 = $pair[1]['col'];
 
-      for (int i = 0; i < length; i += 2)
-      {
-            a = cipherText[i];
-            b = cipherText[i + 1];
-
-            a_ind = key.IndexOf(a);
-            b_ind = key.IndexOf(b);
-            a_row = a_ind / 5;
-            b_row = b_ind / 5;
-            a_col = a_ind % 5;
-            b_col = b_ind % 5;
-
-            if (a_row == b_row)
-            {
-                  if (a_col == 0)
-                  {
-                  sb.Append(key[a_ind + 4]);
-                  sb.Append(key[b_ind - 1]);
-                  }
-                  else if (b_col == 0)
-                  {
-                  sb.Append(key[a_ind - 1]);
-                  sb.Append(key[b_ind + 4]);
-                  }
-                  else
-                  {
-                  sb.Append(key[a_ind - 1]);
-                  sb.Append(key[b_ind - 1]);
+                  if ($row1 == $row2) {
+                        // Même ligne : décaler les colonnes
+                        $plaintext .= $keySquare[$row1][$this->mod($col1 - 1)] . $keySquare[$row2][$this->mod($col2 - 1)];
+                  } elseif ($col1 == $col2) {
+                        // Même colonne : décaler les lignes
+                        $plaintext .= $keySquare[$this->mod($row1 - 1)][$col1] . $keySquare[$this->mod($row2 - 1)][$col2];
+                  } else {
+                        // Différents lignes et colonnes : former un rectangle
+                        $plaintext .= $keySquare[$row1][$col2] . $keySquare[$row2][$col1];
                   }
             }
-            else if (a_col == b_col)
-            {
-                  if (a_row == 0)
-                  {
-                  sb.Append(key[a_ind + 20]);
-                  sb.Append(key[b_ind - 5]);
-                  }
-                  else if (b_row == 0)
-                  {
-                  sb.Append(key[a_ind - 5]);
-                  sb.Append(key[b_ind + 20]);
-                  }
-                  else
-                  {
-                  sb.Append(key[a_ind - 5]);
-                  sb.Append(key[b_ind - 5]);
-                  }
-            }
-            else
-            {
-                  sb.Append(key[5 * a_row + b_col]);
-                  sb.Append(key[5 * b_row + a_col]);
-            }
+
+            return $plaintext;
       }
-      return sb.ToString();
+
+      // Préparer le texte pour le chiffrement ou déchiffrement (remplacer les 'J' par 'I', ajouter des X si nécessaire)
+      private function prepareText(string $text): string
+      {
+            $text = strtoupper($text);
+            $text = str_replace('J', 'I', $text); // J devient I
+            $text = preg_replace('/[^A-Z]/', '', $text); // Supprimer les caractères non alphabétiques
+
+            // Ajouter un 'X' entre les lettres identiques
+            $text = preg_replace('/([A-Z])\1/', '$1X$1', $text);
+
+            // Si le texte est impair, ajouter un 'X' à la fin
+            if (strlen($text) % 2 != 0) {
+                  $text .= 'X';
+            }
+
+            return $text;
+      }
+
+      // Créer la grille 5x5 à partir de la clé
+      private function createKeySquare(string $key): array
+      {
+            $key = strtoupper($key);
+            $key = str_replace('J', 'I', $key); // J devient I
+            $key = preg_replace('/[^A-Z]/', '', $key); // Supprimer les caractères non alphabétiques
+
+            $keySquare = [];
+            $used = [];
+            $alphabet = 'ABCDEFGHIKLMNOPQRSTUVWXYZ'; // Le 'J' est exclu
+
+            // Ajouter les lettres de la clé dans la grille
+            foreach (str_split($key) as $char) {
+                  if (!isset($used[$char])) {
+                        $used[$char] = true;
+                        $keySquare[] = $char;
+                  }
+            }
+
+            // Ajouter les lettres restantes de l'alphabet
+            foreach (str_split($alphabet) as $char) {
+                  if (!isset($used[$char])) {
+                        $used[$char] = true;
+                        $keySquare[] = $char;
+                  }
+            }
+
+            // Organiser la grille 5x5
+            $grid = [];
+            for ($i = 0; $i < 5; $i++) {
+                  $grid[] = array_slice($keySquare, $i * 5, 5);
+            }
+
+            return $grid;
+      }
+
+      // Trouver les coordonnées d'un caractère dans la grille
+      private function findPosition(string $char, array $keySquare): array|null
+      {
+            for ($row = 0; $row < 5; $row++) {
+                  for ($col = 0; $col < 5; $col++) {
+                        if ($keySquare[$row][$col] === $char) {
+                              return ['row' => $row, 'col' => $col];
+                        }
+                  }
+            }
+
+            return null;
+      }
+
+      // Créer des paires de caractères pour le texte
+      private function createPairs(string $text, array $keySquare): array
+      {
+            $pairs = [];
+            $text = str_split($text, 2);
+
+            foreach ($text as $pair) {
+                  $pairs[] = [
+                        $this->findPosition($pair[0], $keySquare),
+                        $this->findPosition($pair[1], $keySquare)
+                  ];
+            }
+
+            return $pairs;
+      }
+
+      // Modulo pour gérer les indices circulaires de la grille
+      private function mod(int $n): int
+      {
+            return ($n + 5) % 5;
       }
       #endregion
 

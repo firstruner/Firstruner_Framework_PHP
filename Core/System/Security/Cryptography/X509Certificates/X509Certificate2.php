@@ -39,6 +39,11 @@ final class X509Certificate2
             $this->load($certificatePath, $privateKeyPath, $passphrase);
         }
     }
+    
+    public function HasPrivateKey(): bool
+    {
+        return !empty($this->privateKey);
+    }
 
     // Getter/Setter pour le certificat
     public function Certificate($certificate = null)

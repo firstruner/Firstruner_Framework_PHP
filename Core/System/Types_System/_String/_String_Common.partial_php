@@ -264,4 +264,14 @@ class _String
       {
             return str_split($haystack, $lenght);
       }
+
+      public static function ToBase64(string $haystack) : string
+      {
+            return base64_encode($haystack);
+      }
+
+      public static function FromBase64(string $haystack) : string
+      {
+            return base64_decode($haystack);
+      }
 }

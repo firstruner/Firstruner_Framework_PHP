@@ -143,4 +143,50 @@ final class RSACryptoServiceProvider
         }
         return $this->padding;
     }
+
+    // Fonction FromXmlString pour importer la clé à partir d'une chaîne XML
+    public function FromXmlString(string $xml): bool
+    {
+        // Charger les clés RSA à partir de la chaîne XML
+        $xml = simplexml_load_string($xml);
+
+        if ($xml === false)
+            throw new \InvalidArgumentException('XML mal formé');
+
+        // Extraire les informations XML pour les clés privées et publiques
+        $privateKeyXml = $xml->privateKey;
+        $publicKeyXml = $xml->publicKey;
+
+        if ($privateKeyXml) {
+            $this->privateKey = \openssl_pkey_get_private(\base64_decode((string)$privateKeyXml));
+        }
+
+        if ($publicKeyXml) {
+            $this->publicKey = \base64_decode((string)$publicKeyXml);
+        }
+
+        return true;
+    }
+
+    
+    // Importer la clé à partir du blob (clé privée ou publique)
+    public function importCspBlob(string $blob): bool
+    {
+        // Essayons de lire la clé privée
+        $privateKey = \openssl_pkey_get_private($blob);
+        if ($privateKey) {
+            $this->privateKey = $privateKey;
+            return true;
+        }
+
+        // Essayons de lire la clé publique
+        $publicKey = \openssl_pkey_get_public($blob);
+        if ($publicKey) {
+            $this->publicKey = $publicKey;
+            return true;
+        }
+
+        // Si aucune des deux tentatives n'a fonctionné
+        return false;
+    }
 }
