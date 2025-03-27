@@ -200,7 +200,7 @@ class Block implements IDisposable, Serializable
             return $this->calculateHash();
       }
 
-      private function mine(?string $format = null) : bool
+      public function Mine(?string $format = null) : bool
       {
             if ($this->IsLock())
                   return true;
