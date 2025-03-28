@@ -28,7 +28,9 @@ use Firstruner\Cryptography\EncryptDecryptModule;
 
 final class Blockchain
 {
-    private $BlockSep = "[_BLOCK_SEP_]";
+    private const CertName = "Firstruner_BlockChain";
+    private const BlockSep = "[_BLOCK_SEP_]";
+
     private $cert = null;
 
     public $Chain = [];
@@ -38,24 +40,27 @@ final class Blockchain
     public $Control = null;
     private $Signature = null;
     private $BC_Guid;
+    private \Closure $Certificate_Expired;
+    private \Closure $Certificate_NotFind;
+    private \Closure $Certificate_OverCount;
 
     public $Mined;
 
     public function __construct(
-        $initializingData = "{}", 
-        $sign = null, 
-        $controlFormat = null, 
-        $eventManagement = false, 
-        $loadingMode = 'Ignore')
+        string $initializingData = "{}", 
+        ?string $sign = null, 
+        ?string $controlFormat = null, 
+        bool $eventManagement = false, 
+        int $loadingMode = LoadingCert::Ignore)
     {
         $this->BC_Guid = uniqid('', true);
 
-        if ($loadingMode == 'Create') {
+        if ($loadingMode == LoadingCert::Create) {
             $this->CreateCert();
-            $loadingMode = 'Load';
+            $loadingMode = LoadingCert::Load;
         }
 
-        if ($loadingMode == 'Load') {
+        if ($loadingMode == LoadingCert::Load) {
             $this->loadCert();
         }
 
@@ -66,19 +71,76 @@ final class Blockchain
         $this->AddGenesisBlock(($initializingData == "{}" ? "{" . $this->BC_Guid . "}" : $initializingData));
 
         if ($eventManagement) {
-            // Attach event handlers (Example: using closures in PHP)
-            // Certificate_Expired, Certificate_NotFind, etc.
+            $this->Certificate_Expired = \Closure::fromCallable([$this, 'ToolsOnCertificateExpired']);
+            $this->Certificate_NotFind = \Closure::fromCallable([$this, 'ToolsOnCertificateNotFind']);
+            $this->Certificate_OverCount = \Closure::fromCallable([$this, 'ToolsOnCertificateOverCount']);
         }
     }
 
-    private function CreateCert()
+    #region Events des certificats
+
+    private function ToolsOnCertificateOverCount(int $count) : void
     {
-        // Implement certificate creation logic
+        throw new \Exception("Il y a plus d'un certificat (" + $count + ")");
     }
 
-    private function loadCert()
+    private function ToolsOnCertificateNotFind() : void
     {
-        // Implement certificate loading logic
+        throw new \Exception("Certificat introuvable");
+    }
+
+    private function ToolsOnCertificateExpired(\DateTime $dateTime) : void
+    {
+        throw new \Exception("Le certificat a expiré");
+    }
+
+    #endregion
+
+    private function CreateCert(?string $path = null)
+    {
+        $config = [
+            "digest_alg" => "sha256",
+            "private_key_bits" => 2048,
+            "private_key_type" => OPENSSL_KEYTYPE_RSA,
+        ];
+        
+        // Générer une clé privée
+        $privateKey = openssl_pkey_new($config);
+        
+        // Créer un CSR
+        $dn = [
+            "countryName" => "FR",
+            "stateOrProvinceName" => "IDF",
+            "localityName" => "St CYR SUR MORIN",
+            "organizationName" => "Firstruner",
+            "commonName" => Blockchain::CertName,
+        ];
+        
+        $csr = openssl_csr_new($dn, $privateKey, $config);
+        
+        // Auto-signer le certificat
+        $certificate = openssl_csr_sign($csr, null, $privateKey, 365);
+        
+        // Sauvegarder les fichiers
+        openssl_pkey_export_to_file($privateKey, (is_null($path) ? __DIR__ : $path) . Blockchain::CertName . "private.key");
+        openssl_csr_export_to_file($csr, (is_null($path) ? __DIR__ : $path) . Blockchain::CertName . "request.csr");
+        openssl_x509_export_to_file($certificate, (is_null($path) ? __DIR__ : $path) . Blockchain::CertName . "certificate.crt");
+    }
+
+    private function loadCert(?string $path = null)
+    {
+        $certFile = (is_null($path) ? __DIR__ : $path) . Blockchain::CertName . "certificate.crt";
+
+        $this->cert = file_get_contents($certFile);
+        if ($this->cert === false)
+            die("Erreur de lecture du fichier de certificat.");
+
+        $parsedCert = openssl_x509_read($this->cert);
+
+        if ($parsedCert === false)
+            die("Le certificat est invalide.");
+
+        $this->cert = $parsedCert;
     }
 
     private function toOutput()
@@ -144,19 +206,18 @@ final class Blockchain
         $last = $this->Last();
         $b = false;
 
-        if ($last->isLock) {
-            if ($this->Mined != null) {
+        if ($last->isLock)
+        {
+            if ($this->Mined != null)
                 call_user_func($this->Mined, $last->Index, $last->Hash);
-            }
 
             return;
         }
 
         $last->Mine();
 
-        if ($this->Mined != null) {
+        if ($this->Mined != null)
             call_user_func($this->Mined, $last->Index, $last->Hash);
-        }
     }
 
     public function Load($DirectoryName, $Encryption = false)
