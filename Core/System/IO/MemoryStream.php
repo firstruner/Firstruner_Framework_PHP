@@ -113,4 +113,17 @@ final class MemoryStream extends BytesStream
 
             return _String::FromByteArray($this->GetBytes($offset, $lenght));
       }
+
+      // Lire toutes les données du flux et les retourner sous forme de tableau de bytes
+      public function ToArray(): array
+      {
+            // Revenir au début du flux
+            rewind($this->bytes);
+
+            // Lire toutes les données
+            $contents = stream_get_contents($this->bytes);
+
+            // Convertir en tableau de bytes
+            return str_split($contents);
+      }
 }

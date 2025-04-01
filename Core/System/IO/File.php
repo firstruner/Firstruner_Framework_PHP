@@ -75,4 +75,36 @@ class File
             }
       }
 
+      public static function Exists(string $path) : bool
+      {
+            try
+            {
+                  return file_exists($path);
+            }
+            catch (\Exception $ex)
+            {
+                  throw new IOException($ex->getMessage(), $ex->getCode(), $ex);
+            }
+      }
+
+      public static function ReadAllBytes(string $path): array
+      {
+            if (!file_exists($path) || !is_readable($path)) {
+                  throw new IOException("Le fichier n'existe pas ou n'est pas lisible.");
+            }
+
+            // Lire le fichier sous forme de chaîne binaire
+            $data = file_get_contents($path);
+            if ($data === false) {
+                  throw new IOException("Impossible de lire le fichier.");
+            }
+
+            // Convertir la chaîne en tableau d'octets
+            return array_values(unpack("C*", $data));
+      }
+
+      public static function Delete(string $path) : bool
+      {
+            return unlink($path);
+      }
 }

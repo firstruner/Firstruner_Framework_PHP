@@ -27,4 +27,8 @@ namespace System\Default;
 class _boolean
 {
       public const ClassName = "boolean";
+      public const TrueTextValue = "true";
+      public const TrueIntValue = "1";
+      public const FalseTextValue = "false";
+      public const FalseIntValue = "0";
 }

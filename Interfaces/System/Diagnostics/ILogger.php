@@ -27,6 +27,9 @@ namespace System\Diagnostics;
 
 interface ILogger
 {
+      static function WriteInConsole(mixed $element, int $messageType);
+      static function Clear();
+
       function Write(string $element, string $context);
       function Load(string $path);
       function __toString();

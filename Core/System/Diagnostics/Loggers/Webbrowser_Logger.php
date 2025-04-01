@@ -25,19 +25,49 @@
 namespace System\Diagnostics;
 
 use System\Annotations\NotImplemented;
+use System\Default\_string;
+use System\Enumerations;
+use System\Forms\MessageType;
 
 class Webbrowser_Logger implements ILogger {
-    public function Write(string $element, string $context = 'Debug in Console')
+    public static function WriteInConsole(mixed $element, int $messageType = MessageType::Information)
     {
         // Buffering to solve problems frameworks, like header() in this and not a solid return.
         ob_start();
+
+        $output = _string::EmptyString;
       
-        $output  =  'console.info(\'' . $context . ':\');' .
-                    'console.log(' . json_encode($element) . ');';
-  
-        echo "<script>console.info('$context:'); console.log(" . json_encode($element) . ");</script>";
+        if (Enumerations::HasFlag($messageType, MessageType::Error))
+            $output .=  'console.error(\'' . json_encode($element) . ':\');';
+        
+        if (Enumerations::HasFlag($messageType, MessageType::Question))
+            $output .=  'console.info(\'' . json_encode($element) . ':\');';
+
+        if (Enumerations::HasFlag($messageType, MessageType::Warning))
+            $output .=  'console.warn(\'' . json_encode($element) . ':\');';
+
+        if (Enumerations::HasFlag($messageType, MessageType::Information))
+            $output .=  'console.info(\'' . json_encode($element) . ':\');';
+
+        if (Enumerations::HasFlag($messageType, MessageType::Debug))
+            $output .=  'console.debug(\'' . json_encode($element) . ':\');';
+
+        if (Enumerations::HasFlag($messageType, MessageType::Log))
+            $output .=  'console.log(\'' . json_encode($element) . ':\');';
+
+        echo "<script>" . $output . "</script>";
 
         ob_end_flush();
+    }
+
+    public static function Clear()
+    {
+        echo "<script>console.clear();</script>";
+    }
+
+    public function Write(string $element, string $context = 'Default context')
+    {
+        Webbrowser_Logger::WriteInConsole($context . " : " . $element);
     }
 
     public function Load(string $path)

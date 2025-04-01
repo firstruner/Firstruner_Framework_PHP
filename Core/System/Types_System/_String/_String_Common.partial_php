@@ -201,12 +201,24 @@ class _String
        * @param       $needle
        * @return bool
        */
-      public static function EndWith($haystack, $needle) : bool
+      public static function EndsWith($haystack, $needle) : bool
       {
             return self::substring(
                   $haystack,
                   \strlen($haystack) - self::length($needle),
                   self::length($needle)) === $needle;
+      }
+
+      /**
+       * Return true when $haystack ends with $needle.
+       *
+       * @param       $haystack
+       * @param       $needle
+       * @return bool
+       */
+      public static function EndWith($haystack, $needle) : bool
+      {
+            return self::EndsWith($haystack, $needle);
       }
 
       /**
@@ -227,5 +239,44 @@ class _String
                   return \mb_substr($string, $start, $length);
             
             return \substr($string, $start, $length);
+      }
+
+      public static function ToByteArrayBrutUTF8($string) {
+            return array_values(unpack('C*', mb_convert_encoding($string, 'UTF-8', 'UTF-8')));
+      }
+
+      public static function CreateRandomString(
+            $length = 15,
+            $validCharacters = "ABCDEFGHJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*?_-"
+            )
+      {
+            $randomString = "";
+            $maxIndex = strlen($validCharacters) - 1;
+        
+            for ($i = 0; $i < $length; $i++) {
+                $randomString .= $validCharacters[random_int(0, $maxIndex)];
+            }
+        
+            return $randomString;
+      }
+
+      public static function Chunk(string $haystack, int $lenght) : array
+      {
+            return str_split($haystack, $lenght);
+      }
+
+      public static function ToBase64(string $haystack) : string
+      {
+            return base64_encode($haystack);
+      }
+
+      public static function FromBase64(string $haystack) : string
+      {
+            return base64_decode($haystack);
+      }
+
+      public static function Cut(string $haystack, int $size) : array
+      {
+            return str_split($haystack, $size);
       }
 }

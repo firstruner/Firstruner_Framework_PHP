@@ -34,6 +34,7 @@ final class StreamReader
       private string $encoding = _string::EmptyString;
       private $current_file = null;
       private bool $autoOpen = false;
+      private $handle;
 
       private bool $opened = false;
 
@@ -140,5 +141,15 @@ final class StreamReader
             } catch (\Exception $ioEx) {
                   throw new IOException($ioEx->getMessage());
             }
+      }
+
+      public function ReadToEnd(): string
+      {
+            if (!$this->handle) {
+                  throw new IOException("Fichier non ouvert.");
+            }
+
+            $content = stream_get_contents($this->handle);
+            return $content === false ? "" : $content;
       }
 }

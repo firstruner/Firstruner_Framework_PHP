@@ -47,8 +47,9 @@ final class SByte
             if ($name === 'Value' && is_int($value)) $this->setValue($value);
       }
 
-      public function __get($name = "Value") : int {
+      public function __get($name = "Value") : int|null {
             if ($name === 'Value') return $this->valeur;
+            return null;
       }
 
       public function __invoke() {

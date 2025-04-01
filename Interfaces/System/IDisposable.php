@@ -34,5 +34,5 @@ use System\Annotations\ComVisible;
   {
     /// <summary>Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.</summary>
     #[__DynamicallyInvokable]
-    function Dispose(): void;
+    public function Dispose(): void;
   }

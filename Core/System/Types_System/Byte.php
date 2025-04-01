@@ -47,11 +47,17 @@ final class Byte
             if ($name === 'Value' && is_int($value)) $this->setValue($value);
       }
 
-      public function __get($name = "Value") : int {
+      public function __get($name = "Value") : int|null {
             if ($name === 'Value') return $this->valeur;
+            return null;
       }
 
       public function __invoke() {
             return $this->valeur;
+      }
+
+      public static function GenerateRandom(int $keySize) : array
+      {
+            return _string::ToByteArray(random_bytes($keySize));
       }
 }
