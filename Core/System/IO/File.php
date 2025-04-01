@@ -102,4 +102,9 @@ class File
             // Convertir la chaîne en tableau d'octets
             return array_values(unpack("C*", $data));
       }
+
+      public static function Delete(string $path) : bool
+      {
+            return unlink($path);
+      }
 }

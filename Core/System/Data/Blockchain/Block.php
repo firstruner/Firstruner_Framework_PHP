@@ -35,6 +35,8 @@ use System\Security\Cryptography\EncryptionMode;
 
 class Block implements IDisposable, Serializable
 {
+      public const ClassName = "Block";
+
       /// <summary>
       /// Numéro du bloc
       /// </summary>

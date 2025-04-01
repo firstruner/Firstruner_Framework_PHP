@@ -274,4 +274,9 @@ class _String
       {
             return base64_decode($haystack);
       }
+
+      public static function Cut(string $haystack, int $size) : array
+      {
+            return str_split($haystack, $size);
+      }
 }

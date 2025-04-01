@@ -14,7 +14,7 @@
 * DISCLAIMER
 *
 * Do not edit, reproduce ou modify this file.
-* Please refer to https://firstruner.fr/ or contact Firstruner for more information.
+* Please refer to https:*firstruner.fr/ or contact Firstruner for more information.
 *
 * @author    Firstruner and Contributors <contact@firstruner.fr>
 * @copyright Since 2024 Firstruner and Contributors
@@ -22,17 +22,17 @@
 * @version 2.0.0
 */
 
-namespace System\Data\Blockchain;
+namespace System\IO;
 
-use System\Attributes\Partial;
-
-//[Flags]
-#[Partial()]
-abstract class StorageMethod
+abstract class SuffixesSizes
 {
-    public const ByBlock = 0;
-    public const By5Block = 1;
-    public const By10Block = 2;
-    public const ByNbBlock = 4;
-    public const ByFileSize = 8;
+      public const Octets = 0;
+    public const Kilo = 1;
+    public const Mega = 2;
+    public const Giga = 3;
+    public const Tera = 4;
+    public const Peta = 5;
+    public const Exa = 6;
+    public const Zetta = 7;
+    public const Yota = 8;
 }

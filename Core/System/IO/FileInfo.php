@@ -24,6 +24,8 @@
 
 namespace System\IO;
 
+use System\Tuple;
+
 final class FileInfo
 {
     private string $filePath;
@@ -108,15 +110,36 @@ final class FileInfo
         return false;
     }
 
-    public function PrettyOctetsPhysicalSize(): int
+    public static function PhysicalSize(string $filePath): float {
+        return filesize($filePath) / 1024; // Taille en Ko
+    }
+
+    public static function PrettyOctetsPhysicalSize(FileInfo $f, int $precision = 0): Tuple
     {
-        $size = $this->Length();
-        if ($size == 0)
-            return 0;
+        return FileInfo::prettySize($f, $precision, SuffixesRange::OctetSuffixes);
+    }
 
-        $units = ["octets", "Ko", "Mo", "Go", "To"];
-        $i = (int)floor(log($size, 1024));
+    public static function PrettyBytesPhysicalSize(FileInfo $f, int $precision = 0): Tuple
+    {
+        return FileInfo::prettySize($f, $precision, SuffixesRange::BytesRange);
+    }
 
-        return round($size / pow(1024, $i), 2) . " " . $units[$i];
+    private static function prettySize(FileInfo $f, int $precision, array $suffixesRanges): Tuple
+    {
+        if ($precision < 0)
+            throw new \InvalidArgumentException("Precision cannot be negative.");
+
+        if ($f->Length() == 0)
+            return new Tuple(0, $suffixesRanges[0]);
+
+        $index = (int) log($f->Length(), 1024);
+        $size = $f->Length() / (1024 ** $index);
+
+        if (round($size, $precision) >= 1000) {
+            $index++;
+            $size /= 1024;
+        }
+
+        return new Tuple($size, $suffixesRanges[$index]);
     }
 }
