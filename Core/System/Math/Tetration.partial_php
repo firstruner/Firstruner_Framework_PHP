@@ -26,10 +26,10 @@ namespace System;
 
 abstract class Math
 {
-      public static function Tetration(float $value, float $exp) : float
+      public static function Tetration(float $value, float $exp, ?int $precision = null) : float
       {
             if ($exp == 1) return $value;
 
-            return pow($value, Math::Tetration($value, $exp - 1));
+            return bcpow(strval($value), strval(Math::Tetration($value, $exp - 1)), $precision);
       }
 }
