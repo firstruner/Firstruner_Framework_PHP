@@ -26,9 +26,9 @@ namespace System\IO;
 
 use System\Exceptions\IOException;
 
-class File
+abstract class File implements IRepository_Reader, IRepository_Writer
 {
-      public static function ReadAllText(string $path)
+      public static function ReadAllText(string $path) : string
       {
             try
             {
