@@ -32,6 +32,8 @@ use System\Exceptions\ArgumentNullException;
 use System\Linq\ILinq;
 use System\Linq\ILinqTyped;
 use System\Linq\ISorter;
+use System\Collections\Iterators\Iterator_Extension;
+use System\Collections\Iterators\IFilter;
 use System\_String;
 use System\Linq\Operators;
 
