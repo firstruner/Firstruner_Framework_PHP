@@ -22,28 +22,12 @@
  * @version 2.0.0
  */
 
+header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
+header("Last-Modified: ".gmdate("D, d M Y H:i:s")." GMT");
 
-//
+header("Cache-Control: no-store, no-cache, must-revalidate");
+header("Cache-Control: post-check=0, pre-check=0", false);
+header("Pragma: no-cache");
 
-/**
- * UT : Pass
- */
-
-namespace UT\Classes;
-
-require_once(__DIR__ . '/../../../vendor/autoload.php');
-require_once(__DIR__ . '/../../loader.php');
-
-use PHPUnit\Framework\TestCase;
-use System\Collections\CCollection;
-
-final class CCollection_Test extends TestCase
-{
-      public function test_CCollection(): void
-      {
-            $collection = new CCollection();
-            $collection->Add("Item_1");
-
-            $this->assertSame($collection->count(), 1);
-      }
-}
+header("Location: ../");
+exit;

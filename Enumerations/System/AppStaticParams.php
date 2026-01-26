@@ -46,41 +46,9 @@ enum EAppParams
 
 abstract class AppStaticParams
 {
-    const ToolCode_EventAdd = "addevent";
-    const ToolCode_UserManagement = "usermanagement";
-
-    const ServerKey_DefaultPath = _string::EmptyString;
-
-    const SessionKey_DynamicsParams = "DynamicsParams";
-    const SessionKey_CurrentUser = "CurrentUser";
-    const SessionKey_UsersList = "UsersList";
-    const SessionKey_DepartmentsList = "DepartmentsList";
-    const SessionKey_ClientsList = "ClientsList";
     const SessionKey_OAuth = "OAuth_Token";
 
-    const CookieKey_TokensObjects = "Convergence_Token";
-
-    const RequestKey_Username = "uname";
-    const RequestKey_HashPassword = "pass";
-    const RequestKey_Password = "password";
     const RequestKey_Debug = "debug";
-    const RequestKey_CurrentToolCode = "CurrentToolCode";
-    const RequestKey_DatasReceived = "datas";
-
-    const RequestKey_VATNumber = "VAT";
-    const RequestKey_CodePays = "Pays";
-
-    const ControllerKey_Home = "home";
-    const ControllerKey_Connexion = "connexion";
-    const ControllerKey_UserProfile = "userProfile";
-    const ControllerKey_AreaManagement = "areaMan";
-
-    const LinkKey_VisitImage_Prospection = _string::EmptyString;
-    const LinkKey_VisitImage_RDV = _string::EmptyString;
-    const LinkKey_VisitImage_Tel = _string::EmptyString;
-    const LinkKey_VisitImage_Note = _string::EmptyString;
-    const LinkKey_VisitImage_EMail = _string::EmptyString;
-    const LinkKey_VisitImage_SuiviClient = _string::EmptyString;
 
     const CommonValues_DateTimeFormat = "d/m/Y h:i:s";
 }
