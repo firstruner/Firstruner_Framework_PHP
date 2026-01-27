@@ -1,5 +1,5 @@
 # Répertoire racine à analyser (à adapter)
-$RootPath = "C:\chemin\vers\votre\projet"
+$RootPath = (Get-Location).Parent.FullName
 
 # Contenu du fichier index.php
 $IndexContent = @'
