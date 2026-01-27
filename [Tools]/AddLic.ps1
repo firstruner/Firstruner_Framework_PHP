@@ -1,7 +1,6 @@
-# Répertoire racine à analyser
-$RootPath = (Get-Location).Parent.FullName
+# Root = dossier courant remonté d'un niveau (supporte [ ])
+$RootPath = (Get-Item -LiteralPath (Get-Location).Path).Parent.FullName
 
-# Texte à insérer
 $HeaderText = @'
 /**
 * Copyright since 2024 Firstruner and Contributors
@@ -26,18 +25,20 @@ $HeaderText = @'
 */
 '@
 
-# Signature minimale pour détecter si le header est déjà présent
 $HeaderSignature = "Firstruner and Contributors"
 
-# Récupération de tous les fichiers PHP sauf index.php
-$PhpFiles = Get-ChildItem -Path $RootPath -Recurse -Filter *.php |
+if ([string]::IsNullOrWhiteSpace($RootPath) -or -not (Test-Path -LiteralPath $RootPath)) {
+    throw "RootPath invalide: '$RootPath'"
+}
+
+# NOTE: -Filter avec -LiteralPath est OK, le chemin reste littéral.
+$PhpFiles = Get-ChildItem -LiteralPath $RootPath -Recurse -Force -Filter *.php |
             Where-Object { $_.Name -ne "index.php" }
 
 foreach ($File in $PhpFiles) {
 
-    $Content = Get-Content -Path $File.FullName -Raw -Encoding UTF8
+    $Content = Get-Content -LiteralPath $File.FullName -Raw -Encoding UTF8
 
-    # Si le header est déjà présent, on ne touche pas
     if ($Content -match [regex]::Escape($HeaderSignature)) {
         continue
     }
@@ -45,13 +46,10 @@ foreach ($File in $PhpFiles) {
     Write-Host "Ajout du header dans $($File.FullName)"
 
     if ($Content -match '^\s*<\?php') {
-        # Le fichier commence par <?php → on insère juste après
         $NewContent = $Content -replace '^\s*<\?php\s*', "<?php`n`n$HeaderText`n"
-    }
-    else {
-        # Fichier PHP sans balise <?php explicite
+    } else {
         $NewContent = "<?php`n`n$HeaderText`n`n$Content"
     }
 
-    Set-Content -Path $File.FullName -Value $NewContent -Encoding UTF8
+    Set-Content -LiteralPath $File.FullName -Value $NewContent -Encoding UTF8
 }
