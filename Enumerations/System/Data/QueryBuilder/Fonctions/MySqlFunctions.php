@@ -23,9 +23,9 @@
 
 
 
-namespace System\Data\QueryBuilder\Conditions;
+namespace System\Data\QueryBuilder\Functions;
 
-abstract class MySQLType
+abstract class MySQLFunctions
 {
-      public const GETDATE = 'GETDATE';
+      public const GETDATE = 'NOW()';
 }

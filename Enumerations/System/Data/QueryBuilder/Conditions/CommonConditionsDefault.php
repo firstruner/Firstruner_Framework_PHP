@@ -25,7 +25,7 @@
 
 namespace System\Data\QueryBuilder\Conditions;
 
-abstract class CommonConditions
+abstract class CommonConditionsDefault
 {
     public const AND = 'AND';
     public const OR  = 'OR';

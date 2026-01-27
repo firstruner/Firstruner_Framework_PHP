@@ -23,9 +23,9 @@
 
 
 
-namespace System\Data\QueryBuilder\Conditions;
+namespace System\Data\QueryBuilder\Functions;
 
-abstract class MongoDbVerbs
+abstract class SqliteFunctions
 {
-    // public const GETDATE = 'GETDATE';
+      public const GETDATE = 'CURRENT_TIMESTAMP';
 }

@@ -36,7 +36,7 @@ class Framework
             return Framework::$loaded;
       }
 
-      public static function Load(bool $reload = false)
+      public static function Load(bool $reload = false, bool $debug = false, bool $passErrors = false)
       {
             if ($reload) {
                   // TODO: Reload fonction
@@ -48,6 +48,9 @@ class Framework
             define("FirstrunerFramework_LogPath", "log/Firstruner.log");
 
             require_once(__DIR__ . '/Core/System/Reflection/Dependencies/Loader.php');
+
+            Loader::$debug = $debug;
+            Loader::$passErrors = $passErrors;
 
             if (Framework::$VendorLoading)
             {

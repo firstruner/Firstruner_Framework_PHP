@@ -23,9 +23,9 @@
 
 
 
-namespace System\Data\QueryBuilder\Conditions;
+namespace System\Data\QueryBuilder\Functions;
 
-abstract class SqlServerType
+abstract class CommonFunctions
 {
-      public const GETDATE = 'GETDATE';
+    public const GETDATE = 'GETDATE';
 }

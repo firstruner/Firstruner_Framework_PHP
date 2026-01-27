@@ -23,9 +23,9 @@
 
 
 
-namespace System\Data\QueryBuilder\Conditions;
+namespace System\Data\QueryBuilder\Functions;
 
-abstract class PostgresType
+abstract class SqlServerFunctions
 {
-      public const GETDATE = 'GETDATE';
+      public const GETDATE = 'GETDATE()';
 }

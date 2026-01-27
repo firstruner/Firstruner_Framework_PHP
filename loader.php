@@ -30,18 +30,23 @@ require_once(__DIR__ . '/Framework_Symfony.php');
 use Firstruner\Framework;
 use Firstruner\Framework_Symfony;
 
+$debug = false;
+$details = false;
+$includeFiles = false;
+$passErrors = false;
+
 /**
  * Exemple: ta logique de chargement.
  * Remplace ce bloc par ton mécanisme réel (require vendor/autoload.php, scan, etc.)
  *
  * @return string[] liste des fichiers réellement inclus
  */
-function do_loading(bool $debug): array
+function do_loading(bool $debug, bool $passErrors): array
 {
     $includedBefore = get_included_files();
 
     Framework::$VendorLoading = false;
-    Framework::Load();
+    Framework::Load(debug: $debug, passErrors: $passErrors);
 
     Framework_Symfony::$VendorLoading = false;
     Framework_Symfony::Load();
@@ -57,16 +62,13 @@ function do_loading(bool $debug): array
     return $diff;
 }
 
-$debug = false;
-$details = false;
-$includeFiles = false;
-
 if (isset($argv))
 {
     $flags = new CliFlags($argv);
     $debug = $flags->has('--debug');
     $details = $flags->has('--details');
     $includeFiles = $flags->has('--includeFiles');
+    $passErrors = $flags->has('--passErrors');
 
     if ($flags->has('--help') || $flags->has('--h'))
     {
@@ -76,6 +78,7 @@ if (isset($argv))
             "  --debug          Affiche un diagnostique rapide" . PHP_EOL .
             "  --details        Affiche le détails des chargements" . PHP_EOL .
             "  --includeFiles   Affiche la liste des fichiers chargés" . PHP_EOL .
+            "  --passErrors     Outrepasse les erreurs de chargement" . PHP_EOL .
             PHP_EOL . PHP_EOL .
             "Informations :" . PHP_EOL .
             "--details         nécessite --debug" . PHP_EOL .
@@ -87,7 +90,7 @@ if (isset($argv))
     $beforeLoading = snapshot_declared();
 }
 
-$loadedFiles = do_loading($debug);
+$loadedFiles = do_loading($debug, $passErrors);
 
 if (isset($argv))
 {

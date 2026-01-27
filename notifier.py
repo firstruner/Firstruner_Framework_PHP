@@ -20,13 +20,13 @@ def main():
         sys.exit(0)
 
     # --- Règles Pull (priorité) ---
-    if "needed_pull" in git_tag:
+    if "needed_pull" in commit_message:
         pull_info = "🔴 Pull obligatoire"
         color = 15158332  # rouge
-    elif "high_recommended_pull" in git_tag:
+    elif "high_recommended_pull" in commit_message:
         pull_info = "🟡 Pull fortement recommandé"
         color = 16705372  # orange
-    elif "recommended_pull" in git_tag:
+    elif "recommended_pull" in commit_message:
         pull_info = "🔵 Pull recommandé"
         color = 3447003    # bleu
     else:
@@ -37,7 +37,7 @@ def main():
     pipeline_id = os.getenv("CI_PIPELINE_ID", "")
     project_path = os.getenv("CI_PROJECT_PATH", "")
     pipeline_url = os.getenv("CI_PIPELINE_URL", "")
-    commit_tag = git_tag or "Aucun"
+    commit_tag = commit_message or "Aucun"
 
     public_repo = "https://github.com/firstruner/Firstruner_Framework_PHP"
     private_repo = "https://gitlab.com/firstruner/Firstruner_Framework_PHP"

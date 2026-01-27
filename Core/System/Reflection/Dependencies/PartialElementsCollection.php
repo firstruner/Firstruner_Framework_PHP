@@ -225,19 +225,29 @@ final class PartialElementsCollection implements Iterator
                   ($this->isAbstractClass() ? "abstract " : "") .
                   $this->elements[0]->getHeaderTag() . $this->elements[0]->ElementName . PHP_EOL;
 
+            $UsesTagFiles = "";
+            $UsesArray = [];
+
             $Uses = "";
             $Extends = "";
             $Implements = "";
             $Contents = "";
 
-            foreach ($this->elements as $partial) {
-                  $Uses .= $partial->Tag_File . PHP_EOL . $partial->Uses . PHP_EOL;
+            foreach ($this->elements as $partial)
+            {
+                  $UsesTagFiles .= $partial->Tag_File . PHP_EOL;
+                  array_push($UsesArray, $partial->Uses);
+
                   $Extends .= $this->extendsCompiler(PartialEnumerations_Element::_Extends, $Extends, $partial);
                   $Implements .= $this->extendsCompiler(PartialEnumerations_Element::_Implements, $Implements, $partial);
                   $Contents .= $partial->Tag_File . PHP_EOL . $partial->Content . PHP_EOL;
             }
 
-            $Uses = str_replace(PartialElementsCollection::UsePartial, "", $Uses);
+            $UsesArray = array_unique($UsesArray);
+            $Uses = implode(PHP_EOL, $UsesArray);
+
+            $Uses = $UsesTagFiles .
+                  str_replace(PartialElementsCollection::UsePartial, "", $Uses);
 
             // Managing php < 8.1
             $ElementName = $this->EnumClassHeaderAdapter($ElementName);
@@ -292,9 +302,14 @@ final class PartialElementsCollection implements Iterator
                               break;
                   }
 
+                  if (Loader::$debug)
+                        echo "Contenu :" . PHP_EOL . $finalClass;
+
                   eval($finalClass);
                   return true;
-            } catch (\Error $err) {
+            }
+            catch (\Error $err) 
+            {
                   echo new \Exception(
                         PartialMessages::ExceptionOnLoading .
                               " on " . $ElementName . " - " .

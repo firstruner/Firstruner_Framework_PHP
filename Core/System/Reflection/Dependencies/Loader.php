@@ -73,6 +73,8 @@ final class Loader
       private static bool $log_active = false;
       private static array $log = array();
       private static array $escapesChars = [ "/", "\\"];
+      public static bool $debug = false;
+      public static bool $passErrors = false;
 
       private const IndexFileName = "index.php";
       private const PartialsAttributesFileName = "PartialsAttributes.php";
@@ -275,6 +277,9 @@ final class Loader
 
       private static function LoadFromFile(string $currentPath, PartialElementsCollection &$partialsCollection)
       {
+            if (Loader::$debug)
+                  echo PHP_EOL . "Chargement de " . $currentPath;
+
             $ext = pathinfo($currentPath, PATHINFO_EXTENSION);
             $preload = _string::EmptyString;
 
@@ -283,9 +288,9 @@ final class Loader
                         $preload = Loader::StandardPHP_TryGetContent($currentPath);
                   case Loader::PhpPartialExtension:
                         if (!Loader::PartialPHP_AddToCollection(
-                              $partialsCollection,
-                              strlen($preload) > 0 ? $preload : file_get_contents($currentPath),
-                              $currentPath
+                              collection: $partialsCollection,
+                              content: strlen($preload) > 0 ? $preload : file_get_contents($currentPath),
+                              filename: $currentPath
                         ))
                               if (Loader::StandardPHP_LoadFile($currentPath))
                                     Loader::$Counter++;
@@ -308,7 +313,7 @@ final class Loader
                   foreach (scandir($path) as $filename) {
                         $currentPath = $path . '/' . $filename;
 
-                        if (Loader::IsNotLoadable($currentPath, $filename))
+                        if (Loader::IsNotLoadable($currentPath))//, $filename))
                               continue;
 
                         if (is_file($currentPath)) {
@@ -369,8 +374,10 @@ final class Loader
       {
             Loader::CheckPartialMessagesKeysLoaded();
 
-            for ($index = 0; $index < count(Loader::$dependants); $index++) {
-                  try {
+            for ($index = 0; $index < count(Loader::$dependants); $index++)
+            {
+                  try
+                  {
                         if (Loader::$log_active) Loader::AddToLog(
                               str_replace('{0}', Loader::$dependants[$index], PartialMessages::LogAddPreLoad)
                         );
@@ -382,7 +389,9 @@ final class Loader
                         );
 
                         array_push(Loader::$dependants_Loaded, $index);
-                  } catch (\Error $e) {
+                  }
+                  catch (\Error $e)
+                  {
                         if (Loader::$log_active) Loader::AddToLog($e->getMessage());
                   }
             }
@@ -411,7 +420,7 @@ final class Loader
                         str_replace('{0}', $path, PartialMessages::LogAddPreLoad)
                   );
 
-                  Loader::StandardPHP_LoadDependency($path);
+                  Loader::StandardPHP_LoadDependency(path: $path);
 
                   if (Loader::$log_active) Loader::AddToLog(
                         str_replace('{0}', $path, PartialMessages::LogAddPostLoad)
@@ -490,21 +499,12 @@ final class Loader
             Loader::InitializeLoadingValues();
             $path = realpath(str_replace('/', Loader::$escapesChars[0], $path));
 
-            /*if (strpos($path, "_array.php") > 0)
+            if (!in_array($path, haystack: get_included_files()))
             {
-                  var_dump(get_included_files());
-                  var_dump("FILE :> " . $path);
-                  var_dump("CORRECTED FILE :> " . str_replace('/', '\\', $path));
-                  var_dump("IN_ARRAY : " .
-                        in_array(
-                              str_replace('/', Loader::$escapesChars[0], $path),
-                              get_included_files()
-                        ) ? "Trouvé" : "Pas trouvé"
-                  );
-            }*/
+                  set_error_handler(function ($severity, $message, $file, $line) {
+                        throw new \ErrorException($message, 0, $severity, $file, $line);
+                  });
 
-            if (!in_array($path, get_included_files()))
-            {
                   try
                   {
                         if ($OnceOnly)
@@ -513,25 +513,28 @@ final class Loader
                         }
                         else
                         {
-                              /*if (in_array($path, get_included_files()))
-                              {
-                                    var_dump(get_included_files());
+                              if (Loader::$passErrors) {
+                                    spl_autoload_register(function ($path) {
+                                          if (is_file($path)) {
+                                                require $path;
+                                          }
+                                    });
+                              } else  {
+                                    if (is_file($path)) require($path);
                               }
-                              else
-                              {
-                                    var_dump($path);
-                              }*/
-
-                              if (is_file($path)) require($path);
                         }
+
+
                         //Loader::requireClassFile($path);
-                  } catch (\Error $err) {
+                  } catch (\Throwable $err) {
                         //var_dump(get_included_files());
                         echo new \Exception(
                               "Error on loading Standard file " .
                                     $path . " - " .
                                     $err->getMessage() . " (" . $err->getLine() . ") "
                         );
+                  } finally {
+                        restore_error_handler();
                   }
 
                   return true;

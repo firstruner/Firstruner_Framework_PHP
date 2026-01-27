@@ -1,4 +1,7 @@
 <?php
+
+use System\Reflection\Dependencies\Loader;
+
 final class LoaderReport
 {
     /** @var string[] */
@@ -14,13 +17,20 @@ final class LoaderReport
 
     public function printSummary(bool $details): void
     {
-        echo "Chargements détectés\n";
-        echo "---------------------\n";
+        echo PHP_EOL;
+        echo "------------------------" . PHP_EOL;
+        echo "Chargements détectés" . PHP_EOL;
+        echo "------------------------" . PHP_EOL;
         echo "Classes    : " . count($this->classes) . PHP_EOL;
         echo "Interfaces : " . count($this->interfaces) . PHP_EOL;
         echo "Traits     : " . count($this->traits) . PHP_EOL;
         echo "Enums      : " . count($this->enums) . PHP_EOL;
         echo "Fonctions  : " . count($this->functions) . PHP_EOL;
+        echo "------------------------" . PHP_EOL;
+        echo "Propriétés du Loader" . PHP_EOL;
+        echo "Debug      : " . (Loader::$debug ? "Activé" : "Désactivé") . PHP_EOL;
+        echo "Erreurs    : " . (Loader::$passErrors ? "Non gérées" : "Gérées") . PHP_EOL;
+        echo "------------------------" . PHP_EOL . " ";
 
         if (!$details) {
             return;

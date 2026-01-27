@@ -23,9 +23,9 @@
 
 
 
-namespace System\Data\QueryBuilder\Conditions;
+namespace System\Data\QueryBuilder\Functions;
 
-abstract class OracleType
+abstract class PostgresFunctions
 {
-    public const GETDATE = 'GETDATE';
+      public const GETDATE = 'CURRENT_TIMESTAMP';
 }

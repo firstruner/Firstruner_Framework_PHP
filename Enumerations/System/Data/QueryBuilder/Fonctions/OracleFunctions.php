@@ -23,9 +23,9 @@
 
 
 
-namespace System\Data\QueryBuilder\Conditions;
+namespace System\Data\QueryBuilder\Functions;
 
-abstract class SqliteType
+abstract class OracleFunctions
 {
-      public const GETDATE = 'GETDATE';
+    public const GETDATE = 'SYSDATE';
 }
