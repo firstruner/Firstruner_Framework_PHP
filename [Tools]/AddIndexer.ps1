@@ -1,7 +1,6 @@
-# Répertoire racine à analyser (à adapter)
-$RootPath = (Get-Location).Parent.FullName
+# Root = dossier courant remonté d'un niveau (supporte [ ])
+$RootPath = (Get-Item -LiteralPath (Get-Location).Path).Parent.FullName
 
-# Contenu du fichier index.php
 $IndexContent = @'
 <?php
 
@@ -38,15 +37,19 @@ header("Location: ../");
 exit;
 '@
 
-# Récupération de tous les dossiers (récursivement, y compris la racine)
-$Directories = Get-ChildItem -Path $RootPath -Directory -Recurse
-$Directories += Get-Item -Path $RootPath
+if ([string]::IsNullOrWhiteSpace($RootPath) -or -not (Test-Path -LiteralPath $RootPath)) {
+    throw "RootPath invalide: '$RootPath'"
+}
+
+# Racine + sous-dossiers (utilise -LiteralPath)
+$Directories = @(Get-Item -LiteralPath $RootPath)
+$Directories += Get-ChildItem -LiteralPath $RootPath -Directory -Recurse -Force
 
 foreach ($Dir in $Directories) {
-    $IndexPath = Join-Path $Dir.FullName "index.php"
+    $IndexPath = Join-Path -Path $Dir.FullName -ChildPath "index.php"
 
-    if (-not (Test-Path $IndexPath)) {
+    if (-not (Test-Path -LiteralPath $IndexPath)) {
         Write-Host "Création de index.php dans $($Dir.FullName)"
-        Set-Content -Path $IndexPath -Value $IndexContent -Encoding UTF8
+        Set-Content -LiteralPath $IndexPath -Value $IndexContent -Encoding UTF8
     }
 }
