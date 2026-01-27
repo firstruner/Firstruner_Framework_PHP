@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 
 /**
  * Copyright since 2024 Firstruner and Contributors

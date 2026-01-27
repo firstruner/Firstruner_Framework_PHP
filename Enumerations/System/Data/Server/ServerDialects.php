@@ -1,5 +1,4 @@
-﻿<?php
-
+<?php
 /**
 * Copyright since 2024 Firstruner and Contributors
 * Firstruner is an Registered Trademark & Property of Christophe BOULAS
@@ -21,14 +20,14 @@
 * @license   Proprietary
 * @version 2.0.0
 */
-namespace System\Data\Servers;
+namespace System\Data\QueryBuilder;
 
 abstract class ServerDialects
 {
-      public const Oracle = "Oracle";
-      public const Mongo = "Mongo";
-      public const MySQL = "MySql";
-      public const SQLServer = "SqlServer";
-      public const Postgres = "Postgres";
-      public const Sqlite = "Sqlite";
+    public const Oracle    = 'Oracle';
+    public const Mongo     = 'Mongo';
+    public const MySQL     = 'MySql';
+    public const SQLServer = 'SqlServer';
+    public const Postgres  = 'Postgres';
+    public const Sqlite    = 'Sqlite';
 }
