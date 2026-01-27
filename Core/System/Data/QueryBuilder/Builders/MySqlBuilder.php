@@ -26,12 +26,13 @@
 namespace System\Data\QueryBuilder\Builders;
 
 use System\Data\QueryBuilder\Builders\QueryBuilder;
+use System\Data\Servers\ServerTypes;
 
 abstract class MySQLType extends QueryBuilder
 {
     public static function dialectName(): string
     {
-        return 'MySQL';
+        return ServerTypes::MySQL;
     }
 
 }
