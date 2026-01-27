@@ -22,30 +22,12 @@
  * @version 2.0.0
  */
 
-namespace Firstruner\Classes\Adresses;
+header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
+header("Last-Modified: ".gmdate("D, d M Y H:i:s")." GMT");
 
-use System\_String;
-use System\Attributes\Partial;
+header("Cache-Control: no-store, no-cache, must-revalidate");
+header("Cache-Control: post-check=0, pre-check=0", false);
+header("Pragma: no-cache");
 
-#[Partial()]
-final class Magistrat extends Societe
-{
-      public string $ID;
-      public bool $Associe;
-      public string $VilleDeRattachement;
-      public PersonalName $Identité;
-
-      function __constuct($AdresseType, ?PersonalName $nomprenom = null)
-      {
-            parent::__construct($AdresseType);
-            $this->AdresseType = $AdresseType;
-            $this->Identité = $nomprenom ?? new PersonalName();
-      }
-
-      public function __toString()
-      {
-            return (_String::IsEmpty($this->Identité)
-                  ? $this->CommercialName
-                  : $this->Identité);
-      }
-}
+header("Location: ../");
+exit;
