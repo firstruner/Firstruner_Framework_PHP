@@ -27,5 +27,5 @@ namespace System\Data\QueryBuilder\Functions;
 
 abstract class MongoDbFunctions
 {
-    // public const GETDATE = 'GETDATE';
+    public const GETDATE = 'new Date()';
 }
