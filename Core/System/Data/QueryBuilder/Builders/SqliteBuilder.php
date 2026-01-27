@@ -26,11 +26,12 @@
 namespace System\Data\QueryBuilder\Builders;
 
 use System\Data\QueryBuilder\Builders\QueryBuilder;
+use System\Data\Servers\ServerTypes;
 
 abstract class SqliteType extends QueryBuilder
 {
     public static function dialectName(): string
     {
-        return 'Sqlite';
+        return ServerTypes::Sqlite;
     }
 }

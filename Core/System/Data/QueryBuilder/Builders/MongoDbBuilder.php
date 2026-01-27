@@ -27,12 +27,13 @@ namespace System\Data\QueryBuilder\Builders;
 
 use System\Data\QueryBuilder\Builders\QueryBuilder;
 use System\Data\QueryBuilder\Types\MongoDbType;
+use System\Data\Servers\ServerTypes;
 
 final class MongoDbBuilder extends QueryBuilder
 {
     public static function dialectName(): string
     {
-        return 'Mongo';
+        return ServerTypes::Mongo;
     }
 
     /** Alias for ddl() kept for backward-compatibility with the Python version naming. */
