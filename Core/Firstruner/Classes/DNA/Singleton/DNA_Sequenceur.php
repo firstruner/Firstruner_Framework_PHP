@@ -62,7 +62,7 @@ class DNA_Sequenceur
     // Empêche la sérialization/désérialization
     private function __wakeup() { throw new \Exception("Not authorized"); }
 
-    private function __serialize(): array { throw new \Exception("Not authorized"); }
+    public function __serialize(): array { throw new \Exception("Not authorized"); }
 
     // Méthode thread-safe pour récupérer l'instance unique
     public static function GetInstance(): DNA_Sequenceur
