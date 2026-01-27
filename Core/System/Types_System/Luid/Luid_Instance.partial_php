@@ -1,0 +1,141 @@
+<?php
+
+/**
+ * Copyright since 2024 Firstruner and Contributors
+ * Firstruner is an Registered Trademark & Property of Christophe BOULAS
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Freemium License
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to contact@firstruner.fr so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit, reproduce ou modify this file.
+ * Please refer to https://firstruner.fr/ or contact Firstruner for more information.
+ *
+ * @author    Firstruner and Contributors <contact@firstruner.fr>
+ * @copyright Since 2024 Firstruner and Contributors
+ * @license   Proprietary
+ * @version 2.0.0
+ */
+
+namespace System;
+
+use System\Attributes\Partial;
+use System\Default\_array;
+use System\Default\_string;
+
+#[Partial()]
+final class Luid implements IGuid
+{
+      // instance
+      protected string $defaultValue = '00000000000-0000-000-00000000';
+      private $values = array('00000000000', '0000', '000', '00000000');
+
+      public function __construct($values = null)
+      {
+            switch (gettype($values))
+            {
+                  case _string::ClassName:
+                        $this->fromStringValue($values);
+                        break;
+                  case _array::ClassName:
+                        $method = array_filter($values, 'is_int')
+                              ? 'fromByteArray'
+                              : 'fromStringArray';
+
+                        $this->$method($values);
+                        break;
+                  default:
+                        $this->fromStringValue($this->defaultValue);
+                        break;
+            }
+      }
+
+      public function UseHighEntropy() : bool
+      {
+            return strlen($this->values[count($this->values) - 1]) == 16;
+      }
+
+      private function fromStringValue(string $value)
+      {
+            if (strlen($value) == 26)
+            {
+                  $value = substr($value, 0, 11) . '-' .
+                        substr($value, 11, 4) . '-' .
+                        substr($value, 15, 3) . '-' .
+                        substr($value, 18);
+            }
+
+            if (strlen($value) >= 29)
+            {
+                  $cur_values = explode('-', $value);
+                  $this->values = [
+                              $cur_values[0],
+                              $cur_values[1],
+                              $cur_values[2],
+                              $cur_values[3]
+                        ];
+
+                  if (count($cur_values) == 5)
+                        array_push($this->values, $cur_values[4]);
+            }
+            else
+            {
+                  $this->fromStringValue($this->defaultValue);
+            }
+      }
+
+      private function fromByteArray(array $bytes)
+      {
+            $this->fromStringValue(implode(array_map("chr", $bytes)));
+      }
+
+      private function fromStringArray(array $values)
+      {
+            $normArray = array();
+
+            $firstPartId = (count($values) == 4 ? 0 : 1);
+
+            $prefixVal = $values[0];
+            $firstVal = $values[$firstPartId++];
+            $secondVal = $values[$firstPartId++];
+            $thirdVal = $values[$firstPartId++];
+            $quadVal = $values[$firstPartId++];
+
+            if ((strlen($firstVal . $secondVal . $thirdVal . $quadVal) == 26))
+                  {
+                        if (($prefixVal != $firstVal) && ($prefixVal != _string::EmptyString))
+                              $normArray[0] = $prefixVal;
+                        
+                        array_merge($normArray,
+                              [
+                                    $firstVal,
+                                    $secondVal,
+                                    $thirdVal,
+                                    $quadVal
+                        ]);
+                  }
+
+            if (count($normArray) >= 4)
+                  $this->values = $normArray;
+      }
+
+      private function getString() : string
+      {
+            return implode('-', $this->values);
+      }
+
+      public function __toString()
+      {
+            return $this->getString();
+      }
+
+      public function ToByteArray()
+      {
+            return unpack('C*',$this->getString());
+      }
+}

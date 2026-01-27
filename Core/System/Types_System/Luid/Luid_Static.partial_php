@@ -1,0 +1,79 @@
+<?php
+
+/**
+ * Copyright since 2024 Firstruner and Contributors
+ * Firstruner is an Registered Trademark & Property of Christophe BOULAS
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Freemium License
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to contact@firstruner.fr so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit, reproduce ou modify this file.
+ * Please refer to https://firstruner.fr/ or contact Firstruner for more information.
+ *
+ * @author    Firstruner and Contributors <contact@firstruner.fr>
+ * @copyright Since 2024 Firstruner and Contributors
+ * @license   Proprietary
+ * @version 2.0.0
+ */
+
+namespace System;
+
+use System\Attributes\Partial;
+use System\Default\_string as defaultString;
+
+#[Partial()]
+class Luid
+{
+      private static bool $initialized = false;
+      private static int $lastTimestamp = 0;
+      private static int $counter = 0; 
+      private static int $maxCounter = 4095; // Limite pour le compteur (12 bits)
+      private static string $processId = defaultString::EmptyString;
+  
+      private static function initialize(): void {
+          if (empty(self::$processId)) {
+              // Utilise getmypid() ou une alternative aléatoire si non disponible
+              self::$processId = function_exists('getmypid') 
+                  ? str_pad(dechex(getmypid()), 4, '0', STR_PAD_LEFT) 
+                  : bin2hex(random_bytes(2));
+          }
+
+          Luid::$initialized = true;
+      }
+  
+      public static function NewLuid(string $prefix = defaultString::EmptyString, bool $useHighEntropy = false): Luid
+      {
+            if (!Luid::$initialized) Luid::initialize();
+
+            $prefix = trim(preg_replace('/[^a-zA-Z0-9]/', '_', $prefix), '_');
+            $timestamp = (int)(microtime(true) * 1000); // Horodatage en millisecondes
+            $counter = ($timestamp === Luid::$lastTimestamp
+                  ? (Luid::$counter + 1) & Luid::$maxCounter
+                  : 0);
+            Luid::$counter = $counter;
+      
+            if ($counter == 0)
+                  // Attendre la prochaine milliseconde si le compteur est saturé
+                  while ($timestamp <= Luid::$lastTimestamp)
+                        $timestamp = (int)(microtime(true) * 1000);
+      
+            Luid::$lastTimestamp = $timestamp;
+            $randomPart = bin2hex(random_bytes($useHighEntropy ? 8 : 4));
+      
+            return new Luid(
+                  ($prefix ? "$prefix-" : defaultString::EmptyString) .
+                  sprintf(
+                        '%08X-%s-%03X-%s',
+                        $timestamp,
+                        Luid::$processId,
+                        $counter,
+                        $randomPart
+                  ));
+      }
+}
