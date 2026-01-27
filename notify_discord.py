@@ -14,6 +14,9 @@ def main():
     commit_message = os.getenv("CI_COMMIT_MESSAGE", "")
     git_tag = os.getenv("CI_COMMIT_TAG") or ""
 
+    if "INFORMATIQUE" in commit_message:
+        return
+
     # --- Règle 1 : no_notify ---
     if "no_notify" in commit_message:
         print("ℹ️ Tag no_notify détecté : notification ignorée.")
@@ -42,14 +45,20 @@ def main():
     public_repo = "https://github.com/firstruner/Firstruner_Framework_PHP"
     private_repo = "https://gitlab.com/firstruner/Firstruner_Framework_PHP"
 
+    description_private = (
+        f"[Voir le pipeline]({pipeline_url})\n"
+        f"[Repo privé GitLab]({private_repo})\n"
+        f"\n"
+    )
+
     description = (
         f"✅ **Firstruner Framework PHP : Nouvelle version !**\n"
         f"{pull_info}\n\n"
         f"Pipeline **#{pipeline_id}** terminé\n"
         f"Projet : **{project_path}**\n"
         f"Tag : **{commit_tag}**\n"
-        f"[Voir le pipeline]({pipeline_url})\n"
-        f"[Repo privé GitLab]({private_repo})\n"
+        f"\n"
+        f"{description_private if ('gitlab' in webhook_url) else ''}"
         f"[Repo public GitHub]({public_repo})\n\n"
         f"**Description du commit :**\n{commit_message}"
     )
