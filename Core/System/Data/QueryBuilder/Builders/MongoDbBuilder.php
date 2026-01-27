@@ -23,12 +23,12 @@
 
 
 
-namespace System\Data\QueryBuilder\Types;
+namespace System\Data\QueryBuilder\Builders;
 
-use System\Data\QueryBuilder\DBTypeEnum;
+use System\Data\QueryBuilder\Builders\QueryBuilder;
 use System\Data\QueryBuilder\Types\MongoDbType;
 
-final class MongoDbBuilder extends DBTypeEnum
+final class MongoDbBuilder extends QueryBuilder
 {
     public static function dialectName(): string
     {

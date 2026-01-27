@@ -83,6 +83,8 @@ class Framework
                         __DIR__ . '/Core/System/Data/DataObject.php',
                         __DIR__ . '/Core/System/Data/DataObjectArray.php',
                         __DIR__ . '/Core/System/Data/KeyConstraint.php',
+                        __DIR__ . '/Core/System/Data/QueryBuilder/Builders/QueryBuilder.php',
+                        __DIR__ . '/Core/System/Data/QueryBuilder',
 
                         __DIR__ . '/Core/System/Data',
                         __DIR__ . '/Core/System/Runtime/Serialization/Serializer.php',

@@ -23,11 +23,11 @@
 
 
 
-namespace Firstruner\Enumerations\System\Data\QueryBuilder\Types;
+namespace System\Data\QueryBuilder\Builders;
 
-use System\Data\QueryBuilder\DBTypeEnum;
+use System\Data\QueryBuilder\Builders\QueryBuilder;
 
-abstract class SqlServerType extends DBTypeEnum
+abstract class SqlServerType extends QueryBuilder
 {
     public static function dialectName(): string
     {

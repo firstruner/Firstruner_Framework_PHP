@@ -23,11 +23,11 @@
 
 
 
-namespace Firstruner\Enumerations\System\Data\QueryBuilder\Types;
+namespace System\Data\QueryBuilder\Builders;
 
-use System\Data\QueryBuilder\DBTypeEnum;
+use System\Data\QueryBuilder\Builders\QueryBuilder;
 
-abstract class SqliteType extends DBTypeEnum
+abstract class SqliteType extends QueryBuilder
 {
     public static function dialectName(): string
     {

@@ -23,11 +23,11 @@
 
 
 
-namespace System\Data\QueryBuilder\Types;
+namespace System\Data\QueryBuilder\Builders;
 
-use System\Data\QueryBuilder\DBTypeEnum;
+use System\Data\QueryBuilder\Builders\QueryBuilder;
 
-abstract class MySQLType extends DBTypeEnum
+abstract class MySQLType extends QueryBuilder
 {
     public static function dialectName(): string
     {

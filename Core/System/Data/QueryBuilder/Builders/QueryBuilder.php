@@ -1,12 +1,12 @@
 <?php
 
-namespace System\Data\QueryBuilder;
+namespace System\Data\QueryBuilder\Builders;
 
 use System\Data\QueryBuilder\Types\CommonType;
 use System\Default\_string;
 use System\Exceptions\NotImplementedException;
 
-abstract class DBTypeEnum
+abstract class QueryBuilder
 {
     protected string $_ddl = _string::EmptyString;
     protected CommonType $_value; 
