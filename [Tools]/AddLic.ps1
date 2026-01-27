@@ -1,5 +1,5 @@
 # Répertoire racine à analyser
-$RootPath = "C:\chemin\vers\votre\projet"
+$RootPath = (Get-Location).Parent.FullName
 
 # Texte à insérer
 $HeaderText = @'
