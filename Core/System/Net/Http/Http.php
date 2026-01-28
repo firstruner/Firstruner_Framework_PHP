@@ -102,7 +102,10 @@ class Http
                   $host = Http::detect_host();
                   $basePath = Http::detect_base_path();
 
-                  if ($host === '') {
+                  if ($host == '') {
+                        if ((php_sapi_name() == "cli"))
+                              return "http://127.0.0.1";
+
                         throw new \RuntimeException(
                         "Impossible de déterminer l'host (pas de contexte HTTP). Définis SITE_URL."
                         );
