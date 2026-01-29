@@ -60,7 +60,7 @@ def main():
         f"\n"
         f"{description_private if ('gitlab' in webhook_url) else ''}"
         f"[Repo public GitHub]({public_repo})\n\n"
-        f"**Description du commit :**\n{commit_message}"
+        f"**Description du commit :**\n{clean_commit_message(commit_message)}"
     )
 
     payload = json.dumps({
@@ -83,6 +83,27 @@ def main():
     )
 
     print("✅ Notification Discord envoyée avec succès.")
+
+def clean_commit_message(message: str) -> str:
+    rules = [
+        "no_notify",
+        "needed_pull",
+        "high_recommended_pull",
+        "recommended_pull",
+    ]
+
+    cleaned = message
+    for rule in rules:
+        cleaned = cleaned.replace(rule, "")
+
+    # Nettoyage des espaces multiples et lignes vides
+    cleaned = "\n".join(
+        line.strip()
+        for line in cleaned.splitlines()
+        if line.strip()
+    )
+
+    return cleaned.strip()
 
 if __name__ == "__main__":
     main()
