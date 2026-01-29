@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright since 2024 Firstruner and Contributors
+ * Copyright 2024-2026 Firstruner and Contributors
  * Firstruner is an Registered Trademark & Property of Christophe BOULAS
  *
  * NOTICE OF LICENSE
@@ -17,7 +17,7 @@
  * Please refer to https://firstruner.fr/ or contact Firstruner for more information.
  *
  * @author    Firstruner and Contributors <contact@firstruner.fr>
- * @copyright Since 2024 Firstruner and Contributors
+ * @copyright 2024-2026 Firstruner and Contributors
  * @license   Proprietary
  * @version 2.0.0
  */
@@ -30,46 +30,37 @@ abstract class BytesStream extends Stream
 {
       protected array $bytes = [];
 
-      protected function AppendBytes(array $buffer) : int
+      protected function AppendBytes(array $buffer): int
       {
-            try
-            {
+            try {
                   array_push($this->bytes, $buffer);
                   return count($this->bytes);
-            }
-            catch (\Exception $ex)
-            {
+            } catch (\Exception $ex) {
                   throw new IOException($ex->getMessage());
             }
       }
 
-      protected function GetBytes(int $offset, int $lenght = 0) : array | int
+      protected function GetBytes(int $offset, int $lenght = 0): array | int
       {
-            try
-            {
+            try {
                   if ($lenght == 0) $lenght = -1;
 
                   return $lenght == 1
                         ? $this->bytes[$offset]
                         : array_slice($this->bytes, $offset, $lenght, true);
-            }
-            catch (\Exception $ex)
-            {
+            } catch (\Exception $ex) {
                   throw new IOException($ex->getMessage());
             }
       }
 
-      protected function SetBytes(array $buffer, int $offset = 0) : int
+      protected function SetBytes(array $buffer, int $offset = 0): int
       {
-            try
-            {
+            try {
                   for ($i = 0; $i <= count($buffer); $i++)
                         $this->bytes[$offset + $i] = $buffer[$i];
 
                   return count($this->bytes);
-            }
-            catch (\Exception $ex)
-            {
+            } catch (\Exception $ex) {
                   throw new IOException($ex->getMessage());
             }
       }
@@ -88,7 +79,7 @@ abstract class BytesStream extends Stream
       /// <exception cref="T:System.NotSupportedException">The stream does not support reading.</exception>
       /// <exception cref="T:System.ObjectDisposedException">Methods were called after the stream was closed.</exception>
       //#[__DynamicallyInvokable]
-      public function Read(int $offset, int $lenght = 0) : array | int
+      public function Read(int $offset, int $lenght = 0): array | int
       {
             return $this->GetBytes($offset, $lenght);
       }
@@ -107,12 +98,16 @@ abstract class BytesStream extends Stream
       /// <exception cref="T:System.ObjectDisposedException">
       /// <see cref="M:System.IO.Stream.Write(System.Byte[],System.Int32,System.Int32)" /> was called after the stream was closed.</exception>
       //#[__DynamicallyInvokable]
-      public function Write(array $buffer, int $offset = 0, int $lenght = 0) : int
+      public function Write(array $buffer, int $offset = 0, int $lenght = 0): int
       {
             return $this->SetBytes(
-                  array_slice($buffer, $offset,
-                        ($lenght == 0 ? (count($buffer) - $offset) : $lenght)),
-                  $offset);
+                  array_slice(
+                        $buffer,
+                        $offset,
+                        ($lenght == 0 ? (count($buffer) - $offset) : $lenght)
+                  ),
+                  $offset
+            );
       }
 
       public function __destruct()

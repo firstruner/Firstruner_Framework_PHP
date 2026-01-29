@@ -1,26 +1,27 @@
 <?php
 
 /**
-* Copyright since 2024 Firstruner and Contributors
-* Firstruner is an Registered Trademark & Property of Christophe BOULAS
-*
-* NOTICE OF LICENSE
-*
-* This source file is subject to the Freemium License
-* If you did not receive a copy of the license and are unable to
-* obtain it through the world-wide-web, please send an email
-* to contact@firstruner.fr so we can send you a copy immediately.
-*
-* DISCLAIMER
-*
-* Do not edit, reproduce ou modify this file.
-* Please refer to https://firstruner.fr/ or contact Firstruner for more information.
-*
-* @author    Firstruner and Contributors <contact@firstruner.fr>
-* @copyright Since 2024 Firstruner and Contributors
-* @license   Proprietary
-* @version 2.0.0
-*/
+ * Copyright 2024-2026 Firstruner and Contributors
+ * Firstruner is an Registered Trademark & Property of Christophe BOULAS
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Freemium License
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to contact@firstruner.fr so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit, reproduce ou modify this file.
+ * Please refer to https://firstruner.fr/ or contact Firstruner for more information.
+ *
+ * @author    Firstruner and Contributors <contact@firstruner.fr>
+ * @copyright 2024-2026 Firstruner and Contributors
+ * @license   Proprietary
+ * @version 2.0.0
+ */
+
 namespace System\Runtime\Serialization;
 
 use System\IO\Stream;
@@ -137,25 +138,21 @@ class JsonSerializer extends Serializer
             if (is_array($value)) {
                   // datetime ?
                   if (($value['@type'] ?? null) == 'datetime' && isset($value['value']) && is_string($value['value']))
-                        try
-                        {
+                        try {
                               return new \DateTimeImmutable($value['value']);
+                        } catch (\Throwable) { /* no actions */
                         }
-                        catch (\Throwable)
-                        { /* no actions */ }
 
                   // marqueur circular ref ?
                   if (($value['@ref'] ?? null) === 'circular')
                         return null; // limitation volontaire (pas de graph IDs)
 
                   // objet ?
-                  if (isset($value['@class'], $value['data']) && is_string($value['@class']) && is_array($value['data']))
-                  {
+                  if (isset($value['@class'], $value['data']) && is_string($value['@class']) && is_array($value['data'])) {
                         $class = $value['@class'];
                         $canInstantiate = in_array($class, $allowedClasses, true);
 
-                        if (!$canInstantiate || !class_exists($class))
-                        {
+                        if (!$canInstantiate || !class_exists($class)) {
                               if ($strictClasses)
                                     throw new \RuntimeException("Class not allowed for deserialization: {$class}");
 
@@ -168,14 +165,12 @@ class JsonSerializer extends Serializer
                         $obj = $this->instantiateWithoutConstructor($class);
                         $ref = new \ReflectionObject($obj);
 
-                        foreach ($value['data'] as $propName => $propVal)
-                        {
+                        foreach ($value['data'] as $propName => $propVal) {
                               $realVal = $this->denormalize($propVal, $allowedClasses, $strictClasses);
 
-                              if ($ref->hasProperty($propName))
-                              {
+                              if ($ref->hasProperty($propName)) {
                                     $rp = $ref->getProperty($propName);
-                                    
+
                                     if ($rp->isStatic())
                                           continue;
 
@@ -209,7 +204,7 @@ class JsonSerializer extends Serializer
       private function instantiateWithoutConstructor(string $class): object
       {
             $ref = new \ReflectionClass($class);
-            
+
             if (method_exists($ref, 'newInstanceWithoutConstructor'))
                   return $ref->newInstanceWithoutConstructor();
 
@@ -221,10 +216,8 @@ class JsonSerializer extends Serializer
             $type = $rp->getType();
             if (!$type) return $value;
 
-            if ($type instanceof \ReflectionUnionType)
-            {
-                  foreach ($type->getTypes() as $t)
-                  {
+            if ($type instanceof \ReflectionUnionType) {
+                  foreach ($type->getTypes() as $t) {
                         $coerced = $this->coerceToNamedType($t, $value);
                         if ($coerced !== JsonSerializer::COERCE_FAILED)
                               return $coerced;
@@ -233,8 +226,7 @@ class JsonSerializer extends Serializer
                   return $value;
             }
 
-            if ($type instanceof \ReflectionNamedType)
-            {
+            if ($type instanceof \ReflectionNamedType) {
                   $coerced = $this->coerceToNamedType($type, $value);
                   return $coerced === JsonSerializer::COERCE_FAILED
                         ? $value
@@ -253,17 +245,15 @@ class JsonSerializer extends Serializer
                         ? null
                         : JsonSerializer::COERCE_FAILED;
 
-            if ($type->isBuiltin())
-            {
-                  return match ($name)
-                  {
+            if ($type->isBuiltin()) {
+                  return match ($name) {
                         'int'    => is_numeric($value) ? (int)$value : JsonSerializer::COERCE_FAILED,
                         'float'  => is_numeric($value) ? (float)$value : JsonSerializer::COERCE_FAILED,
                         'string' => is_scalar($value) ? (string)$value : JsonSerializer::COERCE_FAILED,
                         'bool'   => is_bool($value)
                               ? $value
                               : (is_string($value)
-                                    ? in_array(strtolower($value), ['1','true','yes'], true)
+                                    ? in_array(strtolower($value), ['1', 'true', 'yes'], true)
                                     : JsonSerializer::COERCE_FAILED),
                         'array'  => is_array($value) ? $value : JsonSerializer::COERCE_FAILED,
                         default  => JsonSerializer::COERCE_FAILED,
@@ -273,18 +263,14 @@ class JsonSerializer extends Serializer
             if (is_object($value) && is_a($value, $name))
                   return $value;
 
-            if (in_array($name, [\DateTimeInterface::class, \DateTimeImmutable::class, \DateTime::class], true))
-            {
+            if (in_array($name, [\DateTimeInterface::class, \DateTimeImmutable::class, \DateTime::class], true)) {
                   if ($value instanceof \DateTimeInterface)
                         return $value;
 
                   if (is_string($value))
-                        try
-                        {
+                        try {
                               return new \DateTimeImmutable($value);
-                        }
-                        catch (\Throwable)
-                        {
+                        } catch (\Throwable) {
                               return JsonSerializer::COERCE_FAILED;
                         }
             }
@@ -292,4 +278,3 @@ class JsonSerializer extends Serializer
             return JsonSerializer::COERCE_FAILED;
       }
 }
-

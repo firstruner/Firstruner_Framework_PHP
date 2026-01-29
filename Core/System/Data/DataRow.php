@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright since 2024 Firstruner and Contributors
+ * Copyright 2024-2026 Firstruner and Contributors
  * Firstruner is an Registered Trademark & Property of Christophe BOULAS
  *
  * NOTICE OF LICENSE
@@ -17,7 +17,7 @@
  * Please refer to https://firstruner.fr/ or contact Firstruner for more information.
  *
  * @author    Firstruner and Contributors <contact@firstruner.fr>
- * @copyright Since 2024 Firstruner and Contributors
+ * @copyright 2024-2026 Firstruner and Contributors
  * @license   Proprietary
  * @version 2.0.0
  */
@@ -88,11 +88,9 @@ final class DataRow extends DataObjectArray
             $maxLength = $this->Table->Columns->Find(strval($key))->MaxLength();
 
             // Check MaxLength
-            if ($maxLength > 0)
-            {
+            if ($maxLength > 0) {
                   // Mixed => objet|ressource|array|string|float|int|bool|null
-                  switch (gettype($value))
-                  {
+                  switch (gettype($value)) {
                         case _string::ClassName:
                               if (strlen($value) > $maxLength)
                                     throw new DataException("Value exceed maximum length");
@@ -111,7 +109,7 @@ final class DataRow extends DataObjectArray
       }
 
       private function check_Constaints_OnSet(string $key, mixed &$value)
-      {      
+      {
             $contraint = $this->Table->Columns->Find(strval($key))->GetConstraint();
 
             if (!isset($contraint))
@@ -122,8 +120,7 @@ final class DataRow extends DataObjectArray
                   foreach ($this->Table->Rows as $row)
                         if ($row[$contraint->Column] == $value)
                               throw new DataException("Cannot duplicate Primary Key");
-            }
-            else // FK
+            } else // FK
             {
                   if ($this->Table->Parent() != null)
                         throw new DataException("No DataTable parent setted");
@@ -134,10 +131,8 @@ final class DataRow extends DataObjectArray
 
                   $ds = Parser::Parse(DataSet::ClassName, $ds_origin);
 
-                  if (isset($ds))
-                  {
-                        try
-                        {
+                  if (isset($ds)) {
+                        try {
                               $dt_PK = $ds->Tables->Find($contraint->Table);
                               $PK_Constraint = $dt_PK->Columns[$contraint->Column]->GetConstraint();
 
@@ -147,11 +142,9 @@ final class DataRow extends DataObjectArray
                               foreach ($dt_PK->Rows as $row)
                                     if ($row[$contraint->Column] == $value)
                                           return;
-                              
+
                               throw new DataException("Primary Key Value does not exist");
-                        }
-                        catch (\Exception $ex)
-                        {
+                        } catch (\Exception $ex) {
                               throw new DataException("Incorrect Foreign Key : " . $ex->getMessage());
                         }
                   }

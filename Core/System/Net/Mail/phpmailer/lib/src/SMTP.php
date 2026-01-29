@@ -1,26 +1,26 @@
 <?php
 
 /**
-* Copyright since 2024 Firstruner and Contributors
-* Firstruner is an Registered Trademark & Property of Christophe BOULAS
-*
-* NOTICE OF LICENSE
-*
-* This source file is subject to the Freemium License
-* If you did not receive a copy of the license and are unable to
-* obtain it through the world-wide-web, please send an email
-* to contact@firstruner.fr so we can send you a copy immediately.
-*
-* DISCLAIMER
-*
-* Do not edit, reproduce ou modify this file.
-* Please refer to https://firstruner.fr/ or contact Firstruner for more information.
-*
-* @author    Firstruner and Contributors <contact@firstruner.fr>
-* @copyright Since 2024 Firstruner and Contributors
-* @license   Proprietary
-* @version 2.0.0
-*/
+ * Copyright 2024-2026 Firstruner and Contributors
+ * Firstruner is an Registered Trademark & Property of Christophe BOULAS
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Freemium License
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to contact@firstruner.fr so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit, reproduce ou modify this file.
+ * Please refer to https://firstruner.fr/ or contact Firstruner for more information.
+ *
+ * @author    Firstruner and Contributors <contact@firstruner.fr>
+ * @copyright 2024-2026 Firstruner and Contributors
+ * @license   Proprietary
+ * @version 2.0.0
+ */
 
 /**
  * PHPMailer RFC821 SMTP email transport class.
@@ -309,7 +309,7 @@ class SMTP
                 $str = preg_replace('/\r\n|\r/m', "\n", $str);
                 echo gmdate('Y-m-d H:i:s'),
                 "\t",
-                    //Trim trailing space
+                //Trim trailing space
                 trim(
                     //Indent for readability, except for trailing break
                     str_replace(
@@ -355,7 +355,7 @@ class SMTP
         // Connect to the SMTP server
         $this->edebug(
             "Connection: opening to $host:$port, timeout=$timeout, options=" .
-            (count($options) > 0 ? var_export($options, true) : 'array()'),
+                (count($options) > 0 ? var_export($options, true) : 'array()'),
             self::DEBUG_CONNECTION
         );
         $errno = 0;
@@ -398,7 +398,7 @@ class SMTP
             );
             $this->edebug(
                 'SMTP ERROR: ' . $this->error['error']
-                . ": $errstr ($errno)",
+                    . ": $errstr ($errno)",
                 self::DEBUG_CLIENT
             );
 
@@ -538,8 +538,7 @@ class SMTP
                     'User & Password',
                     base64_encode("\0" . $username . "\0" . $password),
                     235
-                )
-                ) {
+                )) {
                     return false;
                 }
                 break;
@@ -977,7 +976,7 @@ class SMTP
             // Cut off error code from each response line
             $detail = preg_replace(
                 "/{$code}[ -]" .
-                ($code_ex ? str_replace('.', '\\.', $code_ex) . ' ' : '') . '/m',
+                    ($code_ex ? str_replace('.', '\\.', $code_ex) . ' ' : '') . '/m',
                 '',
                 $this->last_reply
             );
@@ -1081,8 +1080,10 @@ class SMTP
     {
         //If SMTP transcripts are left enabled, or debug output is posted online
         //it can leak credentials, so hide credentials in all but lowest level
-        if (self::DEBUG_LOWLEVEL > $this->do_debug &&
-            in_array($command, ['User & Password', 'Username', 'Password'], true)) {
+        if (
+            self::DEBUG_LOWLEVEL > $this->do_debug &&
+            in_array($command, ['User & Password', 'Username', 'Password'], true)
+        ) {
             $this->edebug('CLIENT -> SERVER: [credentials hidden]', self::DEBUG_CLIENT);
         } else {
             $this->edebug('CLIENT -> SERVER: ' . $data, self::DEBUG_CLIENT);
@@ -1219,7 +1220,7 @@ class SMTP
             if ($endtime && time() > $endtime) {
                 $this->edebug(
                     'SMTP -> get_lines(): timelimit reached (' .
-                    $this->Timelimit . ' sec)',
+                        $this->Timelimit . ' sec)',
                     self::DEBUG_LOWLEVEL
                 );
                 break;

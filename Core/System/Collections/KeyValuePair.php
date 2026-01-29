@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright since 2024 Firstruner and Contributors
+ * Copyright 2024-2026 Firstruner and Contributors
  * Firstruner is an Registered Trademark & Property of Christophe BOULAS
  *
  * NOTICE OF LICENSE
@@ -17,7 +17,7 @@
  * Please refer to https://firstruner.fr/ or contact Firstruner for more information.
  *
  * @author    Firstruner and Contributors <contact@firstruner.fr>
- * @copyright Since 2024 Firstruner and Contributors
+ * @copyright 2024-2026 Firstruner and Contributors
  * @license   Proprietary
  * @version 2.0.0
  */
@@ -28,33 +28,33 @@ class KeyValuePair
 {
     public $Value = null;
     private ?string $p_key = null;
-    
+
     public function GetKey()
     {
         return $this->p_key;
     }
-    
-    public function __construct1() { die("Constructeur interdit"); }
-    
+
+    public function __construct1()
+    {
+        die("Constructeur interdit");
+    }
+
     public function __construct(string $key, $value = null)
     {
         $this->p_key = $key;
         $this->Value = $value;
     }
 
-    public static function Parse($value, string $spliChar = ":") : ?KeyValuePair
+    public static function Parse($value, string $spliChar = ":"): ?KeyValuePair
     {
-        if (is_string($value))
-        {
+        if (is_string($value)) {
             $kv = explode($spliChar, $value);
 
             if (count($kv) != 2) return null;
 
             return new KeyValuePair($kv[0], $kv[1]);
-        }
-        else
-        {
-            if($value instanceof KeyValuePair)
+        } else {
+            if ($value instanceof KeyValuePair)
                 return new KeyValuePair($value->GetKey(), $value->Value);
 
             return null;

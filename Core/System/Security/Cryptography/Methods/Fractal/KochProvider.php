@@ -1,26 +1,26 @@
 <?php
 
 /**
-* Copyright since 2024 Firstruner and Contributors
-* Firstruner is an Registered Trademark & Property of Christophe BOULAS
-*
-* NOTICE OF LICENSE
-*
-* This source file is subject to the Freemium License
-* If you did not receive a copy of the license and are unable to
-* obtain it through the world-wide-web, please send an email
-* to contact@firstruner.fr so we can send you a copy immediately.
-*
-* DISCLAIMER
-*
-* Do not edit, reproduce ou modify this file.
-* Please refer to https:*firstruner.fr/ or contact Firstruner for more information.
-*
-* @author    Firstruner and Contributors <contact@firstruner.fr>
-* @copyright Since 2024 Firstruner and Contributors
-* @license   Proprietary
-* @version 2.0.0
-*/
+ * Copyright 2024-2026 Firstruner and Contributors
+ * Firstruner is an Registered Trademark & Property of Christophe BOULAS
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Freemium License
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to contact@firstruner.fr so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit, reproduce ou modify this file.
+ * Please refer to https:*firstruner.fr/ or contact Firstruner for more information.
+ *
+ * @author    Firstruner and Contributors <contact@firstruner.fr>
+ * @copyright 2024-2026 Firstruner and Contributors
+ * @license   Proprietary
+ * @version 2.0.0
+ */
 
 namespace System\Security\Cryptography\Methods\Fractal;
 
@@ -28,25 +28,24 @@ use System\Math\Fractals\FractalOptions;
 
 final class KochProvider
 {
-      private FractalOptions $Options;
+    private FractalOptions $Options;
 
-      /**
-       * Steganographie fractale (Julia) - embed + extract
-       *
-       * Dépendances : extension GD
-       */
+    /**
+     * Steganographie fractale (Julia) - embed + extract
+     *
+     * Dépendances : extension GD
+     */
 
-      public function __construct(?FractalOptions $_options = null)
-      {
-            $this->Options = $_options??new FractalOptions();
+    public function __construct(?FractalOptions $_options = null)
+    {
+        $this->Options = $_options ?? new FractalOptions();
 
-            if (!$_options)
-            {
-                  $this->Options->Size->Width = 200;
-                  $this->Options->Size->Height = 200;
-                  $this->Options->MaximalIteration = 50;
-            }
-      }
+        if (!$_options) {
+            $this->Options->Size->Width = 200;
+            $this->Options->Size->Height = 200;
+            $this->Options->MaximalIteration = 50;
+        }
+    }
 
     public function Encrypt(string $data): array
     {

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright since 2024 Firstruner and Contributors
+ * Copyright 2024-2026 Firstruner and Contributors
  * Firstruner is an Registered Trademark & Property of Christophe BOULAS
  *
  * NOTICE OF LICENSE
@@ -17,7 +17,7 @@
  * Please refer to https://firstruner.fr/ or contact Firstruner for more information.
  *
  * @author    Firstruner and Contributors <contact@firstruner.fr>
- * @copyright Since 2024 Firstruner and Contributors
+ * @copyright 2024-2026 Firstruner and Contributors
  * @license   Proprietary
  * @version 2.0.0
  */
@@ -32,14 +32,15 @@ enum EMessageType
 */
 
 /* PHP 7+*/
+
 abstract class Operators
 {
-      public const Exist = 0;
-      public const Equals = 1;
-      public const Not = -1;
-      public const GreaterThan = 2;
-      public const SmallerThan = 4;
-      public const Like = 128;
-      public const And = 256;
-      public const Or = 512;
+    public const Exist = 0;
+    public const Equals = 1;
+    public const Not = -1;
+    public const GreaterThan = 2;
+    public const SmallerThan = 4;
+    public const Like = 128;
+    public const And = 256;
+    public const Or = 512;
 }

@@ -1,26 +1,26 @@
 <?php
 
 /**
-* Copyright since 2024 Firstruner and Contributors
-* Firstruner is an Registered Trademark & Property of Christophe BOULAS
-*
-* NOTICE OF LICENSE
-*
-* This source file is subject to the Freemium License
-* If you did not receive a copy of the license and are unable to
-* obtain it through the world-wide-web, please send an email
-* to contact@firstruner.fr so we can send you a copy immediately.
-*
-* DISCLAIMER
-*
-* Do not edit, reproduce ou modify this file.
-* Please refer to https://firstruner.fr/ or contact Firstruner for more information.
-*
-* @author    Firstruner and Contributors <contact@firstruner.fr>
-* @copyright Since 2024 Firstruner and Contributors
-* @license   Proprietary
-* @version 2.0.0
-*/
+ * Copyright 2024-2026 Firstruner and Contributors
+ * Firstruner is an Registered Trademark & Property of Christophe BOULAS
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Freemium License
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to contact@firstruner.fr so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit, reproduce ou modify this file.
+ * Please refer to https://firstruner.fr/ or contact Firstruner for more information.
+ *
+ * @author    Firstruner and Contributors <contact@firstruner.fr>
+ * @copyright 2024-2026 Firstruner and Contributors
+ * @license   Proprietary
+ * @version 2.0.0
+ */
 
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
@@ -44,11 +44,11 @@ use System\Reflection\FieldInfo;
 use System\Reflection\PropertyInfo;
 use System\Reflection\MethodInfo;
 
-abstract class Type// : MemberInfo, IReflect
+abstract class Type // : MemberInfo, IReflect
 {
-      protected function __construct() { }
+      protected function __construct() {}
 
-      private function isRef() : bool
+      private function isRef(): bool
       {
             debug_zval_dump($this);
             preg_match('~refcount\((\d+)\)~', ob_get_clean(), $matches);
@@ -57,7 +57,10 @@ abstract class Type// : MemberInfo, IReflect
 
       // public override MemberTypes MemberType => MemberTypes.TypeInfo;
 
-      public function GetType() : string { return gettype($this); }
+      public function GetType(): string
+      {
+            return gettype($this);
+      }
 
       // public abstract string? Namespace { get; }
       // public abstract string? AssemblyQualifiedName { get; }
@@ -66,7 +69,8 @@ abstract class Type// : MemberInfo, IReflect
       // public abstract Assembly Assembly { get; }
       // public new abstract Module Module { get; }
 
-      public function IsNested() : bool {
+      public function IsNested(): bool
+      {
             foreach (get_object_vars($this) as $property)
                   if (is_object($property)) return true;
             return false;
@@ -78,11 +82,20 @@ abstract class Type// : MemberInfo, IReflect
       // public abstract Type UnderlyingSystemType { get; }
 
       // public virtual bool IsTypeDefinition => throw NotImplemented.ByDesign;
-      public function IsArray() : bool { return is_array($this); }
+      public function IsArray(): bool
+      {
+            return is_array($this);
+      }
       // protected abstract bool IsArrayImpl();
-      public function IsByRef() : bool { return $this->isRef(); }
+      public function IsByRef(): bool
+      {
+            return $this->isRef();
+      }
       // protected abstract bool IsByRefImpl();
-      public function IsPointer() : bool { return $this->IsByRef(); }
+      public function IsPointer(): bool
+      {
+            return $this->IsByRef();
+      }
       // protected abstract bool IsPointerImpl();
       // public virtual bool IsConstructedGenericType => throw NotImplemented.ByDesign;
       // public virtual bool IsGenericParameter => false;
@@ -124,7 +137,7 @@ abstract class Type// : MemberInfo, IReflect
       // public TypeAttributes Attributes => GetAttributeFlagsImpl();
       // protected abstract TypeAttributes GetAttributeFlagsImpl();
 
-      public function IsAbstract() : bool
+      public function IsAbstract(): bool
       {
             $reflection = new \ReflectionClass($this);
             return $reflection->isAbstract();
@@ -136,7 +149,7 @@ abstract class Type// : MemberInfo, IReflect
       //       return $reflection->();
       // }
 
-      public function IsSealed() : bool
+      public function IsSealed(): bool
       {
             $reflection = new \ReflectionClass($this);
             return $reflection->isFinal();
@@ -144,7 +157,7 @@ abstract class Type// : MemberInfo, IReflect
 
       //public bool IsSpecialName => (GetAttributeFlagsImpl() & TypeAttributes.SpecialName) != 0;
 
-      public function IsClass() : bool
+      public function IsClass(): bool
       {
             return is_object($this);
       }
@@ -156,17 +169,17 @@ abstract class Type// : MemberInfo, IReflect
       // public bool IsNestedPrivate => (GetAttributeFlagsImpl() & TypeAttributes.VisibilityMask) == TypeAttributes.NestedPrivate;
       // public bool IsNestedPublic => (GetAttributeFlagsImpl() & TypeAttributes.VisibilityMask) == TypeAttributes.NestedPublic;
 
-      public function IsNotPublic() : bool
+      public function IsNotPublic(): bool
       {
             return !$this->IsPublic();
       }
 
-      public function IsPublic() : bool
+      public function IsPublic(): bool
       {
             throw new NotImplementedException();
 
             $reflection = new \ReflectionClass($this);
-            return $reflection;//->is Public;
+            return $reflection; //->is Public;
       }
 
       // public bool IsAutoLayout => (GetAttributeFlagsImpl() & TypeAttributes.LayoutMask) == TypeAttributes.AutoLayout;
@@ -187,8 +200,8 @@ abstract class Type// : MemberInfo, IReflect
       // protected virtual bool IsMarshalByRefImpl() => false;
       // public bool IsPrimitive => IsPrimitiveImpl();
       // protected abstract bool IsPrimitiveImpl();
-      
-      public function IsValueType() : bool
+
+      public function IsValueType(): bool
       {
             return !$this->IsClass();
       }
@@ -254,10 +267,11 @@ abstract class Type// : MemberInfo, IReflect
       // [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors)]
       // protected abstract ConstructorInfo? GetConstructorImpl(BindingFlags bindingAttr, Binder? binder, CallingConventions callConvention, Type[] types, ParameterModifier[]? modifiers);
 
-      private function getConstructorInfo($className) : int {
+      private function getConstructorInfo($className): int
+      {
             $reflection = new \ReflectionClass($className);
             $constructor = $reflection->getConstructor();
-        
+
             return ($constructor == null);
 
             // if ($constructor) {
@@ -288,7 +302,7 @@ abstract class Type// : MemberInfo, IReflect
       // public abstract EventInfo[] GetEvents(BindingFlags bindingAttr);
 
       // [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicFields)]
-      public function GetField(string $name = null) : ?FieldInfo
+      public function GetField(string $name = null): ?FieldInfo
       {
             // => GetField(name, DefaultLookup);
             return null;
@@ -370,7 +384,7 @@ abstract class Type// : MemberInfo, IReflect
       //public MethodInfo? GetMethod(string name) => GetMethod(name, DefaultLookup);
 
       // [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods | DynamicallyAccessedMemberTypes.NonPublicMethods)]
-      public function GetMethod(string $name, BindingFlags $bindingAttr = null) : ?MethodInfo
+      public function GetMethod(string $name, BindingFlags $bindingAttr = null): ?MethodInfo
       {
             if ($name == null) throw new ArgumentNullException("name");
 
@@ -468,7 +482,7 @@ abstract class Type// : MemberInfo, IReflect
       // public PropertyInfo? GetProperty(string name) => GetProperty(name, DefaultLookup);
 
       // [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.NonPublicProperties)]
-      public function GetProperty(string $name, BindingFlags $bindingAttr = null) : ?PropertyInfo
+      public function GetProperty(string $name, BindingFlags $bindingAttr = null): ?PropertyInfo
       {
             if ($name == null) throw new ArgumentNullException("name");
 

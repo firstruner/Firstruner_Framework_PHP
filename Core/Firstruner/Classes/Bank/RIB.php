@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright since 2024 Firstruner and Contributors
+ * Copyright 2024-2026 Firstruner and Contributors
  * Firstruner is an Registered Trademark & Property of Christophe BOULAS
  *
  * NOTICE OF LICENSE
@@ -17,7 +17,7 @@
  * Please refer to https://firstruner.fr/ or contact Firstruner for more information.
  *
  * @author    Firstruner and Contributors <contact@firstruner.fr>
- * @copyright Since 2024 Firstruner and Contributors
+ * @copyright 2024-2026 Firstruner and Contributors
  * @license   Proprietary
  * @version 2.0.0
  */
@@ -62,11 +62,11 @@ final class RIB extends AbsBankingAccounts
         $cle = $lG % 97;
 
         return ($cle == 0)
-            ? RIB::DefaultRibKey 
+            ? RIB::DefaultRibKey
             : str_pad($cle, 2, RIB::DefaultNumber, STR_PAD_LEFT);
     }
 
-    private function stringToRib(string $rib) : array
+    private function stringToRib(string $rib): array
     {
         $bank    = substr($rib, 0, 5);
         $guichet = substr($rib, 5, 5);
@@ -86,13 +86,14 @@ final class RIB extends AbsBankingAccounts
         $arrayRIB = $this->stringToRib($rib);
 
         return
-                $arrayRIB["bank"] . 
-                $arrayRIB["guichet"] . 
-                $arrayRIB["compte"] . 
-                $this->RIB_GetKey(
-                    $arrayRIB["bank"], 
-                    $arrayRIB["guichet"], 
-                    $arrayRIB["compte"])
+            $arrayRIB["bank"] .
+            $arrayRIB["guichet"] .
+            $arrayRIB["compte"] .
+            $this->RIB_GetKey(
+                $arrayRIB["bank"],
+                $arrayRIB["guichet"],
+                $arrayRIB["compte"]
+            )
             == $rib;
     }
 }

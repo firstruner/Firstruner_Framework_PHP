@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright since 2024 Firstruner and Contributors
+ * Copyright 2024-2026 Firstruner and Contributors
  * Firstruner is an Registered Trademark & Property of Christophe BOULAS
  *
  * NOTICE OF LICENSE
@@ -17,7 +17,7 @@
  * Please refer to https://firstruner.fr/ or contact Firstruner for more information.
  *
  * @author    Firstruner and Contributors <contact@firstruner.fr>
- * @copyright Since 2024 Firstruner and Contributors
+ * @copyright 2024-2026 Firstruner and Contributors
  * @license   Proprietary
  * @version 2.0.0
  */
@@ -35,16 +35,17 @@ class Societe extends Adresse
 	public function __construct(int $type = AdresseType::Societe)
 	{
 		parent::__construct();
-		
-		if(($type == AdresseType::Particulier) && ($type == AdresseType::Societe))
+
+		if (($type == AdresseType::Particulier) && ($type == AdresseType::Societe))
 			$this->ElementsLegaux = new ElementsJuridiques();
 
 		$this->AdresseType = $type;
 	}
 
-	public function GenJson(){
+	public function GenJson()
+	{
 		$arr = serialize($this);
-	 
+
 		echo json_encode($arr);
 	}
 
@@ -56,6 +57,6 @@ class Societe extends Adresse
 			'postalCode' => $this->CodePostal,
 			'city' => $this->Ville,
 			'companyType' => $this->AdresseType
-			);
+		);
 	}
 }

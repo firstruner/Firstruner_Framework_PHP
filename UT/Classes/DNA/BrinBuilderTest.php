@@ -1,6 +1,7 @@
 <?php
+
 /**
- * Copyright since 2024 Firstruner and Contributors
+ * Copyright 2024-2026 Firstruner and Contributors
  * Firstruner is an Registered Trademark & Property of Christophe BOULAS
  *
  * NOTICE OF LICENSE
@@ -16,7 +17,7 @@
  * Please refer to https://firstruner.fr/ or contact Firstruner for more information.
  *
  * @author    Firstruner and Contributors <contact@firstruner.fr>
- * @copyright Since 2024 Firstruner and Contributors
+ * @copyright 2024-2026 Firstruner and Contributors
  * @license   Proprietary
  * @version 2.0.0
  */
@@ -30,6 +31,7 @@
  * @Author : Nadia TRABELSI
  * @Update on : 11/03/2025 by : Nadia TRABELSI
  */
+
 namespace DatasDNA\tests;
 
 use PHPUnit\Framework\TestCase;
@@ -42,25 +44,25 @@ class BrinBuilderTest extends TestCase
 {
     public function testAddBaseWithValidBase()
     {
-        
+
         $brin = BrinBuilder::buildFromBase(ENucleicBases::ADENINE);
 
         $this->assertInstanceOf(Brin::class, $brin);
     }
 
     public function testAddBaseWithInvalidBase()
-{
-    $builder = new BrinBuilder(); 
+    {
+        $builder = new BrinBuilder();
 
-    try {
-        $builder->buildFromBase('X'); // Cette ligne doit déclencher une exception
-        $this->fail("L'ajout d'une base invalide n'a pas déclenché d'exception."); // Échec si aucune exception n'est levée
-    } catch (ATCG_Pair_Exception $e) {
-        $this->assertInstanceOf(ATCG_Pair_Exception::class, $e); // Vérifie que l'exception est bien levée
-    } catch (\Exception $e) {
-        $this->fail("Une exception inattendue a été levée : " . $e->getMessage()); // Gère toute autre exception
+        try {
+            $builder->buildFromBase('X'); // Cette ligne doit déclencher une exception
+            $this->fail("L'ajout d'une base invalide n'a pas déclenché d'exception."); // Échec si aucune exception n'est levée
+        } catch (ATCG_Pair_Exception $e) {
+            $this->assertInstanceOf(ATCG_Pair_Exception::class, $e); // Vérifie que l'exception est bien levée
+        } catch (\Exception $e) {
+            $this->fail("Une exception inattendue a été levée : " . $e->getMessage()); // Gère toute autre exception
+        }
     }
-}
 
 
     public function testBuild()

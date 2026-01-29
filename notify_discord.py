@@ -1,4 +1,27 @@
 #!/usr/bin/env python3
+
+ #
+ # Copyright 2024-2026 Firstruner and Contributors
+ # Firstruner is an Registered Trademark & Property of Christophe BOULAS
+ #
+ # NOTICE OF LICENSE
+ #
+ # This source file is subject to the Freemium License
+ # If you did not receive a copy of the license and are unable to
+ # obtain it through the world-wide-web, please send an email
+ # to contact@firstruner.fr so we can send you a copy immediately.
+ #
+ # DISCLAIMER
+ #
+ # Do not edit, reproduce ou modify this file.
+ # Please refer to https://firstruner.fr/ or contact Firstruner for more information.
+ #
+ # @author    Firstruner and Contributors <contact@firstruner.fr>
+ # @copyright 2024-2026 Firstruner and Contributors
+ # @license   Proprietary
+ # @version 2.0.0
+ #
+
 import json
 import os
 import subprocess
@@ -11,25 +34,26 @@ def main():
 
     webhook_url = sys.argv[1]
 
-    commit_message = os.getenv("CI_COMMIT_MESSAGE", "")
+    raw_commit_message = os.getenv("CI_COMMIT_MESSAGE", "")
+    cleaned_commit_message = clean_commit_message(raw_commit_message)
     git_tag = os.getenv("CI_COMMIT_TAG") or ""
 
-    if "INFORMATIQUE" in commit_message:
+    if "INFORMATIQUE" in raw_commit_message:
         return
 
     # --- Règle 1 : no_notify ---
-    if "no_notify" in commit_message:
+    if "no_notify" in raw_commit_message:
         print("ℹ️ Tag no_notify détecté : notification ignorée.")
         sys.exit(0)
 
     # --- Règles Pull (priorité) ---
-    if "needed_pull" in commit_message:
+    if "needed_pull" in raw_commit_message:
         pull_info = "🔴 Pull obligatoire"
         color = 15158332  # rouge
-    elif "high_recommended_pull" in commit_message:
+    elif "high_recommended_pull" in raw_commit_message:
         pull_info = "🟡 Pull fortement recommandé"
         color = 16705372  # orange
-    elif "recommended_pull" in commit_message:
+    elif "recommended_pull" in raw_commit_message:
         pull_info = "🔵 Pull recommandé"
         color = 3447003    # bleu
     else:
@@ -40,7 +64,7 @@ def main():
     pipeline_id = os.getenv("CI_PIPELINE_ID", "")
     project_path = os.getenv("CI_PROJECT_PATH", "")
     pipeline_url = os.getenv("CI_PIPELINE_URL", "")
-    commit_tag = commit_message or "Aucun"
+    commit_tag = git_tag or "Aucun"
 
     public_repo = "https://github.com/firstruner/Firstruner_Framework_PHP"
     private_repo = "https://gitlab.com/firstruner/Firstruner_Framework_PHP"
@@ -60,7 +84,7 @@ def main():
         f"\n"
         f"{description_private if ('gitlab' in webhook_url) else ''}"
         f"[Repo public GitHub]({public_repo})\n\n"
-        f"**Description du commit :**\n{clean_commit_message(commit_message)}"
+        f"**Description du commit :**\n{cleaned_commit_message}"
     )
 
     payload = json.dumps({

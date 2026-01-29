@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright since 2024 Firstruner and Contributors
+ * Copyright 2024 Firstruner and Contributors
  * Firstruner is an Registered Trademark & Property of Christophe BOULAS
  *
  * NOTICE OF LICENSE
@@ -17,12 +17,12 @@
  * Please refer to https://firstruner.fr/ or contact Firstruner for more information.
  *
  * @author    Firstruner and Contributors <contact@firstruner.fr>
- * @copyright Since 2024 Firstruner and Contributors
+ * @copyright 2024 Firstruner and Contributors
  * @license   Proprietary
  * @version 2.0.0
  */
 
- namespace System\Net;
+namespace System\Net;
 
 use Symfony\Component\HttpFoundation\Response_Light;
 
@@ -107,7 +107,8 @@ class Session
 
         if (!$withoutResponse)
             HttpHeaders::Redirect(
-                AppStaticParams::ServerKey_DefaultPath . AppStaticParams::ControllerKey_Connexion);
+                AppStaticParams::ServerKey_DefaultPath . AppStaticParams::ControllerKey_Connexion
+            );
 
         return false;
     }

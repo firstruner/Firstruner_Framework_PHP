@@ -1,26 +1,26 @@
 <?php
 
 /**
-* Copyright since 2024 Firstruner and Contributors
-* Firstruner is an Registered Trademark & Property of Christophe BOULAS
-*
-* NOTICE OF LICENSE
-*
-* This source file is subject to the Freemium License
-* If you did not receive a copy of the license and are unable to
-* obtain it through the world-wide-web, please send an email
-* to contact@firstruner.fr so we can send you a copy immediately.
-*
-* DISCLAIMER
-*
-* Do not edit, reproduce ou modify this file.
-* Please refer to https:*firstruner.fr/ or contact Firstruner for more information.
-*
-* @author    Firstruner and Contributors <contact@firstruner.fr>
-* @copyright Since 2024 Firstruner and Contributors
-* @license   Proprietary
-* @version 2.0.0
-*/
+ * Copyright 2024-2026 Firstruner and Contributors
+ * Firstruner is an Registered Trademark & Property of Christophe BOULAS
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Freemium License
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to contact@firstruner.fr so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit, reproduce ou modify this file.
+ * Please refer to https:*firstruner.fr/ or contact Firstruner for more information.
+ *
+ * @author    Firstruner and Contributors <contact@firstruner.fr>
+ * @copyright 2024-2026 Firstruner and Contributors
+ * @license   Proprietary
+ * @version 2.0.0
+ */
 
 namespace System\Data\Blockchain;
 
@@ -73,12 +73,12 @@ final class Blockchain
     public bool $AutoMining = false;
 
     public function __construct(
-        string $initializingData = "{}", 
-        ?string $sign = null, 
-        ?string $controlFormat = null, 
-        bool $eventManagement = false, 
-        int $loadingMode = LoadingCert::Ignore)
-    {
+        string $initializingData = "{}",
+        ?string $sign = null,
+        ?string $controlFormat = null,
+        bool $eventManagement = false,
+        int $loadingMode = LoadingCert::Ignore
+    ) {
         $this->BC_Guid = new Guid();
         $this->Chain = new CCollection([], 0, Block::ClassName);
 
@@ -105,17 +105,17 @@ final class Blockchain
 
     #region Events des certificats
 
-    private function ToolsOnCertificateOverCount(int $count) : void
+    private function ToolsOnCertificateOverCount(int $count): void
     {
         throw new \Exception("Il y a plus d'un certificat (" + $count + ")");
     }
 
-    private function ToolsOnCertificateNotFind() : void
+    private function ToolsOnCertificateNotFind(): void
     {
         throw new \Exception("Certificat introuvable");
     }
 
-    private function ToolsOnCertificateExpired(\DateTime $dateTime) : void
+    private function ToolsOnCertificateExpired(\DateTime $dateTime): void
     {
         throw new \Exception("Le certificat a expiré");
     }
@@ -183,7 +183,8 @@ final class Blockchain
             $previousBlock = $this->Chain[$i - 1];
 
             if (($currentBlock->Hash() != $currentBlock->ComputeHash())
-                || ($currentBlock->PreviousHash() != $previousBlock->Hash())) {
+                || ($currentBlock->PreviousHash() != $previousBlock->Hash())
+            ) {
                 return false;
             }
         }
@@ -196,8 +197,7 @@ final class Blockchain
         $last = $this->Last();
         $b = false;
 
-        if ($last->IsLock())
-        {
+        if ($last->IsLock()) {
             if (!is_null($this->Mined))
                 call_user_func($this->Mined, $last->Index, $last->Hash());
 
@@ -210,7 +210,7 @@ final class Blockchain
             call_user_func($this->Mined, $last->Index, $last->Hash);
     }
 
-    public function Load(string $DirectoryName, bool $Encryption = false) : bool
+    public function Load(string $DirectoryName, bool $Encryption = false): bool
     {
         $EDModule = new EncryptDecryptModule(null);
 
@@ -233,17 +233,12 @@ final class Blockchain
         $method = intval($header[0]);
         $size = intval($header[1]);
 
-        try
-        {
+        try {
             $EDModule->Decrypt($this->cert, $head2);
-        }
-        catch (NeedAdministratorAccesException $eAdmin)
-        {
+        } catch (NeedAdministratorAccesException $eAdmin) {
             Console::WriteLine("Accès administrateur nécessaire");
             return false;
-        }
-        catch (PrivateKeyUnavailableException $ePK)
-        {
+        } catch (PrivateKeyUnavailableException $ePK) {
             Console::WriteLine("Clé non disponible");
             return false;
         }
@@ -255,23 +250,20 @@ final class Blockchain
         $this->Signature = ($header[3] == _string::EmptyString ? null : $header[3]);
         $this->BC_Guid = new Guid($header[4]);
 
-        switch ($method)
-        {
+        switch ($method) {
             case StorageMethod::ByBlock:
             case StorageMethod::By5Block:
             case StorageMethod::By10Block:
             case StorageMethod::ByNbBlock:
                 $this->Chain = new CCollection([], 0, Block::ClassName);
 
-                foreach (glob($DirectoryName . "/*.fbc") as $file)
-                {
+                foreach (glob($DirectoryName . "/*.fbc") as $file) {
                     $_datasC = new CCollection([], 0, _string::ClassName);
                     $_datasU = new CCollection([], 0, _string::ClassName);
                     $_srLine = _string::EmptyString;
                     $_sr = new StreamReader($file);
 
-                    do
-                    {
+                    do {
                         $_srLine = $_sr->ReadLine();
 
                         if (is_null($_srLine))
@@ -288,8 +280,7 @@ final class Blockchain
                     $final = _string::EmptyString;
                     $temp = null; // String Null
 
-                    for ($b = 0; $b < $_datasU->count(); $b++)
-                    {
+                    for ($b = 0; $b < $_datasU->count(); $b++) {
                         $end = strpos(
                             Blockchain::BlockSep,
                             ($_datasU[$b] + (
@@ -299,21 +290,19 @@ final class Blockchain
                             )
                         );
 
-                        if (!is_null($temp) || (($end < 0) && is_null($temp)))
-                        {
+                        if (!is_null($temp) || (($end < 0) && is_null($temp))) {
                             $final .= $temp ?? $_datasU[$b];
                             $temp = null;
-                        }
-                        else
-                        {
+                        } else {
                             $final .= substr(
                                 ($_datasU[$b] + (
                                     ($b < ($_datasU->count() - 1))
-                                        ? $_datasU[$b + 1]
-                                        : _string::EmptyString)),
-                                    0,
-                                    $end);
-                            
+                                    ? $_datasU[$b + 1]
+                                    : _string::EmptyString)),
+                                0,
+                                $end
+                            );
+
                             $this->Chain->Add(new Block($final));
                             $final = _string::EmptyString;
 
@@ -322,7 +311,8 @@ final class Blockchain
                                     ($b < ($_datasU->count() - 1))
                                     ? $_datasU[$b + 1]
                                     : _string::EmptyString)),
-                                    $end + strlen(Blockchain::BlockSep));
+                                $end + strlen(Blockchain::BlockSep)
+                            );
                         }
                     }
                 }
@@ -339,17 +329,14 @@ final class Blockchain
         int $method = StorageMethod::ByBlock,
         int $size = 0,
         bool $Encryption = false,
-        int $backupMethod = BackupMethod::Standard) : bool
-    {
+        int $backupMethod = BackupMethod::Standard
+    ): bool {
         $EDModule = new EncryptDecryptModule(null);
 
-        try
-        {
+        try {
             foreach (glob($DirectoryName) as $file)
                 File::Delete($file);
-        }
-        catch (\Exception $e)
-        {
+        } catch (\Exception $e) {
             throw $e;
         }
 
@@ -360,7 +347,7 @@ final class Blockchain
             StorageMethod::ByBlock,
             StorageMethod::By5Block,
             StorageMethod::By10Block,
-            ]))
+        ]))
             $size = $method;
 
         $swheader = new StreamWriter($DirectoryName . "\\fbc.header");
@@ -370,50 +357,43 @@ final class Blockchain
         $swheader->Close();
         unset($swheader);
 
-        switch ($method)
-        {
+        switch ($method) {
             case StorageMethod::ByBlock:
             case StorageMethod::By5Block:
             case StorageMethod::By10Block:
             case StorageMethod::ByNbBlock:
                 #region Ecriture des fichiers client
                 if (($backupMethod == BackupMethod::Standard)
-                    || ($backupMethod == BackupMethod::Full))
-                {
-                    for ($i = 0; $i < $this->Chain->count(); $i += $size)
-                    {
+                    || ($backupMethod == BackupMethod::Full)
+                ) {
+                    for ($i = 0; $i < $this->Chain->count(); $i += $size) {
                         $xml_blocks = System_Array::CreateArray($size);
 
-                        for ($j = 0; $j < $size; $j++)
-                        {
+                        for ($j = 0; $j < $size; $j++) {
                             $xml = serialize($this->Chain[$i]);
                             $xml_blocks[$j] = $xml . Blockchain::BlockSep;
                         }
 
                         $fileout = new StreamWriter($DirectoryName . "\\" . Guid::NewGuid() . ".fbc");
-                        for ($z = 0; $z < count($xml_blocks); $z++)
-                        {
-                            if (!is_null($xml_blocks[$z]) && ($xml_blocks[$z] != _string::EmptyString))
-                            {
-                                if ($Encryption)
-                                {
+                        for ($z = 0; $z < count($xml_blocks); $z++) {
+                            if (!is_null($xml_blocks[$z]) && ($xml_blocks[$z] != _string::EmptyString)) {
+                                if ($Encryption) {
                                     $cuttedStrings = System_String::Cut($xml_blocks[$z], 65);
-                                    for ($cs = 0; $cs < count($cuttedStrings); $cs++)
-                                    {
+                                    for ($cs = 0; $cs < count($cuttedStrings); $cs++) {
                                         $fileout->WriteLine(
                                             $EDModule->Encrypt(
                                                 $this->cert,
-                                                $cuttedStrings[$cs])->Value()
-                                            . Alphabetics::HidedChar);
+                                                $cuttedStrings[$cs]
+                                            )->Value()
+                                                . Alphabetics::HidedChar
+                                        );
                                         $fileout->Flush();
                                     }
-                                }
-                                else
-                                {
+                                } else {
                                     $fileout->WriteLine($xml_blocks[$z]);
                                 }
 
-                                $fileout.Flush();
+                                $fileout . Flush();
                             }
                         }
 
@@ -425,42 +405,43 @@ final class Blockchain
 
                 #region Ecriture des fichiers de sécurité
 
-                if ($backupMethod >= 1)
-                {
+                if ($backupMethod >= 1) {
                     $secIDFile = 1;
                     $fs = new FileStream(
                         $DirectoryName . "\\fbc.1.security",
-                        AccessMode::WriteOnly_Create);
+                        AccessMode::WriteOnly_Create
+                    );
 
                     $full = new CCollection([], 0, _string::ClassName);
                     $finalByteses = new CCollection([], 0, _sbyte::ClassName);
 
                     foreach ($this->Chain as $block)
                         $full->Add(
-                            System_String::Cut(serialize($block) . Alphabetics::HidedChar, 200));
+                            System_String::Cut(serialize($block) . Alphabetics::HidedChar, 200)
+                        );
 
-                    for ($fullID = 0; $fullID < $full->count(); $fullID++)
-                    {
+                    for ($fullID = 0; $fullID < $full->count(); $fullID++) {
                         $items = $full[$fullID];
                         for ($strs = 0; $strs < count($items); $strs++)
                             $finalByteses->Add(
-                                $EDModule->Encrypt($items[$strs],
+                                $EDModule->Encrypt(
+                                    $items[$strs],
                                     RsaEncryptionType::PreCalculate,
-                                    EncryptionSize::enc2048)->ByteValue());
+                                    EncryptionSize::enc2048
+                                )->ByteValue()
+                            );
                     }
 
-                    for ($i = 0; $i < $finalByteses->count(); $i++)
-                    {
+                    for ($i = 0; $i < $finalByteses->count(); $i++) {
                         $fName = $DirectoryName + "\\fbc." . $secIDFile . ".security";
 
-                        if (File::Exists($fName))
-                        {
+                        if (File::Exists($fName)) {
                             $fi = new FileInfo($fName);
 
                             if ((FileInfo::PrettyOctetsPhysicalSize($fi)->Item1() >= 10) &&
                                 (FileInfo::PrettyBytesPhysicalSize($fi)->Item2() ==
-                                    SuffixesRange::OctetSuffixes[SuffixesSizes::Mega]))
-                            {
+                                    SuffixesRange::OctetSuffixes[SuffixesSizes::Mega])
+                            ) {
                                 $fs->Flush();
                                 $fs->Close();
                                 $i++;
@@ -497,10 +478,10 @@ final class Blockchain
             "private_key_bits" => 2048,
             "private_key_type" => OPENSSL_KEYTYPE_RSA,
         ];
-        
+
         // Générer une clé privée
         $privateKey = openssl_pkey_new($config);
-        
+
         // Créer un CSR
         $dn = [
             "countryName" => "FR",
@@ -509,12 +490,12 @@ final class Blockchain
             "organizationName" => "Firstruner",
             "commonName" => Blockchain::CertName,
         ];
-        
+
         $csr = openssl_csr_new($dn, $privateKey, $config);
-        
+
         // Auto-signer le certificat
         $certificate = openssl_csr_sign($csr, null, $privateKey, 365);
-        
+
         // Sauvegarder les fichiers
         openssl_pkey_export_to_file($privateKey, (is_null($path) ? __DIR__ : $path) . Blockchain::CertName . "private.key");
         openssl_csr_export_to_file($csr, (is_null($path) ? __DIR__ : $path) . Blockchain::CertName . "request.csr");

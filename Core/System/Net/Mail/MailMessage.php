@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright since 2024 Firstruner and Contributors
+ * Copyright 2024-2026 Firstruner and Contributors
  * Firstruner is an Registered Trademark & Property of Christophe BOULAS
  *
  * NOTICE OF LICENSE
@@ -17,11 +17,11 @@
  * Please refer to https://firstruner.fr/ or contact Firstruner for more information.
  *
  * @author    Firstruner and Contributors <contact@firstruner.fr>
- * @copyright Since 2024 Firstruner and Contributors
+ * @copyright 2024-2026 Firstruner and Contributors
  * @license   Proprietary
  * @version 2.0.0
  */
- 
+
 namespace System\Net\Mail;
 
 use System\Collections\CCollection;
@@ -44,9 +44,12 @@ final class MailMessage
       public MailAddress $From;
       public string $Subject = _string::EmptyString;
 
-      public function __construct(mixed $from = null, mixed $to = null, 
-            ?string $subject = null, ?string $body = null)
-      {
+      public function __construct(
+            mixed $from = null,
+            mixed $to = null,
+            ?string $subject = null,
+            ?string $body = null
+      ) {
             $this->Views = new CCollection();
             $this->Attachments = new CCollection();
             $this->To = new MailAddressCollection();
@@ -54,8 +57,7 @@ final class MailMessage
             $this->Bcc = new MailAddressCollection();
             $this->BodyEncoding = Encoding::UTF8();
 
-            if (isset($from))
-            {
+            if (isset($from)) {
                   if (gettype($from) == _string::ClassName)
                         $from = new MailAddress($from);
 
@@ -74,8 +76,7 @@ final class MailMessage
 
       private function setMailRecipient(mixed $target, MailAddressCollection &$list)
       {
-            switch (gettype($target))
-            {
+            switch (gettype($target)) {
                   case _string::ClassName:
                         $list->append(new MailAddress($target));
                         break;

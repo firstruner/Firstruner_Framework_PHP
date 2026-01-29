@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright since 2024 Firstruner and Contributors
+ * Copyright 2024-2026 Firstruner and Contributors
  * Firstruner is an Registered Trademark & Property of Christophe BOULAS
  *
  * NOTICE OF LICENSE
@@ -17,7 +17,7 @@
  * Please refer to https://firstruner.fr/ or contact Firstruner for more information.
  *
  * @author    Firstruner and Contributors <contact@firstruner.fr>
- * @copyright Since 2024 Firstruner and Contributors
+ * @copyright 2024-2026 Firstruner and Contributors
  * @license   Proprietary
  * @version 2.0.0
  */
@@ -45,9 +45,7 @@ class TextFile_Logger implements ILogger
         $this->initiateLog();
     }
 
-    function Write(string $element, string $context)
-    {
-    }
+    function Write(string $element, string $context) {}
 
     function Load(string $path)
     {
@@ -77,13 +75,7 @@ class TextFile_Logger implements ILogger
         return $output;
     }
 
-    static function WriteInConsole(mixed $element, int $messageType)
-    {
+    static function WriteInConsole(mixed $element, int $messageType) {}
 
-    }
-    
-    static function Clear()
-    {
-        
-    }
+    static function Clear() {}
 }

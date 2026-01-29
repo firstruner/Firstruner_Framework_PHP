@@ -1,26 +1,26 @@
 <?php
 
 /**
-* Copyright since 2024 Firstruner and Contributors
-* Firstruner is an Registered Trademark & Property of Christophe BOULAS
-*
-* NOTICE OF LICENSE
-*
-* This source file is subject to the Freemium License
-* If you did not receive a copy of the license and are unable to
-* obtain it through the world-wide-web, please send an email
-* to contact@firstruner.fr so we can send you a copy immediately.
-*
-* DISCLAIMER
-*
-* Do not edit, reproduce ou modify this file.
-* Please refer to https://firstruner.fr/ or contact Firstruner for more information.
-*
-* @author    Firstruner and Contributors <contact@firstruner.fr>
-* @copyright Since 2024 Firstruner and Contributors
-* @license   Proprietary
-* @version 2.0.0
-*/
+ * Copyright 2024-2026 Firstruner and Contributors
+ * Firstruner is an Registered Trademark & Property of Christophe BOULAS
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Freemium License
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to contact@firstruner.fr so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit, reproduce ou modify this file.
+ * Please refer to https://firstruner.fr/ or contact Firstruner for more information.
+ *
+ * @author    Firstruner and Contributors <contact@firstruner.fr>
+ * @copyright 2024-2026 Firstruner and Contributors
+ * @license   Proprietary
+ * @version 2.0.0
+ */
 
 namespace System;
 
@@ -28,33 +28,34 @@ use System\Default\_string;
 
 final class DBNull
 {
-      public static function Value() { return new DBNull(); }
-
-      private function __construct()
-      {            
+      public static function Value()
+      {
+            return new DBNull();
       }
 
-//         [Obsolete(Obsoletions.LegacyFormatterImplMessage, DiagnosticId = Obsoletions.LegacyFormatterImplDiagId, UrlFormat = Obsoletions.SharedUrlFormat)]
-//         [EditorBrowsable(EditorBrowsableState.Never)]
-//         public void GetObjectData(SerializationInfo info, StreamingContext context)
-//         {
-// #pragma warning disable SYSLIB0050 // UnitySerializationHolder is obsolete
-//             UnitySerializationHolder.GetUnitySerializationInfo(info, UnitySerializationHolder.NullUnity);
-// #pragma warning restore SYSLIB0050
-//         }
+      private function __construct() {}
 
-      public function __ToString() : string
+      //         [Obsolete(Obsoletions.LegacyFormatterImplMessage, DiagnosticId = Obsoletions.LegacyFormatterImplDiagId, UrlFormat = Obsoletions.SharedUrlFormat)]
+      //         [EditorBrowsable(EditorBrowsableState.Never)]
+      //         public void GetObjectData(SerializationInfo info, StreamingContext context)
+      //         {
+      // #pragma warning disable SYSLIB0050 // UnitySerializationHolder is obsolete
+      //             UnitySerializationHolder.GetUnitySerializationInfo(info, UnitySerializationHolder.NullUnity);
+      // #pragma warning restore SYSLIB0050
+      //         }
+
+      public function __ToString(): string
       {
             return _string::EmptyString;
       }
 
-      
+
       // public function ToString(IFormatProvider? provider)
       // {
       // return ;
       // }
 
-      public function GetTypeCode() : int
+      public function GetTypeCode(): int
       {
             return TypeCode::DBNull;
       }

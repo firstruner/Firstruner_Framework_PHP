@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright since 2024 Firstruner and Contributors
+ * Copyright 2024-2026 Firstruner and Contributors
  * Firstruner is an Registered Trademark & Property of Christophe BOULAS
  *
  * NOTICE OF LICENSE
@@ -17,31 +17,32 @@
  * Please refer to https://firstruner.fr/ or contact Firstruner for more information.
  *
  * @author    Firstruner and Contributors <contact@firstruner.fr>
- * @copyright Since 2024 Firstruner and Contributors
+ * @copyright 2024-2026 Firstruner and Contributors
  * @license   Proprietary
  * @version 2.0.0
  */
 
- namespace System\Collections;
+namespace System\Collections;
 
- /* PHP 8+
+/* PHP 8+
  enum EMessageType
  {
      //case ...;
  }
  */
- 
- /* PHP 7+*/
- abstract class CCollection_ErrorCodes
- {
-      const Null = 96001;
-      const Empty = 96002;
-      const NullOrEmpty = 96003;
-      const TypeDismatch = 96011;
-      const IncorrectMethod = 96012;
-      const IndexOversize = 96004;
-      const EmptyCollection = 96005;
-      const LastIndex = 96006;
-      const FirstIndex = 96007;
-      const IncorrectIndex = 96008;
- }
+
+/* PHP 7+*/
+
+abstract class CCollection_ErrorCodes
+{
+    const Null = 96001;
+    const Empty = 96002;
+    const NullOrEmpty = 96003;
+    const TypeDismatch = 96011;
+    const IncorrectMethod = 96012;
+    const IndexOversize = 96004;
+    const EmptyCollection = 96005;
+    const LastIndex = 96006;
+    const FirstIndex = 96007;
+    const IncorrectIndex = 96008;
+}

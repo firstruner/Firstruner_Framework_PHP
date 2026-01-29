@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright since 2024 Firstruner and Contributors
+ * Copyright 2024-2026 Firstruner and Contributors
  * Firstruner is an Registered Trademark & Property of Christophe BOULAS
  *
  * NOTICE OF LICENSE
@@ -17,7 +17,7 @@
  * Please refer to https://firstruner.fr/ or contact Firstruner for more information.
  *
  * @author    Firstruner and Contributors <contact@firstruner.fr>
- * @copyright Since 2024 Firstruner and Contributors
+ * @copyright 2024-2026 Firstruner and Contributors
  * @license   Proprietary
  * @version 2.0.0
  */
@@ -39,8 +39,8 @@ use System\Exceptions\{
   ArgumentException,
   ArgumentNullException,
   ArgumentOutOfRangeException,
-    Constants,
-    CultureNotFoundException,
+  Constants,
+  CultureNotFoundException,
   InvalidOperationException
 };
 use System\Constants\Const_System;
@@ -48,6 +48,7 @@ use System\Default\_int;
 use System\Default\_string;
 
 /// <summary>Contains information about the country/region.</summary>
+
 /** @ComVisible(expose=true) */
 /** @__DynamicallyInvokable */
 /** @Serializable */
@@ -214,7 +215,7 @@ class RegionInfo
         if ($this->m_cultureData == null)
           throw new ArgumentException(
             CultureInfo::getCurrentCulture() . PHP_EOL .
-            Constants::Argument_InvalidCultureName . PHP_EOL .
+              Constants::Argument_InvalidCultureName . PHP_EOL .
               $name . PHP_EOL .
               "name"
           );
@@ -298,7 +299,7 @@ class RegionInfo
     if ($this->m_cultureData == null)
       throw new ArgumentException(
         CultureInfo::getCurrentCulture() . PHP_EOL .
-        Constants::Argument_InvalidCultureName . PHP_EOL .
+          Constants::Argument_InvalidCultureName . PHP_EOL .
           $this->m_name . PHP_EOL .
           "m_name"
       );
@@ -310,9 +311,7 @@ class RegionInfo
   }
 
   //[System.Runtime.Serialization.OnSerializing]
-  private function OnSerializing($ctx)
-  {
-  }
+  private function OnSerializing($ctx) {}
 
   /// <summary>Gets the <see cref="T:System.Globalization.RegionInfo" /> that represents the country/region used by the current thread.</summary>
   /// <returns>The <see cref="T:System.Globalization.RegionInfo" /> that represents the country/region used by the current thread.</returns>

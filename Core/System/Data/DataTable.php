@@ -1,26 +1,26 @@
 <?php
 
 /**
-* Copyright since 2024 Firstruner and Contributors
-* Firstruner is an Registered Trademark & Property of Christophe BOULAS
-*
-* NOTICE OF LICENSE
-*
-* This source file is subject to the Freemium License
-* If you did not receive a copy of the license and are unable to
-* obtain it through the world-wide-web, please send an email
-* to contact@firstruner.fr so we can send you a copy immediately.
-*
-* DISCLAIMER
-*
-* Do not edit, reproduce ou modify this file.
-* Please refer to https://firstruner.fr/ or contact Firstruner for more information.
-*
-* @author    Firstruner and Contributors <contact@firstruner.fr>
-* @copyright Since 2024 Firstruner and Contributors
-* @license   Proprietary
-* @version 2.0.0
-*/
+ * Copyright 2024-2026 Firstruner and Contributors
+ * Firstruner is an Registered Trademark & Property of Christophe BOULAS
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Freemium License
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to contact@firstruner.fr so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit, reproduce ou modify this file.
+ * Please refer to https://firstruner.fr/ or contact Firstruner for more information.
+ *
+ * @author    Firstruner and Contributors <contact@firstruner.fr>
+ * @copyright 2024-2026 Firstruner and Contributors
+ * @license   Proprietary
+ * @version 2.0.0
+ */
 
 namespace System\Data;
 
@@ -82,7 +82,7 @@ final class DataTable extends DataObject
             return $ar;
       }
 
-      public function Clone() : DataTable
+      public function Clone(): DataTable
       {
             return clone $this;
       }
@@ -92,16 +92,14 @@ final class DataTable extends DataObject
             if (!$this->checkClosure($closure))
                   throw new DataException("Closure invalid for this object");
 
-            switch ($dataState)
-            {
+            switch ($dataState) {
                   case DataState::Update:
                         $this->closure_Update = $closure;
                         break;
                   case DataState::Inserted:
                         $this->closure_Insert = $closure;
                         break;
-                  case DataState::Deleted::
-                        $this->closure_Delete = $closure;
+                  case DataState::Deleted::$this->closure_Delete = $closure;
                         break;
                   default:
                         throw new DataException("No $dataState valid for this object");
@@ -110,33 +108,28 @@ final class DataTable extends DataObject
 
       public function AcceptChanges(string $stateFilter = _string::EmptyString)
       {
-            foreach ($this->Rows as &$row)
-            {
-                  try
-                  {
-                        switch ($row->GetState())
-                        {
+            foreach ($this->Rows as &$row) {
+                  try {
+                        switch ($row->GetState()) {
                               case DataState::Update
-                                    && ($stateFilter == _string::EmptyString || ($stateFilter == $row->GetState())) :
+                                    && ($stateFilter == _string::EmptyString || ($stateFilter == $row->GetState())):
                                     if ($this->closure_Update instanceof Closure)
                                           if (($this->closure_Update)($row)) $row->ValidChanges();
                                     break;
                               case DataState::Inserted
-                                    && ($stateFilter == _string::EmptyString || ($stateFilter == $row->GetState())) :
+                                    && ($stateFilter == _string::EmptyString || ($stateFilter == $row->GetState())):
                                     if ($this->closure_Update instanceof Closure)
                                           if (($this->closure_Insert)($row)) $row->ValidChanges();
                                     break;
                               case DataState::Deleted
-                                    && ($stateFilter == _string::EmptyString || ($stateFilter == $row->GetState())) :
+                                    && ($stateFilter == _string::EmptyString || ($stateFilter == $row->GetState())):
                                     if ($this->closure_Update instanceof Closure)
                                           if (($this->closure_Delete)($row)) $row->ValidChanges();
                                     break;
                               default:
                                     break;
                         }
-                  }
-                  catch (\Exception $ex)
-                  {
+                  } catch (\Exception $ex) {
                         throw new DataException("Fail on insert, update or delete DataRow");
                   }
             }

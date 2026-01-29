@@ -1,26 +1,26 @@
 <?php
 
 /**
-* Copyright since 2024 Firstruner and Contributors
-* Firstruner is an Registered Trademark & Property of Christophe BOULAS
-*
-* NOTICE OF LICENSE
-*
-* This source file is subject to the Freemium License
-* If you did not receive a copy of the license and are unable to
-* obtain it through the world-wide-web, please send an email
-* to contact@firstruner.fr so we can send you a copy immediately.
-*
-* DISCLAIMER
-*
-* Do not edit, reproduce ou modify this file.
-* Please refer to https:*firstruner.fr/ or contact Firstruner for more information.
-*
-* @author    Firstruner and Contributors <contact@firstruner.fr>
-* @copyright Since 2024 Firstruner and Contributors
-* @license   Proprietary
-* @version 2.0.0
-*/
+ * Copyright 2024-2026 Firstruner and Contributors
+ * Firstruner is an Registered Trademark & Property of Christophe BOULAS
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Freemium License
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to contact@firstruner.fr so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit, reproduce ou modify this file.
+ * Please refer to https:*firstruner.fr/ or contact Firstruner for more information.
+ *
+ * @author    Firstruner and Contributors <contact@firstruner.fr>
+ * @copyright 2024-2026 Firstruner and Contributors
+ * @license   Proprietary
+ * @version 2.0.0
+ */
 
 namespace System\Security\Cryptography;
 
@@ -40,7 +40,7 @@ final class TripleDESCryptoServiceProvider
             $this->iv = $iv ?? random_bytes(8);   // Initialisation vector de 8 octets
       }
 
-      public function Clear() : void
+      public function Clear(): void
       {
             $this->key = _string::EmptyString;
             $this->iv = _string::EmptyString;
@@ -150,9 +150,10 @@ final class TripleDESCryptoServiceProvider
       {
             if ($padding !== null) {
                   if (!in_array($padding, [
-                        PaddingMode::PKCS7, 
-                        PaddingMode::NO_PADDING, 
-                        PaddingMode::ZERO_PADDING]))
+                        PaddingMode::PKCS7,
+                        PaddingMode::NO_PADDING,
+                        PaddingMode::ZERO_PADDING
+                  ]))
                         throw new \InvalidArgumentException("Padding invalide");
 
                   $this->padding = $padding;
@@ -174,8 +175,9 @@ final class TripleDESCryptoServiceProvider
                         CipherMode::ECB,
                         CipherMode::CBC,
                         CipherMode::CFB,
-                        CipherMode::OFB])) {
-                  throw new \InvalidArgumentException("Mode invalide");
+                        CipherMode::OFB
+                  ])) {
+                        throw new \InvalidArgumentException("Mode invalide");
                   }
                   $this->mode = $mode;
                   return null;
@@ -191,7 +193,7 @@ final class TripleDESCryptoServiceProvider
       public function CreateEncryptor(): string
       {
             $cipher = openssl_cipher_iv_length('des-ede3-' . $this->mode); // Obtient la longueur de l'IV pour Triple DES avec le mode
-            
+
             if ($cipher === false) {
                   throw new \InvalidArgumentException("Mode de chiffrement invalide");
             }
@@ -211,7 +213,7 @@ final class TripleDESCryptoServiceProvider
       {
             $key = $key ?? $this->key;
             $iv = $iv ?? $this->iv;
-            
+
             // Assurer que la clé et le vecteur d'initialisation sont valides
             if (strlen($key) !== 24)
                   throw new \InvalidArgumentException("La clé doit avoir 24 octets (192 bits).");
@@ -224,15 +226,16 @@ final class TripleDESCryptoServiceProvider
                   private $iv;
 
                   // Décryptage avec OpenSSL
-                  public function Transform(string $data): string {
+                  public function Transform(string $data): string
+                  {
                         return openssl_decrypt(
                               $data,
                               EncryptionMode::DES_ProtocolName,
                               $this->key,
                               OPENSSL_RAW_DATA,
-                              $this->iv);
+                              $this->iv
+                        );
                   }
             };
       }
 }
-

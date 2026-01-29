@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright since 2024 Firstruner and Contributors
+ * Copyright 2024-2026 Firstruner and Contributors
  * Firstruner is an Registered Trademark & Property of Christophe BOULAS
  *
  * NOTICE OF LICENSE
@@ -17,7 +17,7 @@
  * Please refer to https://firstruner.fr/ or contact Firstruner for more information.
  *
  * @author    Firstruner and Contributors <contact@firstruner.fr>
- * @copyright Since 2024 Firstruner and Contributors
+ * @copyright 2024-2026 Firstruner and Contributors
  * @license   Proprietary
  * @version 2.0.0
  */
@@ -34,21 +34,19 @@ use System\Annotations\{
       DllImport,
       SuppressUnmanagedCodeSecurity
 };
-use System\
-      {
-            IFormatProvider,
-            DateTimeFormatInfo,
-            NumberFormatInfo,
-            _String
-      };
-use System\Default\
-      {
-    _int,
-    _nullable,
-    _sbyte,
-    _string as Default_string,
-    _ushort
-      };
+use System\{
+      IFormatProvider,
+      DateTimeFormatInfo,
+      NumberFormatInfo,
+      _String
+};
+use System\Default\{
+      _int,
+      _nullable,
+      _sbyte,
+      _string as Default_string,
+      _ushort
+};
 use System\Environment\Client;
 use System\Exceptions\{
       ArgumentException,
@@ -223,7 +221,7 @@ class CultureInfo implements IFormatProvider
       private function p__construct_A(string $name, bool $useUserOverride)
       {
             if ($name == null)
-            throw new ArgumentNullException("name", ConstantsException::ArgumentNull_String);
+                  throw new ArgumentNullException("name", ConstantsException::ArgumentNull_String);
 
             $this->m_cultureData = CultureData::GetCultureData($name, $useUserOverride);
 
@@ -782,7 +780,7 @@ class CultureInfo implements IFormatProvider
       /// <summary>Gets the <see cref="T:System->Globalization->TextInfo" /> that defines the writing system associated with the culture-></summary>
       /// <returns>The <see cref="T:System->Globalization->TextInfo" /> that defines the writing system associated with the culture-></returns>
       /** @__DynamicallyInvokable */
-      public function TextInfo()//: TextInfo
+      public function TextInfo() //: TextInfo
       {
             /*if ($this->textInfo == null) {
                   $textInfo = new TextInfo($this->m_cultureData);
@@ -830,7 +828,7 @@ class CultureInfo implements IFormatProvider
       /// -or-
       /// null, if <paramref name="formatType" /> is any other object-></returns>
       /** @__DynamicallyInvokable */
-      public function GetFormat(object $formatType) : object
+      public function GetFormat(object $formatType): object
       {
             if ($formatType == "NumberFormatInfo")
                   return $this->getNumberFormat();
@@ -957,7 +955,7 @@ class CultureInfo implements IFormatProvider
       private static function GetCalendarInstanceRare(int $calType): Calendar
       {
             switch ($calType) {
-                        /*
+                  /*
                   case 2:
                   case 9:
                   case 10:
@@ -1042,7 +1040,8 @@ class CultureInfo implements IFormatProvider
 
             if ($fallbackUiCulture == null) {
                   $fallbackUiCulture = CultureInfo::CreateSpecificCulture(
-                        $this->m_cultureData->SCONSOLEFALLBACKNAME());
+                        $this->m_cultureData->SCONSOLEFALLBACKNAME()
+                  );
                   $fallbackUiCulture->m_isReadOnly = true;
                   $this->m_consoleFallbackCulture = $fallbackUiCulture;
             }
@@ -1223,11 +1222,10 @@ class CultureInfo implements IFormatProvider
       public static function GetCultureInfo($value1, string $altName = null): ?CultureInfo
       {
             if (gettype($value1) == Default_string::ClassName) {
-                  if ($altName == null)
-                  {
+                  if ($altName == null) {
                         if ($value1 == null)
                               throw new ArgumentNullException("name");
-                        
+
                         return CultureInfo::GetCultureInfoHelper(0, $value1, Default_string::EmptyString);
                   }
 
@@ -1238,9 +1236,7 @@ class CultureInfo implements IFormatProvider
                         throw new ArgumentNullException("altName");
 
                   return CultureInfo::GetCultureInfoHelper(-1, $value1, $altName);
-            }
-            else if (gettype($value1) == _int::ClassName)
-            {
+            } else if (gettype($value1) == _int::ClassName) {
                   if ($value1 == 0)
                         throw new ArgumentOutOfRangeException("culture");
 
@@ -1269,7 +1265,7 @@ class CultureInfo implements IFormatProvider
                   throw new CultureNotFoundException(
                         "name",
                         CultureInfo::getCurrentCulture() .
-                        ConstantsException::Argument_CultureIetfNotSupported .
+                              ConstantsException::Argument_CultureIetfNotSupported .
                               $name
                   );
 

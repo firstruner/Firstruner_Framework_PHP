@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright since 2024 Firstruner and Contributors
+ * Copyright 2024-2026 Firstruner and Contributors
  * Firstruner is an Registered Trademark & Property of Christophe BOULAS
  *
  * NOTICE OF LICENSE
@@ -17,7 +17,7 @@
  * Please refer to https://firstruner.fr/ or contact Firstruner for more information.
  *
  * @author    Firstruner and Contributors <contact@firstruner.fr>
- * @copyright Since 2024 Firstruner and Contributors
+ * @copyright 2024-2026 Firstruner and Contributors
  * @license   Proprietary
  * @version 2.0.0
  */
@@ -30,14 +30,12 @@
  * @Update on : 14/02/2025 by : Nadia TRABELSI
  */
 
- namespace DatasDNA\Classes\Bases;
+namespace DatasDNA\Classes\Bases;
 
- use DatasDNA\Enumerations\ENucleicBases;
- 
- final class Guanine extends AbsNucleicBase
- {
-    public const SYMBOL = ENucleicBases::GUANINE;
-    public const WEIGHT = ENucleicBases::GUANINE_VALUE;
-   
- }
- 
+use DatasDNA\Enumerations\ENucleicBases;
+
+final class Guanine extends AbsNucleicBase
+{
+   public const SYMBOL = ENucleicBases::GUANINE;
+   public const WEIGHT = ENucleicBases::GUANINE_VALUE;
+}

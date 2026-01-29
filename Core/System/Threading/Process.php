@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright since 2024 Firstruner and Contributors
+ * Copyright 2024-2026 Firstruner and Contributors
  * Firstruner is an Registered Trademark & Property of Christophe BOULAS
  *
  * NOTICE OF LICENSE
@@ -17,113 +17,127 @@
  * Please refer to https://firstruner.fr/ or contact Firstruner for more information.
  *
  * @author    Firstruner and Contributors <contact@firstruner.fr>
- * @copyright Since 2024 Firstruner and Contributors
+ * @copyright 2024-2026 Firstruner and Contributors
  * @license   Proprietary
  * @version 2.0.0
  */
 
 namespace System\Threading;
 
-class Process {
-      private $command;
-      private $descriptorSpec;
-      private $process;
-      private $pipes;
-      private $status;
-      private $output = [];
-      private $errorOutput = [];
-      private $exitCode;
-      private $timeout;
-  
-      public function __construct(string $command) {
-          $this->command = $command;
-          $this->descriptorSpec = [
-              0 => ["pipe", "r"],  // stdin
-              1 => ["pipe", "w"],  // stdout
-              2 => ["pipe", "w"]   // stderr
-          ];
-          $this->timeout = 60; // default timeout
-      }
-  
-      public function Start(): bool {
-          $this->process = proc_open($this->command, $this->descriptorSpec, $this->pipes);
-  
-          if (is_resource($this->process)) {
-              $this->status = 'Running';
-              return true;
-          }
-  
-          return false;
-      }
-  
-      public function WriteInput(string $input) {
-          if ($this->status !== 'Running') {
-              throw new \Exception("Process is not running.");
-          }
-  
-          fwrite($this->pipes[0], $input);
-      }
-  
-      public function ReadOutput(): string {
-          if ($this->status !== 'Running') {
-              throw new \Exception("Process is not running.");
-          }
-  
-          $this->output[] = fgets($this->pipes[1]);
-          return implode("\n", $this->output);
-      }
-  
-      public function ReadError(): string {
-          if ($this->status !== 'Running') {
-              throw new \Exception("Process is not running.");
-          }
-  
-          $this->errorOutput[] = fgets($this->pipes[2]);
-          return implode("\n", $this->errorOutput);
-      }
-  
-      public function Wait(): void {
-          if ($this->status !== 'Running') {
-              throw new \Exception("Process is not running.");
-          }
-  
-          $this->status = 'Completed';
-          $this->exitCode = proc_close($this->process);
-      }
-  
-      public function ExitCode(): int {
-          return $this->exitCode ?? -1;
-      }
-  
-      public function IsRunning(): bool {
-          return $this->status === 'Running';
-      }
-  
-      public function SetTimeout(int $seconds): void {
-          $this->timeout = $seconds;
-      }
-  
-      public function GetTimeout(): int {
-          return $this->timeout;
-      }
-  
-      public function Status(): string {
-          return $this->status;
-      }
-  
-      public function Terminate() {
-          if ($this->status === 'Running') {
-              proc_terminate($this->process);
-              $this->status = 'Terminated';
-          }
-      }
-  
-      public function __destruct() {
-          if ($this->status === 'Running') {
-              $this->Terminate();
-          }
-      }
-  }
+class Process
+{
+    private $command;
+    private $descriptorSpec;
+    private $process;
+    private $pipes;
+    private $status;
+    private $output = [];
+    private $errorOutput = [];
+    private $exitCode;
+    private $timeout;
+
+    public function __construct(string $command)
+    {
+        $this->command = $command;
+        $this->descriptorSpec = [
+            0 => ["pipe", "r"],  // stdin
+            1 => ["pipe", "w"],  // stdout
+            2 => ["pipe", "w"]   // stderr
+        ];
+        $this->timeout = 60; // default timeout
+    }
+
+    public function Start(): bool
+    {
+        $this->process = proc_open($this->command, $this->descriptorSpec, $this->pipes);
+
+        if (is_resource($this->process)) {
+            $this->status = 'Running';
+            return true;
+        }
+
+        return false;
+    }
+
+    public function WriteInput(string $input)
+    {
+        if ($this->status !== 'Running') {
+            throw new \Exception("Process is not running.");
+        }
+
+        fwrite($this->pipes[0], $input);
+    }
+
+    public function ReadOutput(): string
+    {
+        if ($this->status !== 'Running') {
+            throw new \Exception("Process is not running.");
+        }
+
+        $this->output[] = fgets($this->pipes[1]);
+        return implode("\n", $this->output);
+    }
+
+    public function ReadError(): string
+    {
+        if ($this->status !== 'Running') {
+            throw new \Exception("Process is not running.");
+        }
+
+        $this->errorOutput[] = fgets($this->pipes[2]);
+        return implode("\n", $this->errorOutput);
+    }
+
+    public function Wait(): void
+    {
+        if ($this->status !== 'Running') {
+            throw new \Exception("Process is not running.");
+        }
+
+        $this->status = 'Completed';
+        $this->exitCode = proc_close($this->process);
+    }
+
+    public function ExitCode(): int
+    {
+        return $this->exitCode ?? -1;
+    }
+
+    public function IsRunning(): bool
+    {
+        return $this->status === 'Running';
+    }
+
+    public function SetTimeout(int $seconds): void
+    {
+        $this->timeout = $seconds;
+    }
+
+    public function GetTimeout(): int
+    {
+        return $this->timeout;
+    }
+
+    public function Status(): string
+    {
+        return $this->status;
+    }
+
+    public function Terminate()
+    {
+        if ($this->status === 'Running') {
+            proc_terminate($this->process);
+            $this->status = 'Terminated';
+        }
+    }
+
+    public function __destruct()
+    {
+        if ($this->status === 'Running') {
+            $this->Terminate();
+        }
+    }
+}
   
   // Exemple d'utilisation
 //   try {
@@ -148,4 +162,3 @@ class Process {
 //   } catch (Exception $e) {
 //       echo "Error: " . $e->getMessage();
 //   }
-  

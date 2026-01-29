@@ -1,26 +1,26 @@
 <?php
 
 /**
-* Copyright since 2024 Firstruner and Contributors
-* Firstruner is an Registered Trademark & Property of Christophe BOULAS
-*
-* NOTICE OF LICENSE
-*
-* This source file is subject to the Freemium License
-* If you did not receive a copy of the license and are unable to
-* obtain it through the world-wide-web, please send an email
-* to contact@firstruner.fr so we can send you a copy immediately.
-*
-* DISCLAIMER
-*
-* Do not edit, reproduce ou modify this file.
-* Please refer to https://firstruner.fr/ or contact Firstruner for more information.
-*
-* @author    Firstruner and Contributors <contact@firstruner.fr>
-* @copyright Since 2024 Firstruner and Contributors
-* @license   Proprietary
-* @version 2.0.0
-*/
+ * Copyright 2024-2026 Firstruner and Contributors
+ * Firstruner is an Registered Trademark & Property of Christophe BOULAS
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Freemium License
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to contact@firstruner.fr so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit, reproduce ou modify this file.
+ * Please refer to https://firstruner.fr/ or contact Firstruner for more information.
+ *
+ * @author    Firstruner and Contributors <contact@firstruner.fr>
+ * @copyright 2024-2026 Firstruner and Contributors
+ * @license   Proprietary
+ * @version 2.0.0
+ */
 
 
 namespace System\Security\Cryptography;
@@ -77,7 +77,7 @@ final class RijndaelManaged
       {
             if ($key !== null) {
                   if (strlen($key) !== 32) {
-                  throw new InvalidArgumentException("La clé doit avoir 32 octets (256 bits)");
+                        throw new InvalidArgumentException("La clé doit avoir 32 octets (256 bits)");
                   }
                   $this->key = $key;
                   return null;
@@ -90,7 +90,7 @@ final class RijndaelManaged
       {
             if ($iv !== null) {
                   if (strlen($iv) !== 16) {
-                  throw new InvalidArgumentException("Le vecteur d'initialisation doit avoir 16 octets (128 bits)");
+                        throw new InvalidArgumentException("Le vecteur d'initialisation doit avoir 16 octets (128 bits)");
                   }
                   $this->iv = $iv;
                   return null;
@@ -103,7 +103,7 @@ final class RijndaelManaged
       {
             if ($size !== null) {
                   if (!in_array($size, [128])) {
-                  throw new InvalidArgumentException("La taille du bloc doit être 128 bits pour AES.");
+                        throw new InvalidArgumentException("La taille du bloc doit être 128 bits pour AES.");
                   }
                   $this->blockSize = $size;
             }
@@ -115,7 +115,7 @@ final class RijndaelManaged
       {
             if ($size !== null) {
                   if (!in_array($size, [128, 192, 256])) {
-                  throw new InvalidArgumentException("La taille de la clé doit être 128, 192 ou 256 bits.");
+                        throw new InvalidArgumentException("La taille de la clé doit être 128, 192 ou 256 bits.");
                   }
                   $this->keySize = $size;
                   $this->key = $this->GenerateKey(); // Regénérer une clé avec la bonne taille
@@ -137,7 +137,7 @@ final class RijndaelManaged
       {
             if ($mode !== null) {
                   if (!in_array(strtolower($mode), ["cbc", "ecb", "cfb", "ofb"])) {
-                  throw new InvalidArgumentException("Mode de chiffrement non valide.");
+                        throw new InvalidArgumentException("Mode de chiffrement non valide.");
                   }
                   $this->cipherMode = strtolower($mode);
                   $this->cipherAlgorithm = "aes-256-" . $this->cipherMode;
@@ -150,7 +150,7 @@ final class RijndaelManaged
       {
             if ($mode !== null) {
                   if (!in_array(strtolower($mode), ["pkcs7", "zero"])) {
-                  throw new InvalidArgumentException("Mode de padding non valide.");
+                        throw new InvalidArgumentException("Mode de padding non valide.");
                   }
                   $this->paddingMode = strtolower($mode);
             }

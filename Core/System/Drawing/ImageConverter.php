@@ -1,26 +1,26 @@
 <?php
 
 /**
-* Copyright since 2024 Firstruner and Contributors
-* Firstruner is an Registered Trademark & Property of Christophe BOULAS
-*
-* NOTICE OF LICENSE
-*
-* This source file is subject to the Freemium License
-* If you did not receive a copy of the license and are unable to
-* obtain it through the world-wide-web, please send an email
-* to contact@firstruner.fr so we can send you a copy immediately.
-*
-* DISCLAIMER
-*
-* Do not edit, reproduce ou modify this file.
-* Please refer to https://firstruner.fr/ or contact Firstruner for more information.
-*
-* @author    Firstruner and Contributors <contact@firstruner.fr>
-* @copyright Since 2024 Firstruner and Contributors
-* @license   Proprietary
-* @version 2.0.0
-*/
+ * Copyright 2024-2026 Firstruner and Contributors
+ * Firstruner is an Registered Trademark & Property of Christophe BOULAS
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Freemium License
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to contact@firstruner.fr so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit, reproduce ou modify this file.
+ * Please refer to https://firstruner.fr/ or contact Firstruner for more information.
+ *
+ * @author    Firstruner and Contributors <contact@firstruner.fr>
+ * @copyright 2024-2026 Firstruner and Contributors
+ * @license   Proprietary
+ * @version 2.0.0
+ */
 
 namespace System\Drawing;
 
@@ -34,24 +34,22 @@ class ImageConverter
        * @param int $quality Qualité (0-100) pour JPEG
        * @return array Tableau d’octets
        */
-      public static function ConvertTo(string|\GdImage $image, string $format = 'webp',
-            int $quality = 90, ?string $outputPath = null): array
-      {
-            if (is_string($image))
-            {
+      public static function ConvertTo(
+            string|\GdImage $image,
+            string $format = 'webp',
+            int $quality = 90,
+            ?string $outputPath = null
+      ): array {
+            if (is_string($image)) {
                   $content = @file_get_contents($image);
 
                   if ($content === false)
                         throw new \Exception("Impossible de charger l'image : $image");
 
                   $gd = imagecreatefromstring($content);
-            }
-            elseif ($image instanceof \GdImage)
-            {
+            } elseif ($image instanceof \GdImage) {
                   $gd = $image;
-            }
-            else
-            {
+            } else {
                   throw new \InvalidArgumentException("Image doit être un chemin ou une ressource GD.");
             }
 
@@ -72,7 +70,7 @@ class ImageConverter
                         imagewebp($gd, $outputPath, $quality);
                         break;
             }
-            
+
             $data = ob_get_clean();
 
             return array_values(unpack('C*', $data)); // Convertir en tableau de bytes
@@ -82,7 +80,8 @@ class ImageConverter
        * @deprecated
        * Non utilisée pour le moment
        */
-      private static function convertToWebp(string $source, string $output, int $quality = 80): void {
+      private static function convertToWebp(string $source, string $output, int $quality = 80): void
+      {
             $info = getimagesize($source);
 
             switch ($info['mime']) {
@@ -104,7 +103,7 @@ class ImageConverter
             imagedestroy($image);
 
             echo "Conversion en WebP terminée !\n";
-            }
+      }
 
 
       /**
@@ -135,6 +134,7 @@ class ImageConverter
       {
             return file_put_contents(
                   $filePath,
-                  pack('C*', ...$bytes)) !== false;
+                  pack('C*', ...$bytes)
+            ) !== false;
       }
 }

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright since 2024 Firstruner and Contributors
+ * Copyright 2024-2026 Firstruner and Contributors
  * Firstruner is an Registered Trademark & Property of Christophe BOULAS
  *
  * NOTICE OF LICENSE
@@ -17,11 +17,11 @@
  * Please refer to https://firstruner.fr/ or contact Firstruner for more information.
  *
  * @author    Firstruner and Contributors <contact@firstruner.fr>
- * @copyright Since 2024 Firstruner and Contributors
+ * @copyright 2024-2026 Firstruner and Contributors
  * @license   Proprietary
  * @version 2.0.0
  */
- 
+
 namespace System\Net;
 
 use System\Default\_array;
@@ -51,7 +51,7 @@ final class NetworkCredential
       ///       The user name associated with this credential.
       ///    </para>
       /// </devdoc>
-      public function UserName() : string
+      public function UserName(): string
       {
             return $this->_userName;
       }
@@ -61,11 +61,11 @@ final class NetworkCredential
       ///       The password for the user name.
       ///    </para>
       /// </devdoc>
-      public function Password() : mixed
+      public function Password(): mixed
       {
             return $this->_password ?? _string::EmptyString;
       }
-      
+
       public function IsSecurePassword(): bool
       {
             return gettype($this->_password) == _array::ClassName;
