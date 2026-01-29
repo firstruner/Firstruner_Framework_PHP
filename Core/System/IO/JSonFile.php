@@ -1,26 +1,26 @@
 <?php
 
 /**
-* Copyright since 2024 Firstruner and Contributors
-* Firstruner is an Registered Trademark & Property of Christophe BOULAS
-*
-* NOTICE OF LICENSE
-*
-* This source file is subject to the Freemium License
-* If you did not receive a copy of the license and are unable to
-* obtain it through the world-wide-web, please send an email
-* to contact@firstruner.fr so we can send you a copy immediately.
-*
-* DISCLAIMER
-*
-* Do not edit, reproduce ou modify this file.
-* Please refer to https:*firstruner.fr/ or contact Firstruner for more information.
-*
-* @author    Firstruner and Contributors <contact@firstruner.fr>
-* @copyright Since 2024 Firstruner and Contributors
-* @license   Proprietary
-* @version 2.0.0
-*/
+ * Copyright 2024-2026 Firstruner and Contributors
+ * Firstruner is an Registered Trademark & Property of Christophe BOULAS
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Freemium License
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to contact@firstruner.fr so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit, reproduce ou modify this file.
+ * Please refer to https:*firstruner.fr/ or contact Firstruner for more information.
+ *
+ * @author    Firstruner and Contributors <contact@firstruner.fr>
+ * @copyright 2024-2026 Firstruner and Contributors
+ * @license   Proprietary
+ * @version 2.0.0
+ */
 
 namespace System\IO;
 
@@ -36,7 +36,7 @@ final class JSonFile implements IBasicRepository
        * @param mixed $data Objet ou chaîne JSON
        * @return bool
        */
-      public static function Write(string $filePath, string $datas) : bool
+      public static function Write(string $filePath, string $datas): bool
       {
             if (!_JSon::IsJSon($datas))
                   throw new IOException("Erreur d'encodage JSON : " . json_last_error_msg());
@@ -51,7 +51,7 @@ final class JSonFile implements IBasicRepository
        * @param string|null $className Nom complet de la classe à instancier, ou null pour renvoyer une string
        * @return mixed
        */
-      public static function Read(string $filePath, ?string $className = null) : mixed
+      public static function Read(string $filePath, ?string $className = null): mixed
       {
             if (!file_exists($filePath))
                   throw new IOException("Fichier introuvable : $filePath");

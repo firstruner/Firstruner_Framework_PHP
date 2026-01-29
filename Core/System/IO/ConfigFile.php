@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright since 2024 Firstruner and Contributors
+ * Copyright 2024-2026 Firstruner and Contributors
  * Firstruner is an Registered Trademark & Property of Christophe BOULAS
  *
  * NOTICE OF LICENSE
@@ -17,7 +17,7 @@
  * Please refer to https://firstruner.fr/ or contact Firstruner for more information.
  *
  * @author    Firstruner and Contributors <contact@firstruner.fr>
- * @copyright Since 2024 Firstruner and Contributors
+ * @copyright 2024-2026 Firstruner and Contributors
  * @license   Proprietary
  * @version 2.0.0
  */
@@ -39,8 +39,8 @@ class ConfigFile
       public function __construct(
             string $configpath,
             bool $autoload = true,
-            bool $autosave = false)
-      {
+            bool $autosave = false
+      ) {
             $this->path = $configpath;
             $this->settings = new Dictionary();
             $this->autosave = $autosave;
@@ -80,8 +80,7 @@ class ConfigFile
 
             $this->initDictionary();
 
-            foreach ($lines as $line)
-            {
+            foreach ($lines as $line) {
                   if (strlen($line) == 0) continue;
                   if ($line[0] == $this->commentChar) continue;
 
@@ -101,15 +100,14 @@ class ConfigFile
       public function Save()
       {
             $writer = new StreamWriter($this->path, true, true);
-            
-            foreach ($this->settings as $setting)
-            {
+
+            foreach ($this->settings as $setting) {
                   $kv = KeyValuePair::Parse($setting);
                   $writer->WriteLine($kv->GetKey() . $this->splitChar . $kv->Value);
             }
       }
 
-      public function Get(string $key) : ?string
+      public function Get(string $key): ?string
       {
             return $this->settings->GetByKey($key);
       }
@@ -118,12 +116,9 @@ class ConfigFile
       {
             $kv = $this->settings->GetByKey($key);
 
-            if (isset($kv))
-            {
+            if (isset($kv)) {
                   $kv->Value = $value;
-            }
-            else
-            {
+            } else {
                   $this->settings->Add(new KeyValuePair($key, $value));
             }
 

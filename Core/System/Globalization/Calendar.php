@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright since 2024 Firstruner and Contributors
+ * Copyright 2024-2026 Firstruner and Contributors
  * Firstruner is an Registered Trademark & Property of Christophe BOULAS
  *
  * NOTICE OF LICENSE
@@ -17,7 +17,7 @@
  * Please refer to https://firstruner.fr/ or contact Firstruner for more information.
  *
  * @author    Firstruner and Contributors <contact@firstruner.fr>
- * @copyright Since 2024 Firstruner and Contributors
+ * @copyright 2024-2026 Firstruner and Contributors
  * @license   Proprietary
  * @version 2.0.0
  */
@@ -47,6 +47,7 @@ use System\Exceptions\{
 use System\Default\_string as DefaultString;
 
 /// <summary>Represents time in divisions, such as weeks, months, and years.</summary>
+
 /** @ComVisible(true) */
 /** @__DynamicallyInvokable */
 /** @Serializable */
@@ -145,9 +146,7 @@ class Calendar // : ICloneable
 
       /// <summary>Initializes a new instance of the <see cref="T:System.Globalization.Calendar" /> class.</summary>
       /** @__DynamicallyInvokable */
-      public function Calendar()
-      {
-      }
+      public function Calendar() {}
 
       /// <summary>Gets a value indicating whether this <see cref="T:System.Globalization.Calendar" /> object is read-only.</summary>
       /// <returns>

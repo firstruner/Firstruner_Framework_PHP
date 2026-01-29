@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright since 2024 Firstruner and Contributors
+ * Copyright 2024-2026 Firstruner and Contributors
  * Firstruner is an Registered Trademark & Property of Christophe BOULAS
  *
  * NOTICE OF LICENSE
@@ -17,7 +17,7 @@
  * Please refer to https://firstruner.fr/ or contact Firstruner for more information.
  *
  * @author    Firstruner and Contributors <contact@firstruner.fr>
- * @copyright Since 2024 Firstruner and Contributors
+ * @copyright 2024-2026 Firstruner and Contributors
  * @license   Proprietary
  * @version 2.0.0
  */
@@ -29,7 +29,8 @@ final class XMLConfigFile
       private string $path;
       private \SimpleXMLElement $xml;
 
-      public function __construct($path) {
+      public function __construct($path)
+      {
             $this->path = $path;
             $this->Reload();
       }
@@ -41,16 +42,19 @@ final class XMLConfigFile
             } else {
                   $this->xml = new \SimpleXMLElement(
                         '<?xml version="1.0"?>' . PHP_EOL .
-                        '<config></config>');
+                              '<config></config>'
+                  );
             }
       }
 
-      public function Get($key) {
+      public function Get($key)
+      {
             $result = $this->xml->xpath("//setting[@name='$key']");
             return !empty($result) ? (string)$result[0] : null;
       }
 
-      public function Set($key, $value) {
+      public function Set($key, $value)
+      {
             $result = $this->xml->xpath("//setting[@name='$key']");
             if (!empty($result)) {
                   $result[0][0] = $value;
@@ -60,7 +64,8 @@ final class XMLConfigFile
             }
       }
 
-      public function Remove($key) {
+      public function Remove($key)
+      {
             $result = $this->xml->xpath("//setting[@name='$key']");
             if (!empty($result)) {
                   $dom = dom_import_simplexml($result[0]);
@@ -68,7 +73,8 @@ final class XMLConfigFile
             }
       }
 
-      public function Save() {
+      public function Save()
+      {
             $this->xml->asXML($this->path);
       }
 }

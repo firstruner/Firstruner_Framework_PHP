@@ -1,26 +1,26 @@
 <?php
 
 /**
-* Copyright since 2024 Firstruner and Contributors
-* Firstruner is an Registered Trademark & Property of Christophe BOULAS
-*
-* NOTICE OF LICENSE
-*
-* This source file is subject to the Freemium License
-* If you did not receive a copy of the license and are unable to
-* obtain it through the world-wide-web, please send an email
-* to contact@firstruner.fr so we can send you a copy immediately.
-*
-* DISCLAIMER
-*
-* Do not edit, reproduce ou modify this file.
-* Please refer to https://firstruner.fr/ or contact Firstruner for more information.
-*
-* @author    Firstruner and Contributors <contact@firstruner.fr>
-* @copyright Since 2024 Firstruner and Contributors
-* @license   Proprietary
-* @version 2.0.0
-*/
+ * Copyright 2024-2026 Firstruner and Contributors
+ * Firstruner is an Registered Trademark & Property of Christophe BOULAS
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Freemium License
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to contact@firstruner.fr so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit, reproduce ou modify this file.
+ * Please refer to https://firstruner.fr/ or contact Firstruner for more information.
+ *
+ * @author    Firstruner and Contributors <contact@firstruner.fr>
+ * @copyright 2024-2026 Firstruner and Contributors
+ * @license   Proprietary
+ * @version 2.0.0
+ */
 
 /**
  * Polish PHPMailer language file: refer to English translation for definitive list
@@ -37,7 +37,7 @@ $PHPMAILER_LANG['file_access']          = 'Brak dostępu do pliku: ';
 $PHPMAILER_LANG['file_open']            = 'Nie można otworzyć pliku: ';
 $PHPMAILER_LANG['from_failed']          = 'Następujący adres Nadawcy jest nieprawidłowy: ';
 $PHPMAILER_LANG['instantiate']          = 'Nie można wywołać funkcji mail(). Sprawdź konfigurację serwera.';
-$PHPMAILER_LANG['invalid_address']      = 'Nie można wysłać wiadomości, '.
+$PHPMAILER_LANG['invalid_address']      = 'Nie można wysłać wiadomości, ' .
     'następujący adres Odbiorcy jest nieprawidłowy: ';
 $PHPMAILER_LANG['provide_address']      = 'Należy podać prawidłowy adres email Odbiorcy.';
 $PHPMAILER_LANG['mailer_not_supported'] = 'Wybrana metoda wysyłki wiadomości nie jest obsługiwana.';

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright since 2024 Firstruner and Contributors
+ * Copyright 2024-2026 Firstruner and Contributors
  * Firstruner is an Registered Trademark & Property of Christophe BOULAS
  *
  * NOTICE OF LICENSE
@@ -17,7 +17,7 @@
  * Please refer to https://firstruner.fr/ or contact Firstruner for more information.
  *
  * @author    Firstruner and Contributors <contact@firstruner.fr>
- * @copyright Since 2024 Firstruner and Contributors
+ * @copyright 2024-2026 Firstruner and Contributors
  * @license   Proprietary
  * @version 2.0.0
  */
@@ -32,13 +32,14 @@ enum EApiHeaders_Code
 */
 
 /* PHP 7+*/
+
 abstract class Headers_Code
 {
     const Success = "HTTP/1.1 200 SUCCESS";
     const Unauthorized = "HTTP/1.1 401 UNAUTHORIZED";
     const BadRequest = "HTTP/1.1 400 BAD REQUEST";
     const TemporaryRedirection = 'HTTP/1.1 302 TEMPORARY REDIRECTION';
-    
+
     const Success_Code = 200;
     const Unauthorized_Code = 401;
     const BadRequest_Code = 400;
@@ -175,8 +176,7 @@ abstract class Headers_Code
 
     public static function GetEnum(int $codeValue, bool $full = false)
     {
-        switch ($codeValue)
-        {
+        switch ($codeValue) {
             case 200:
                 return $full ? Headers_Code::Success : Headers_Code::Success_Code;
             case 302:

@@ -1,26 +1,26 @@
 <?php
 
 /**
-* Copyright since 2024 Firstruner and Contributors
-* Firstruner is an Registered Trademark & Property of Christophe BOULAS
-*
-* NOTICE OF LICENSE
-*
-* This source file is subject to the Freemium License
-* If you did not receive a copy of the license and are unable to
-* obtain it through the world-wide-web, please send an email
-* to contact@firstruner.fr so we can send you a copy immediately.
-*
-* DISCLAIMER
-*
-* Do not edit, reproduce ou modify this file.
-* Please refer to https://firstruner.fr/ or contact Firstruner for more information.
-*
-* @author    Firstruner and Contributors <contact@firstruner.fr>
-* @copyright Since 2024 Firstruner and Contributors
-* @license   Proprietary
-* @version 2.0.0
-*/
+ * Copyright 2024-2026 Firstruner and Contributors
+ * Firstruner is an Registered Trademark & Property of Christophe BOULAS
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Freemium License
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to contact@firstruner.fr so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit, reproduce ou modify this file.
+ * Please refer to https://firstruner.fr/ or contact Firstruner for more information.
+ *
+ * @author    Firstruner and Contributors <contact@firstruner.fr>
+ * @copyright 2024-2026 Firstruner and Contributors
+ * @license   Proprietary
+ * @version 2.0.0
+ */
 require('../Enumerations/System/Default/_string.php');
 require('../Core/System/Types_System/_String/_String_Common.partial_php');
 
@@ -61,13 +61,14 @@ $revBin = Default_string::EmptyString;
 for ($i = 0; $i < strlen($output); $i++)
       $revBin .= $arValues2[$output[$i]];
 
-function binaryToHex($binary) {
+function binaryToHex($binary)
+{
       $hex = Default_string::EmptyString;
 
       for ($i = 0; $i < strlen($binary); $i += 2)
 
-      // Diviser la chaîne binaire en groupes de 4 bits
-      $hex = '';
+            // Diviser la chaîne binaire en groupes de 4 bits
+            $hex = '';
       for ($i = 0; $i < strlen($binary); $i += 2) {
             // Prendre 4 bits à la fois
             $binSegment = substr($binary, $i, 2);
@@ -75,7 +76,7 @@ function binaryToHex($binary) {
             $hex .= dechex(bindec($binSegment));
       }
       return strtoupper($hex); // Retourner en majuscule pour convention hexadécimale
-      }
+}
 
 $revHexa = binaryToHex($revBin);
 $revContent = hex2bin($revHexa);

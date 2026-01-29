@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright since 2024 Firstruner and Contributors
+ * Copyright 2024-2026 Firstruner and Contributors
  * Firstruner is an Registered Trademark & Property of Christophe BOULAS
  *
  * NOTICE OF LICENSE
@@ -17,7 +17,7 @@
  * Please refer to https://firstruner.fr/ or contact Firstruner for more information.
  *
  * @author    Firstruner and Contributors <contact@firstruner.fr>
- * @copyright Since 2024 Firstruner and Contributors
+ * @copyright 2024-2026 Firstruner and Contributors
  * @license   Proprietary
  * @version 2.0.0
  */
@@ -57,19 +57,27 @@ class DNA_Sequenceur
     private function __construct() {}
 
     // Empêche le clonage du singleton
-    private function __clone() { throw new \Exception("Not authorized"); }
+    private function __clone()
+    {
+        throw new \Exception("Not authorized");
+    }
 
     // Empêche la sérialization/désérialization
-    private function __wakeup() { throw new \Exception("Not authorized"); }
+    private function __wakeup()
+    {
+        throw new \Exception("Not authorized");
+    }
 
-    public function __serialize(): array { throw new \Exception("Not authorized"); }
+    public function __serialize(): array
+    {
+        throw new \Exception("Not authorized");
+    }
 
     // Méthode thread-safe pour récupérer l'instance unique
     public static function GetInstance(): DNA_Sequenceur
     {
         if (self::$instance === null) {
-            if (!self::$lock)
-            {
+            if (!self::$lock) {
                 self::$lock = true;
                 self::$instance = new DNA_Sequenceur();
             }
@@ -78,15 +86,19 @@ class DNA_Sequenceur
         return self::$instance;
     }
 
-    private function InstanciateNucleicBase(string $value) : INucleic
+    private function InstanciateNucleicBase(string $value): INucleic
     {
-        switch ($value)
-        {
-            case ENucleicBases::ADENINE : return new Adenine();
-            case ENucleicBases::THYMINE : return new Thymine();
-            case ENucleicBases::CYTOSINE : return new Cytosine();
-            case ENucleicBases::GUANINE : return new Guanine();
-            default: throw new ATCG_Exception();
+        switch ($value) {
+            case ENucleicBases::ADENINE:
+                return new Adenine();
+            case ENucleicBases::THYMINE:
+                return new Thymine();
+            case ENucleicBases::CYTOSINE:
+                return new Cytosine();
+            case ENucleicBases::GUANINE:
+                return new Guanine();
+            default:
+                throw new ATCG_Exception();
         }
     }
 
@@ -95,16 +107,15 @@ class DNA_Sequenceur
         // Utilisation du builder pour créer l'objet DNA_Structure
         $dnaStructure = DNA_StructureBuilder::build();
 
-        foreach (str_split($text) as $char)
-        {
+        foreach (str_split($text) as $char) {
             // `IsValid` déclenche une exception si le caractère est invalide, donc pas besoin de vérifier ici
 
             // Construire l'objet Brin à partir de la base valide
             $brin = BrinBuilder::buildFromBase($this->InstanciateNucleicBase($char));
-            
+
             // Construire le chromosome à partir du Brin
             $chromosome = ChromosomeBuilder::buildFromBrin($brin);
-            
+
             // Ajouter le chromosome à la structure de l'ADN
             $dnaStructure->add($chromosome);
         }

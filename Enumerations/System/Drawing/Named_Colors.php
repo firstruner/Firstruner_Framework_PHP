@@ -1,30 +1,31 @@
 <?php
 
 /**
-* Copyright since 2024 Firstruner and Contributors
-* Firstruner is an Registered Trademark & Property of Christophe BOULAS
-*
-* NOTICE OF LICENSE
-*
-* This source file is subject to the Freemium License
-* If you did not receive a copy of the license and are unable to
-* obtain it through the world-wide-web, please send an email
-* to contact@firstruner.fr so we can send you a copy immediately.
-*
-* DISCLAIMER
-*
-* Do not edit, reproduce ou modify this file.
-* Please refer to https://firstruner.fr/ or contact Firstruner for more information.
-*
-* @author    Firstruner and Contributors <contact@firstruner.fr>
-* @copyright Since 2024 Firstruner and Contributors
-* @license   Proprietary
-* @version 2.0.0
-*/
+ * Copyright 2024-2026 Firstruner and Contributors
+ * Firstruner is an Registered Trademark & Property of Christophe BOULAS
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Freemium License
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to contact@firstruner.fr so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit, reproduce ou modify this file.
+ * Please refer to https://firstruner.fr/ or contact Firstruner for more information.
+ *
+ * @author    Firstruner and Contributors <contact@firstruner.fr>
+ * @copyright 2024-2026 Firstruner and Contributors
+ * @license   Proprietary
+ * @version 2.0.0
+ */
 
 namespace System\Drawing;
 
-abstract class Named_Color {
+abstract class Named_Color
+{
     public const ALICE_BLUE = ["Name" => "AliceBlue", "Hex" => "#F0F8FF", "RGB" => "rgb(240, 248, 255)"];
     public const ANTIQUE_WHITE = ["Name" => "AntiqueWhite", "Hex" => "#FAEBD7", "RGB" => "rgb(250, 235, 215)"];
     public const AQUA = ["Name" => "Aqua", "Hex" => "#00FFFF", "RGB" => "rgb(0, 255, 255)"];
@@ -164,4 +165,3 @@ abstract class Named_Color {
     public const YELLOW = ["Name" => "Yellow", "Hex" => "#FFFF00", "RGB" => "rgb(255, 255, 0)"];
     public const YELLOW_GREEN = ["Name" => "YellowGreen", "Hex" => "#9ACD32", "RGB" => "rgb(154, 205, 50)"];
 }
-    

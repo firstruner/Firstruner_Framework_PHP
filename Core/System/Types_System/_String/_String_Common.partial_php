@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright since 2024 Firstruner and Contributors
+ * Copyright 2024 Firstruner and Contributors
  * Firstruner is an Registered Trademark & Property of Christophe BOULAS
  *
  * NOTICE OF LICENSE
@@ -17,7 +17,7 @@
  * Please refer to https://firstruner.fr/ or contact Firstruner for more information.
  *
  * @author    Firstruner and Contributors <contact@firstruner.fr>
- * @copyright Since 2024 Firstruner and Contributors
+ * @copyright 2024 Firstruner and Contributors
  * @license   Proprietary
  * @version 2.0.0
  */
@@ -140,13 +140,13 @@ class _String
             return array_values(unpack('C*', $stack));
       }
 
-      public static function ToBinary(string $stack) : string
+      public static function ToBinary(string $stack): string
       {
             $binary = Default_string::EmptyString;
-            
+
             for ($i = 0; $i < strlen($stack); $i++)
                   $binary .= sprintf("%08b", ord($stack[$i]));
-            
+
             return $binary;
       }
 
@@ -154,7 +154,7 @@ class _String
       {
             if (function_exists('\mb_strrchr'))
                   return \mb_strrchr($haystack, $needle, $part);
-            
+
             return \strrchr($haystack, $needle);
       }
 
@@ -170,7 +170,7 @@ class _String
       {
             if (function_exists('\mb_strpos'))
                   return \mb_strpos($haystack, $needle, $offset);
-            
+
             return \strpos($haystack, $needle, $offset);
       }
 
@@ -178,7 +178,7 @@ class _String
       {
             if (function_exists('\mb_strrpos'))
                   return \mb_strrpos($haystack, $needle, $offset);
-            
+
             return \strrpos($haystack, $needle, $offset);
       }
 
@@ -189,7 +189,7 @@ class _String
        * @param       $needle
        * @return bool
        */
-      public static function StartsWith($haystack, $needle) : bool
+      public static function StartsWith($haystack, $needle): bool
       {
             return self::substring($haystack, 0, self::length($needle)) === $needle;
       }
@@ -201,12 +201,13 @@ class _String
        * @param       $needle
        * @return bool
        */
-      public static function EndsWith($haystack, $needle) : bool
+      public static function EndsWith($haystack, $needle): bool
       {
             return self::substring(
                   $haystack,
                   \strlen($haystack) - self::length($needle),
-                  self::length($needle)) === $needle;
+                  self::length($needle)
+            ) === $needle;
       }
 
       /**
@@ -216,7 +217,7 @@ class _String
        * @param       $needle
        * @return bool
        */
-      public static function EndWith($haystack, $needle) : bool
+      public static function EndWith($haystack, $needle): bool
       {
             return self::EndsWith($haystack, $needle);
       }
@@ -228,54 +229,54 @@ class _String
        * @param       $needle
        * @return bool
        */
-      public static function Contains($haystack, $needle) : bool
+      public static function Contains($haystack, $needle): bool
       {
             return \strpos($haystack, $needle);
       }
 
-      public static function Substring($string, $start, $length) : string
+      public static function Substring($string, $start, $length): string
       {
             if (function_exists('\mb_substr'))
                   return \mb_substr($string, $start, $length);
-            
+
             return \substr($string, $start, $length);
       }
 
-      public static function ToByteArrayBrutUTF8($string) {
+      public static function ToByteArrayBrutUTF8($string)
+      {
             return array_values(unpack('C*', mb_convert_encoding($string, 'UTF-8', 'UTF-8')));
       }
 
       public static function CreateRandomString(
             $length = 15,
             $validCharacters = "ABCDEFGHJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*?_-"
-            )
-      {
+      ) {
             $randomString = "";
             $maxIndex = strlen($validCharacters) - 1;
-        
+
             for ($i = 0; $i < $length; $i++) {
-                $randomString .= $validCharacters[random_int(0, $maxIndex)];
+                  $randomString .= $validCharacters[random_int(0, $maxIndex)];
             }
-        
+
             return $randomString;
       }
 
-      public static function Chunk(string $haystack, int $lenght) : array
+      public static function Chunk(string $haystack, int $lenght): array
       {
             return str_split($haystack, $lenght);
       }
 
-      public static function ToBase64(string $haystack) : string
+      public static function ToBase64(string $haystack): string
       {
             return base64_encode($haystack);
       }
 
-      public static function FromBase64(string $haystack) : string
+      public static function FromBase64(string $haystack): string
       {
             return base64_decode($haystack);
       }
 
-      public static function Cut(string $haystack, int $size) : array
+      public static function Cut(string $haystack, int $size): array
       {
             return str_split($haystack, $size);
       }

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright since 2024 Firstruner and Contributors
+ * Copyright 2024 Firstruner and Contributors
  * Firstruner is an Registered Trademark & Property of Christophe BOULAS
  *
  * NOTICE OF LICENSE
@@ -17,7 +17,7 @@
  * Please refer to https://firstruner.fr/ or contact Firstruner for more information.
  *
  * @author    Firstruner and Contributors <contact@firstruner.fr>
- * @copyright Since 2024 Firstruner and Contributors
+ * @copyright 2024 Firstruner and Contributors
  * @license   Proprietary
  * @version 2.0.0
  */
@@ -37,8 +37,7 @@ final class Luid implements IGuid
 
       public function __construct($values = null)
       {
-            switch (gettype($values))
-            {
+            switch (gettype($values)) {
                   case _string::ClassName:
                         $this->fromStringValue($values);
                         break;
@@ -55,36 +54,32 @@ final class Luid implements IGuid
             }
       }
 
-      public function UseHighEntropy() : bool
+      public function UseHighEntropy(): bool
       {
             return strlen($this->values[count($this->values) - 1]) == 16;
       }
 
       private function fromStringValue(string $value)
       {
-            if (strlen($value) == 26)
-            {
+            if (strlen($value) == 26) {
                   $value = substr($value, 0, 11) . '-' .
                         substr($value, 11, 4) . '-' .
                         substr($value, 15, 3) . '-' .
                         substr($value, 18);
             }
 
-            if (strlen($value) >= 29)
-            {
+            if (strlen($value) >= 29) {
                   $cur_values = explode('-', $value);
                   $this->values = [
-                              $cur_values[0],
-                              $cur_values[1],
-                              $cur_values[2],
-                              $cur_values[3]
-                        ];
+                        $cur_values[0],
+                        $cur_values[1],
+                        $cur_values[2],
+                        $cur_values[3]
+                  ];
 
                   if (count($cur_values) == 5)
                         array_push($this->values, $cur_values[4]);
-            }
-            else
-            {
+            } else {
                   $this->fromStringValue($this->defaultValue);
             }
       }
@@ -106,25 +101,26 @@ final class Luid implements IGuid
             $thirdVal = $values[$firstPartId++];
             $quadVal = $values[$firstPartId++];
 
-            if ((strlen($firstVal . $secondVal . $thirdVal . $quadVal) == 26))
-                  {
-                        if (($prefixVal != $firstVal) && ($prefixVal != _string::EmptyString))
-                              $normArray[0] = $prefixVal;
-                        
-                        array_merge($normArray,
-                              [
-                                    $firstVal,
-                                    $secondVal,
-                                    $thirdVal,
-                                    $quadVal
-                        ]);
-                  }
+            if ((strlen($firstVal . $secondVal . $thirdVal . $quadVal) == 26)) {
+                  if (($prefixVal != $firstVal) && ($prefixVal != _string::EmptyString))
+                        $normArray[0] = $prefixVal;
+
+                  array_merge(
+                        $normArray,
+                        [
+                              $firstVal,
+                              $secondVal,
+                              $thirdVal,
+                              $quadVal
+                        ]
+                  );
+            }
 
             if (count($normArray) >= 4)
                   $this->values = $normArray;
       }
 
-      private function getString() : string
+      private function getString(): string
       {
             return implode('-', $this->values);
       }
@@ -136,6 +132,6 @@ final class Luid implements IGuid
 
       public function ToByteArray()
       {
-            return unpack('C*',$this->getString());
+            return unpack('C*', $this->getString());
       }
 }

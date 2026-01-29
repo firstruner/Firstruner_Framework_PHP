@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright since 2024 Firstruner and Contributors
+ * Copyright 2024-2026 Firstruner and Contributors
  * Firstruner is an Registered Trademark & Property of Christophe BOULAS
  *
  * NOTICE OF LICENSE
@@ -17,27 +17,28 @@
  * Please refer to https://firstruner.fr/ or contact Firstruner for more information.
  *
  * @author    Firstruner and Contributors <contact@firstruner.fr>
- * @copyright Since 2024 Firstruner and Contributors
+ * @copyright 2024-2026 Firstruner and Contributors
  * @license   Proprietary
  * @version 2.0.0
  */
 
- namespace System\Net\Keys;
+namespace System\Net\Keys;
 
- /* PHP 8+
+/* PHP 8+
  enum EAppParams
  {
      //case ...;
  }
  */
- 
- /* PHP 7+*/
- abstract class AppKeys
- {
+
+/* PHP 7+*/
+
+abstract class AppKeys
+{
     public const DebugMode = "debugmode";
     public const SimsMode = "SimsMode";
     public const DateFormat = "DateFormat";
-    public const DateTimeFormat = "DateTimeFormat";    
+    public const DateTimeFormat = "DateTimeFormat";
     public const DateFormatAffichage = "DateFormatAffichage";
     public const DefaultHashProtocol = "sha256";
     public const CurrentUser = "CurrentUser";
@@ -53,4 +54,4 @@
     public const AccesDayLimitation = "AccesDayLimitation";
     public const MaxCourtoisieVisit = "MaxCourtoisieVisit";
     public const LevelAdmin = "LevelAdmin";
- }
+}

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright since 2024 Firstruner and Contributors
+ * Copyright 2024-2026 Firstruner and Contributors
  * Firstruner is an Registered Trademark & Property of Christophe BOULAS
  *
  * NOTICE OF LICENSE
@@ -17,11 +17,11 @@
  * Please refer to https://firstruner.fr/ or contact Firstruner for more information.
  *
  * @author    Firstruner and Contributors <contact@firstruner.fr>
- * @copyright Since 2024 Firstruner and Contributors
+ * @copyright 2024-2026 Firstruner and Contributors
  * @license   Proprietary
  * @version 2.0.0
  */
- 
+
 namespace System\Diagnostics;
 
 use ArrayObject;
@@ -30,7 +30,7 @@ use System\Guid;
 
 class BenchmarkCollection extends ArrayObject
 {
-    private function find(string|Guid $name_uid) : ?Benchmark
+    private function find(string|Guid $name_uid): ?Benchmark
     {
         foreach ($this as $benchmark)
             if ((is_string($name_uid) ? $benchmark->Name : $benchmark->UID) == $name_uid)
@@ -39,7 +39,7 @@ class BenchmarkCollection extends ArrayObject
         return null;
     }
 
-    public function start(string $name = _string::EmptyString) : Guid
+    public function start(string $name = _string::EmptyString): Guid
     {
         if ($this->find($name) != null)
             throw new \Exception("$name existe déjà !");
@@ -52,7 +52,7 @@ class BenchmarkCollection extends ArrayObject
         return $benchmark->UID;
     }
 
-    public function stop(string|Guid $name_uid) : string|float
+    public function stop(string|Guid $name_uid): string|float
     {
         $benchmark = $this->find($name_uid);
 
@@ -62,7 +62,7 @@ class BenchmarkCollection extends ArrayObject
         return $benchmark->stop();
     }
 
-    public function getElapsedTime(string|Guid $name_uid) : string|float
+    public function getElapsedTime(string|Guid $name_uid): string|float
     {
         $benchmark = $this->find($name_uid);
 
@@ -72,22 +72,22 @@ class BenchmarkCollection extends ArrayObject
         return $benchmark->getElapsedTime();
     }
 
-    public function getAllTimings() : array
+    public function getAllTimings(): array
     {
         $output = [];
 
         foreach ($this as $benchmark)
             $output[$benchmark->UID] = new class($benchmark)
-                {
-                    public readonly Benchmark $Sender;
-                    public readonly string|float $ElapsedTime;
+            {
+                public readonly Benchmark $Sender;
+                public readonly string|float $ElapsedTime;
 
-                    public function __construct(Benchmark $benchmark)
-                    {
-                        $this->Sender = $benchmark;
-                        $this->ElapsedTime = $benchmark->getElapsedTime();
-                    }
-                };
+                public function __construct(Benchmark $benchmark)
+                {
+                    $this->Sender = $benchmark;
+                    $this->ElapsedTime = $benchmark->getElapsedTime();
+                }
+            };
 
         return $output;
     }
@@ -108,16 +108,16 @@ class BenchmarkCollection extends ArrayObject
 
         foreach ($this as $benchmark)
             $output[$benchmark->UID] = new class($benchmark, $decimals)
-                {
-                    public readonly Benchmark $Sender;
-                    public readonly string|float $ElapsedTime;
+            {
+                public readonly Benchmark $Sender;
+                public readonly string|float $ElapsedTime;
 
-                    public function __construct(Benchmark $benchmark, $decimals)
-                    {
-                        $this->Sender = $benchmark;
-                        $this->ElapsedTime = $benchmark->getFormattedTime($decimals);
-                    }
-                };
+                public function __construct(Benchmark $benchmark, $decimals)
+                {
+                    $this->Sender = $benchmark;
+                    $this->ElapsedTime = $benchmark->getFormattedTime($decimals);
+                }
+            };
 
         return $output;
     }

@@ -1,26 +1,26 @@
 <?php
 
 /**
-* Copyright since 2024 Firstruner and Contributors
-* Firstruner is an Registered Trademark & Property of Christophe BOULAS
-*
-* NOTICE OF LICENSE
-*
-* This source file is subject to the Freemium License
-* If you did not receive a copy of the license and are unable to
-* obtain it through the world-wide-web, please send an email
-* to contact@firstruner.fr so we can send you a copy immediately.
-*
-* DISCLAIMER
-*
-* Do not edit, reproduce ou modify this file.
-* Please refer to https:*firstruner.fr/ or contact Firstruner for more information.
-*
-* @author    Firstruner and Contributors <contact@firstruner.fr>
-* @copyright Since 2024 Firstruner and Contributors
-* @license   Proprietary
-* @version 2.0.0
-*/
+ * Copyright 2024-2026 Firstruner and Contributors
+ * Firstruner is an Registered Trademark & Property of Christophe BOULAS
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Freemium License
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to contact@firstruner.fr so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit, reproduce ou modify this file.
+ * Please refer to https:*firstruner.fr/ or contact Firstruner for more information.
+ *
+ * @author    Firstruner and Contributors <contact@firstruner.fr>
+ * @copyright 2024-2026 Firstruner and Contributors
+ * @license   Proprietary
+ * @version 2.0.0
+ */
 
 namespace System\Security\Cryptography\Methods\Fractal;
 
@@ -38,10 +38,9 @@ final class JuliaProvider
 
       public function __construct(?FractalOptions $_options = null)
       {
-            $this->Options = $_options??new FractalOptions();
+            $this->Options = $_options ?? new FractalOptions();
 
-            if (!$_options)
-            {
+            if (!$_options) {
                   $this->Options->RealPartNumber = -0.7;
                   $this->Options->UnRealPartNumber = 0.27015;
                   $this->Options->MaximalIteration = 200;
@@ -62,10 +61,9 @@ final class JuliaProvider
       {
             $iter = 0;
 
-            while (($zx*$zx + $zy*$zy) <= 4.0 && $iter < $maxIter)
-            {
-                  $xt = $zx*$zx - $zy*$zy + $cx;
-                  $zy = 2.0*$zx*$zy + $cy;
+            while (($zx * $zx + $zy * $zy) <= 4.0 && $iter < $maxIter) {
+                  $xt = $zx * $zx - $zy * $zy + $cx;
+                  $zy = 2.0 * $zx * $zy + $cy;
                   $zx = $xt;
                   $iter++;
             }
@@ -78,7 +76,7 @@ final class JuliaProvider
        */
       private function pixelToComplex(int $px, int $py, int $w, int $h, array $bounds): array
       {
-            [$xmin,$xmax,$ymin,$ymax] = $bounds;
+            [$xmin, $xmax, $ymin, $ymax] = $bounds;
 
             $dx = ($xmax - $xmin) / ($w - 1);
             $dy = ($ymax - $ymin) / ($h - 1);
@@ -103,8 +101,7 @@ final class JuliaProvider
             string $message,
             string $outPath,
             ?array $bounds = null
-            ): bool
-      {
+      ): bool {
             $this->checkDependances($srcPath);
 
             $img = imagecreatefromstring(file_get_contents($srcPath));
@@ -118,8 +115,7 @@ final class JuliaProvider
             // Collect carrier pixel positions (those qui restent bornés)
             $carriers = [];
             for ($py = 0; $py < $h; $py++) {
-                  for ($px = 0; $px < $w; $px++)
-                  {
+                  for ($px = 0; $px < $w; $px++) {
                         [$zx, $zy] = $this->pixelToComplex($px, $py, $w, $h, $bounds);
 
                         $iter = $this->juliaIterations(
@@ -145,15 +141,13 @@ final class JuliaProvider
             $payload = $lenPacked . $msgBytes;
             $payloadLenBits = strlen($payload) * 8;
 
-            if (count($carriers) < $payloadLenBits)
-            {
+            if (count($carriers) < $payloadLenBits) {
                   imagedestroy($img);
                   throw new \Exception("Capacité insuffisante: carriers=" . count($carriers) . " bits needed=$payloadLenBits");
             }
 
             // Build bits array
-            for ($i = 0; $i < strlen($payload); $i++)
-            {
+            for ($i = 0; $i < strlen($payload); $i++) {
                   $b = ord($payload[$i]);
 
                   for ($bit = 7; $bit >= 0; $bit--)
@@ -161,8 +155,7 @@ final class JuliaProvider
             }
 
             // Embed bits into LSB of blue channel of carrier pixels (in collected order)
-            for ($i = 0; $i < $payloadLenBits; $i++)
-            {
+            for ($i = 0; $i < $payloadLenBits; $i++) {
                   [$px, $py] = $carriers[$i];
                   $col = imagecolorat($img, $px, $py);
                   $r = ($col >> 16) & 0xFF;
@@ -193,8 +186,7 @@ final class JuliaProvider
       public function Decrypt(
             string $srcPath,
             ?array $bounds = null
-            ): string
-      {
+      ): string {
             $this->checkDependances($srcPath);
 
             $img = imagecreatefromstring(file_get_contents($srcPath));
@@ -204,10 +196,8 @@ final class JuliaProvider
             $bounds = $bounds ?? [-1.8, 1.8, -1.2, 1.2];
 
             $carriers = [];
-            for ($py = 0; $py < $h; $py++)
-            {
-                  for ($px = 0; $px < $w; $px++)
-                  {
+            for ($py = 0; $py < $h; $py++) {
+                  for ($px = 0; $px < $w; $px++) {
                         [$zx, $zy] = $this->pixelToComplex($px, $py, $w, $h, $bounds);
 
                         $iter = $this->juliaIterations(
@@ -225,8 +215,7 @@ final class JuliaProvider
 
             // Read first 32 bits to get length
             $bits = [];
-            for ($i = 0; $i < 32; $i++)
-            {
+            for ($i = 0; $i < 32; $i++) {
                   [$px, $py] = $carriers[$i];
                   $col = imagecolorat($img, $px, $py);
                   $b = $col & 0xFF;
@@ -250,12 +239,10 @@ final class JuliaProvider
             }
 
             $outBytes = '';
-            for ($byteIdx = 0; $byteIdx < $len; $byteIdx++)
-            {
+            for ($byteIdx = 0; $byteIdx < $len; $byteIdx++) {
                   $b = 0;
-                  for ($bit = 0; $bit < 8; $bit++)
-                  {
-                        $i = 32 + $byteIdx*8 + $bit;
+                  for ($bit = 0; $bit < 8; $bit++) {
+                        $i = 32 + $byteIdx * 8 + $bit;
                         [$px, $py] = $carriers[$i];
                         $col = imagecolorat($img, $px, $py);
                         $blue = $col & 0xFF;
@@ -290,8 +277,7 @@ final class JuliaProvider
             $acc = '';
 
             $len = strlen($data);
-            for ($i = 0; $i < $len; $i++)
-            {
+            for ($i = 0; $i < $len; $i++) {
                   $b = ord($data[$i]);
 
                   // small perturbation from byte value
@@ -300,10 +286,9 @@ final class JuliaProvider
                   $zy += 0.013 * ($perturb); // slightly different scale
 
                   // iterate fractal a few times
-                  for ($k = 0; $k < $iterPerByte; $k++)
-                  {
-                        $xt = $zx*$zx - $zy*$zy + $this->Options->RealPartNumber;
-                        $zy = 2*$zx*$zy + $this->Options->UnRealPartNumber;
+                  for ($k = 0; $k < $iterPerByte; $k++) {
+                        $xt = $zx * $zx - $zy * $zy + $this->Options->RealPartNumber;
+                        $zy = 2 * $zx * $zy + $this->Options->UnRealPartNumber;
                         $zx = $xt;
                   }
 
@@ -313,9 +298,8 @@ final class JuliaProvider
             }
 
             // final extra chaotic mixing
-            for ($r = 0; $r < $finalRounds; $r++)
-            {
-                  $xt = $zx*$zx - $zy*$zy + $this->Options->RealPartNumber;
+            for ($r = 0; $r < $finalRounds; $r++) {
+                  $xt = $zx * $zx - $zy * $zy + $this->Options->RealPartNumber;
                   $zy = 2 * $zx * $zy + $this->Options->UnRealPartNumber;
                   $zx = $xt;
                   // append fractional part influence

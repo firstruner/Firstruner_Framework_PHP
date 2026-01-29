@@ -1,26 +1,26 @@
 <?php
 
 /**
-* Copyright since 2024 Firstruner and Contributors
-* Firstruner is an Registered Trademark & Property of Christophe BOULAS
-*
-* NOTICE OF LICENSE
-*
-* This source file is subject to the Freemium License
-* If you did not receive a copy of the license and are unable to
-* obtain it through the world-wide-web, please send an email
-* to contact@firstruner.fr so we can send you a copy immediately.
-*
-* DISCLAIMER
-*
-* Do not edit, reproduce ou modify this file.
-* Please refer to https://firstruner.fr/ or contact Firstruner for more information.
-*
-* @author    Firstruner and Contributors <contact@firstruner.fr>
-* @copyright Since 2024 Firstruner and Contributors
-* @license   Proprietary
-* @version 2.0.0
-*/
+ * Copyright 2024-2026 Firstruner and Contributors
+ * Firstruner is an Registered Trademark & Property of Christophe BOULAS
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Freemium License
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to contact@firstruner.fr so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit, reproduce ou modify this file.
+ * Please refer to https://firstruner.fr/ or contact Firstruner for more information.
+ *
+ * @author    Firstruner and Contributors <contact@firstruner.fr>
+ * @copyright 2024-2026 Firstruner and Contributors
+ * @license   Proprietary
+ * @version 2.0.0
+ */
 
 namespace System;
 
@@ -55,7 +55,7 @@ interface IConvertible
       // of this method should return the TypeCode that best describes the
       // internal representation of the object.
 
-      public function GetTypeCode() : TypeCode;
+      public function GetTypeCode(): TypeCode;
 
       // The ToXXX methods convert the value of the underlying object to the
       // given type. If a particular conversion is not supported, the
@@ -65,20 +65,20 @@ interface IConvertible
       // ?IFormatprovider will be used to get a NumberFormatInfo or similar
       // appropriate service object, and may safely be null.
 
-      function ToBoolean(?IFormatprovider $provider) : bool;
-      function ToChar(?IFormatprovider $provider) : string;
-      function ToSByte(?IFormatprovider $provider) : int;
-      function ToByte(?IFormatprovider $provider) : int;
-      function ToInt16(?IFormatprovider $provider) : int;
-      function ToUInt16(?IFormatprovider $provider) : int;
-      function ToInt32(?IFormatprovider $provider) : int;
-      function ToUInt32(?IFormatprovider $provider) : int;
-      function ToInt64(?IFormatprovider $provider) : int;
-      function ToUInt64(?IFormatprovider $provider) : int;
-      function ToSingle(?IFormatprovider $provider) : float;
-      function ToDouble(?IFormatprovider $provider) : float;
-      function ToDecimal(?IFormatprovider $provider) : float;
-      function ToDateTime(?IFormatprovider $provider) : DateTime;
-      function ToString(?IFormatprovider $provider) : string;
-      function ToType(Type $conversionType, ?IFormatprovider $provider) : object;
+      function ToBoolean(?IFormatprovider $provider): bool;
+      function ToChar(?IFormatprovider $provider): string;
+      function ToSByte(?IFormatprovider $provider): int;
+      function ToByte(?IFormatprovider $provider): int;
+      function ToInt16(?IFormatprovider $provider): int;
+      function ToUInt16(?IFormatprovider $provider): int;
+      function ToInt32(?IFormatprovider $provider): int;
+      function ToUInt32(?IFormatprovider $provider): int;
+      function ToInt64(?IFormatprovider $provider): int;
+      function ToUInt64(?IFormatprovider $provider): int;
+      function ToSingle(?IFormatprovider $provider): float;
+      function ToDouble(?IFormatprovider $provider): float;
+      function ToDecimal(?IFormatprovider $provider): float;
+      function ToDateTime(?IFormatprovider $provider): DateTime;
+      function ToString(?IFormatprovider $provider): string;
+      function ToType(Type $conversionType, ?IFormatprovider $provider): object;
 }

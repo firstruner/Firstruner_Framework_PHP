@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright since 2024 Firstruner and Contributors
+ * Copyright 2024-2026 Firstruner and Contributors
  * Firstruner is an Registered Trademark & Property of Christophe BOULAS
  *
  * NOTICE OF LICENSE
@@ -17,11 +17,11 @@
  * Please refer to https://firstruner.fr/ or contact Firstruner for more information.
  *
  * @author    Firstruner and Contributors <contact@firstruner.fr>
- * @copyright Since 2024 Firstruner and Contributors
+ * @copyright 2024-2026 Firstruner and Contributors
  * @license   Proprietary
  * @version 2.0.0
  */
- 
+
 namespace System\Diagnostics;
 
 use System\Default\_string;
@@ -41,13 +41,13 @@ final class Benchmark
         $this->UID = Guid::NewGuid();
     }
 
-    public function start() : Guid
+    public function start(): Guid
     {
         $this->startTimes = microtime(true);
         return $this->UID;
     }
 
-    public function stop() : string|float
+    public function stop(): string|float
     {
         if (!isset($this->startTimes))
             throw new \Exception($this->Name . " (" . $this->UID . ") n'est pas démarrer");
@@ -56,7 +56,7 @@ final class Benchmark
         return $this->endTimes - $this->startTimes;
     }
 
-    public function getElapsedTime() : string|float
+    public function getElapsedTime(): string|float
     {
         if (!isset($this->endTimes))
             return microtime(true) - $this->startTimes;
@@ -64,7 +64,7 @@ final class Benchmark
         return $this->endTimes - $this->startTimes;
     }
 
-    public function getFormattedTime($decimals = 6) : string|float
+    public function getFormattedTime($decimals = 6): string|float
     {
         if (!isset($this->endTimes))
             throw new \Exception($this->Name . " (" . $this->UID . ") n'est pas arrêter");

@@ -1,26 +1,26 @@
 <?php
 
 /**
-* Copyright since 2024 Firstruner and Contributors
-* Firstruner is an Registered Trademark & Property of Christophe BOULAS
-*
-* NOTICE OF LICENSE
-*
-* This source file is subject to the Freemium License
-* If you did not receive a copy of the license and are unable to
-* obtain it through the world-wide-web, please send an email
-* to contact@firstruner.fr so we can send you a copy immediately.
-*
-* DISCLAIMER
-*
-* Do not edit, reproduce ou modify this file.
-* Please refer to https://firstruner.fr/ or contact Firstruner for more information.
-*
-* @author    Firstruner and Contributors <contact@firstruner.fr>
-* @copyright Since 2024 Firstruner and Contributors
-* @license   Proprietary
-* @version 2.0.0
-*/
+ * Copyright 2024-2026 Firstruner and Contributors
+ * Firstruner is an Registered Trademark & Property of Christophe BOULAS
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Freemium License
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to contact@firstruner.fr so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit, reproduce ou modify this file.
+ * Please refer to https://firstruner.fr/ or contact Firstruner for more information.
+ *
+ * @author    Firstruner and Contributors <contact@firstruner.fr>
+ * @copyright 2024-2026 Firstruner and Contributors
+ * @license   Proprietary
+ * @version 2.0.0
+ */
 
 namespace System;
 
@@ -41,13 +41,13 @@ class BitConverter
       // This field indicates the "endianness" of the architecture.
       // The value is set to true if the architecture is
       // little endian; false if it is big endian.
-// #if BIGENDIAN
-//       [Intrinsic]
-//       public static readonly bool IsLittleEndian /* = false */;
-// #else
-//       [Intrinsic]
+      // #if BIGENDIAN
+      //       [Intrinsic]
+      //       public static readonly bool IsLittleEndian /* = false */;
+      // #else
+      //       [Intrinsic]
       public const IsLittleEndian = true;
-// #endif
+      // #endif
 
       /// <summary>
       /// Returns the specified Boolean value as a byte array.
@@ -676,14 +676,15 @@ class BitConverter
       // /// The combination of <paramref name="startIndex"/> and <paramref name="length"/> does not specify a position within <paramref name="value"/>;
       // /// that is, the <paramref name="startIndex"/> parameter is greater than the length of <paramref name="value"/> minus the <paramref name="length"/> parameter.
       // /// </exception>
-      public static function ToString(array $bytesArray, int $startIndex = 0, int $length = -1) : string
+      public static function ToString(array $bytesArray, int $startIndex = 0, int $length = -1): string
       {
             if ($length < 0) $length = count($bytesArray);
 
             if ($bytesArray == null) throw new ArgumentNullException("value");
 
             if (($startIndex < 0 || $startIndex >= count($bytesArray) && $startIndex > 0)
-                  || ($length < 0))
+                  || ($length < 0)
+            )
                   throw new ArgumentOutOfRangeException("startIndex or length out of range");
 
             if ($startIndex > count($bytesArray) - $length)
@@ -712,7 +713,7 @@ class BitConverter
             // }
 
             // while ($i < $length) {
-                  
+
             // }
 
             return $result;

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright since 2024 Firstruner and Contributors
+ * Copyright 2024-2026 Firstruner and Contributors
  * Firstruner is an Registered Trademark & Property of Christophe BOULAS
  *
  * NOTICE OF LICENSE
@@ -17,7 +17,7 @@
  * Please refer to https://firstruner.fr/ or contact Firstruner for more information.
  *
  * @author    Firstruner and Contributors <contact@firstruner.fr>
- * @copyright Since 2024 Firstruner and Contributors
+ * @copyright 2024-2026 Firstruner and Contributors
  * @license   Proprietary
  * @version 2.0.0
  */
@@ -34,8 +34,7 @@ class RequestForm
 {
     private static function getFormArray(int $method): array
     {
-        switch ($method)
-        {
+        switch ($method) {
             case RequestMethod::FULL:
                 return $_REQUEST;
             case RequestMethod::GET:
@@ -54,7 +53,7 @@ class RequestForm
         }
     }
 
-    public static function Get(string $keyName, $defaultValue = null, int $method = RequestMethod::FULL) : ?string
+    public static function Get(string $keyName, $defaultValue = null, int $method = RequestMethod::FULL): ?string
     {
         try {
             $arrValues = RequestForm::getFormArray($method);
@@ -70,12 +69,12 @@ class RequestForm
         }
     }
 
-    public static function Set(string $serveurName, string $value) : void
+    public static function Set(string $serveurName, string $value): void
     {
         throw new NotImplemented("Non implementée");
     }
 
-    public static function Exists(string $keyName, int $method = RequestMethod::FULL) : bool
+    public static function Exists(string $keyName, int $method = RequestMethod::FULL): bool
     {
         try {
             $arrValues = RequestForm::getFormArray($method);
@@ -88,26 +87,38 @@ class RequestForm
 
     public static function GetMethodType(): int
     {
-        switch (Serveur::Get('REQUEST_METHOD'))
-        {
-            case "POST": return RequestMethod::POST;
-            case "CONNECT": return RequestMethod::CONNECT;
-            case "CREATE": return RequestMethod::CREATE;
-            case "DELETE": return RequestMethod::DELETE;
-            case "GET": return RequestMethod::GET;
-            case "HEAD": return RequestMethod::HEAD;
-            case "OPTIONS": return RequestMethod::OPTIONS;
-            case "PATCH": return RequestMethod::PATCH;
-            case "PUT": return RequestMethod::PUT;
-            case "READ": return RequestMethod::READ;
-            case "TRACE": return RequestMethod::TRACE;
-            case "UPDATE": return RequestMethod::UPDATE;
+        switch (Serveur::Get('REQUEST_METHOD')) {
+            case "POST":
+                return RequestMethod::POST;
+            case "CONNECT":
+                return RequestMethod::CONNECT;
+            case "CREATE":
+                return RequestMethod::CREATE;
+            case "DELETE":
+                return RequestMethod::DELETE;
+            case "GET":
+                return RequestMethod::GET;
+            case "HEAD":
+                return RequestMethod::HEAD;
+            case "OPTIONS":
+                return RequestMethod::OPTIONS;
+            case "PATCH":
+                return RequestMethod::PATCH;
+            case "PUT":
+                return RequestMethod::PUT;
+            case "READ":
+                return RequestMethod::READ;
+            case "TRACE":
+                return RequestMethod::TRACE;
+            case "UPDATE":
+                return RequestMethod::UPDATE;
             default:
-            case "GET": return RequestMethod::FULL;
+            case "GET":
+                return RequestMethod::FULL;
         }
     }
 
-    public static function CheckMethodType(int $method) : bool
+    public static function CheckMethodType(int $method): bool
     {
         return RequestForm::GetMethodType() == $method;
     }

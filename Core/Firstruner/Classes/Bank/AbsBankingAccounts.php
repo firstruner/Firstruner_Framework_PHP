@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright since 2024 Firstruner and Contributors
+ * Copyright 2024-2026 Firstruner and Contributors
  * Firstruner is an Registered Trademark & Property of Christophe BOULAS
  *
  * NOTICE OF LICENSE
@@ -17,7 +17,7 @@
  * Please refer to https://firstruner.fr/ or contact Firstruner for more information.
  *
  * @author    Firstruner and Contributors <contact@firstruner.fr>
- * @copyright Since 2024 Firstruner and Contributors
+ * @copyright 2024-2026 Firstruner and Contributors
  * @license   Proprietary
  * @version 2.0.0
  */
@@ -32,11 +32,12 @@ abstract class AbsBankingAccounts
     protected const DefaultRibKey = "97";
     protected const DefaultNumber = "0";
 
-    protected function Sanitize_Number(string $chaineNombre) : string {
+    protected function Sanitize_Number(string $chaineNombre): string
+    {
         return preg_replace('/\D/', _string::EmptyString, $chaineNombre);
     }
 
-    protected function Sanitize_Account(string $chaineNombre) : string
+    protected function Sanitize_Account(string $chaineNombre): string
     {
         $chaine = strtoupper($chaineNombre);
         $result = _string::EmptyString;
@@ -58,7 +59,7 @@ abstract class AbsBankingAccounts
         return $this->Sanitize_Account_Letters($result);
     }
 
-     /**
+    /**
      * Convertit les lettres d'un numéro de compte RIB en chiffres.
      *
      * Règle : A/J=1, B/K/S=2, C/L/T=3, ..., I/R/Z=9.
@@ -66,19 +67,36 @@ abstract class AbsBankingAccounts
      * @param string $rib
      * @return string
      */
-    private function Sanitize_Account_Letters(string $account) : string
+    private function Sanitize_Account_Letters(string $account): string
     {
         // Tableau de correspondance lettre → chiffre
         $map = [
-            'A' => '1', 'J' => '1',
-            'B' => '2', 'K' => '2', 'S' => '2',
-            'C' => '3', 'L' => '3', 'T' => '3',
-            'D' => '4', 'M' => '4', 'U' => '4',
-            'E' => '5', 'N' => '5', 'V' => '5',
-            'F' => '6', 'O' => '6', 'W' => '6',
-            'G' => '7', 'P' => '7', 'X' => '7',
-            'H' => '8', 'Q' => '8', 'Y' => '8',
-            'I' => '9', 'R' => '9', 'Z' => '9',
+            'A' => '1',
+            'J' => '1',
+            'B' => '2',
+            'K' => '2',
+            'S' => '2',
+            'C' => '3',
+            'L' => '3',
+            'T' => '3',
+            'D' => '4',
+            'M' => '4',
+            'U' => '4',
+            'E' => '5',
+            'N' => '5',
+            'V' => '5',
+            'F' => '6',
+            'O' => '6',
+            'W' => '6',
+            'G' => '7',
+            'P' => '7',
+            'X' => '7',
+            'H' => '8',
+            'Q' => '8',
+            'Y' => '8',
+            'I' => '9',
+            'R' => '9',
+            'Z' => '9',
         ];
 
         $str = _string::EmptyString;
@@ -101,7 +119,8 @@ abstract class AbsBankingAccounts
         return $str;
     }
 
-    protected function SpaceRemove(string $chaineNombre) : string {
+    protected function SpaceRemove(string $chaineNombre): string
+    {
         $chaine = $chaineNombre;
         $result = _string::EmptyString;
 

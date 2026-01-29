@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright since 2024 Firstruner and Contributors
+ * Copyright 2024-2026 Firstruner and Contributors
  * Firstruner is an Registered Trademark & Property of Christophe BOULAS
  *
  * NOTICE OF LICENSE
@@ -17,7 +17,7 @@
  * Please refer to https://firstruner.fr/ or contact Firstruner for more information.
  *
  * @author    Firstruner and Contributors <contact@firstruner.fr>
- * @copyright Since 2024 Firstruner and Contributors
+ * @copyright 2024-2026 Firstruner and Contributors
  * @license   Proprietary
  * @version 2.0.0
  */
@@ -27,31 +27,31 @@ namespace Firstruner\Classes\Justice\Elements\Bodacc_Elements;
 use Firstruner\Enumerations\Justice\Elements\Bodacc\Bodacc_Fields;
 
 final class Fields
- {
-     public string $publicationavis;
-     public string $listepersonnes;
-     public string $id;
-     public string $registre;
-     public string $depot;
-     public string $ville;
-     public bool $ispdf_unitaire;
-     public string $cp;
-     public string $region_nom_officiel;
-     public string $commercant;
-     public string $dateparution;
-     public string $tribunal;
-     public bool $pdf_parution_subfolder;
-     public int $region_code;
-     public int $numeroannonce;
-     public string $parution;
-     public string $publicationavis_facette;
-     public string $typeavis_lib;
-     public string $typeavis;
-     public string $familleavis_lib;
-     public string $familleavis;
-     public string $departement_nom_officiel;
-     public int $numerodepartement;
-     
+{
+    public string $publicationavis;
+    public string $listepersonnes;
+    public string $id;
+    public string $registre;
+    public string $depot;
+    public string $ville;
+    public bool $ispdf_unitaire;
+    public string $cp;
+    public string $region_nom_officiel;
+    public string $commercant;
+    public string $dateparution;
+    public string $tribunal;
+    public bool $pdf_parution_subfolder;
+    public int $region_code;
+    public int $numeroannonce;
+    public string $parution;
+    public string $publicationavis_facette;
+    public string $typeavis_lib;
+    public string $typeavis;
+    public string $familleavis_lib;
+    public string $familleavis;
+    public string $departement_nom_officiel;
+    public int $numerodepartement;
+
     function __construct($array)
     {
         $this->publicationavis = $array[Bodacc_Fields::PublicationAvis];
@@ -78,5 +78,4 @@ final class Fields
         $this->departement_nom_officiel = $array[Bodacc_Fields::Departement_Nom_Officiel];
         $this->numerodepartement = $array[Bodacc_Fields::NumeroDepartement];
     }
- }
-?>
+}

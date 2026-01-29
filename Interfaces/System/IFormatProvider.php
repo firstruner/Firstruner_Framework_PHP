@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright since 2024 Firstruner and Contributors
+ * Copyright 2024-2026 Firstruner and Contributors
  * Firstruner is an Registered Trademark & Property of Christophe BOULAS
  *
  * NOTICE OF LICENSE
@@ -17,7 +17,7 @@
  * Please refer to https://firstruner.fr/ or contact Firstruner for more information.
  *
  * @author    Firstruner and Contributors <contact@firstruner.fr>
- * @copyright Since 2024 Firstruner and Contributors
+ * @copyright 2024-2026 Firstruner and Contributors
  * @license   Proprietary
  * @version 2.0.0
  */
@@ -27,6 +27,7 @@ namespace System;
 use System\Annotations\__DynamicallyInvokable;
 
 /// <summary>Provides a mechanism for retrieving an object to control formatting.</summary>
+
 /** @ComVisible(expose=true) */
 /** @__DynamicallyInvokable */
 interface IFormatProvider
@@ -35,5 +36,5 @@ interface IFormatProvider
       /// <param name="formatType">An object that specifies the type of format object to return.</param>
       /// <returns>An instance of the object specified by <paramref name="formatType" />, if the <see cref="T:System.IFormatProvider" /> implementation can supply that type of object; otherwise, <see langword="null" />.</returns>
       /** @__DynamicallyInvokable */
-      function GetFormat(object $formatType) : object;
+      function GetFormat(object $formatType): object;
 }

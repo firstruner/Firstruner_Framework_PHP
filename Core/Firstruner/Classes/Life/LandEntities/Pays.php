@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright since 2024 Firstruner and Contributors
+ * Copyright 2024-2026 Firstruner and Contributors
  * Firstruner is an Registered Trademark & Property of Christophe BOULAS
  *
  * NOTICE OF LICENSE
@@ -17,7 +17,7 @@
  * Please refer to https://firstruner.fr/ or contact Firstruner for more information.
  *
  * @author    Firstruner and Contributors <contact@firstruner.fr>
- * @copyright Since 2024 Firstruner and Contributors
+ * @copyright 2024-2026 Firstruner and Contributors
  * @license   Proprietary
  * @version 2.0.0
  */
@@ -35,11 +35,13 @@ final class Pays
     public bool $CP_List_Available;
     public CultureInfo $Culture;
 
-    public function __construct(string $frenchName,
+    public function __construct(
+        string $frenchName,
         string $englishName,
         string $landCode,
         bool $cpAvailable = false,
-        CultureInfo $culture = null){
+        CultureInfo $culture = null
+    ) {
 
         $this->French_Name = $frenchName;
         $this->English_Name = $englishName;
@@ -48,7 +50,8 @@ final class Pays
         $this->Culture = new CultureInfo("fr-FR");
     }
 
-    public function ToItemList(){
+    public function ToItemList()
+    {
         //return new ItemList(French_Name, null, this);
         return null;
     }

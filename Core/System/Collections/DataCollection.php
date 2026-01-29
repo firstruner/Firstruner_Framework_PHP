@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright since 2024 Firstruner and Contributors
+ * Copyright 2024-2026 Firstruner and Contributors
  * Firstruner is an Registered Trademark & Property of Christophe BOULAS
  *
  * NOTICE OF LICENSE
@@ -17,7 +17,7 @@
  * Please refer to https://firstruner.fr/ or contact Firstruner for more information.
  *
  * @author    Firstruner and Contributors <contact@firstruner.fr>
- * @copyright Since 2024 Firstruner and Contributors
+ * @copyright 2024-2026 Firstruner and Contributors
  * @license   Proprietary
  * @version 2.0.0
  * UT : Pass
@@ -57,12 +57,12 @@ abstract class DataCollection extends ArrayObject
             return parent::offsetGet($key);
       }
 
-      public function Find(string $objectId)//: ?DataCollection
+      public function Find(string $objectId) //: ?DataCollection
       {
-            foreach($this as $key => $object)
+            foreach ($this as $key => $object)
                   if ($object->GetName() == $objectId)
                         return $object;
-                  
+
             return null;
       }
 
@@ -92,16 +92,14 @@ abstract class DataCollection extends ArrayObject
             if (!$this->checkDataObjectType($item))
                   throw new DataException($this->objectType . " object is not compatible with this collection");
 
-            if (is_int($item))
-            {
+            if (is_int($item)) {
                   unset($this[$item]);
                   return;
             }
 
             $tableFinded = null;
             foreach ($this as $table)
-                  if ($table->GetUniqueIdent() == $item->GetUniqueIdent())
-                  {
+                  if ($table->GetUniqueIdent() == $item->GetUniqueIdent()) {
                         $tableFinded = $table;
                         break;
                   }
@@ -124,14 +122,13 @@ abstract class DataCollection extends ArrayObject
                         : $items->GetUniqueIdent()) == $item)
                         return true;
 
-            
+
             return false;
       }
 
       protected function IsPresent(DataObject|DataObjectArray &$item): bool
       {
-            foreach ($this as $_obj)
-            {
+            foreach ($this as $_obj) {
                   if ($_obj->GetUniqueIdent() == $item->GetUniqueIdent())
                         return true;
             }

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright since 2024 Firstruner and Contributors
+ * Copyright 2024-2026 Firstruner and Contributors
  * Firstruner is an Registered Trademark & Property of Christophe BOULAS
  *
  * NOTICE OF LICENSE
@@ -17,7 +17,7 @@
  * Please refer to https://firstruner.fr/ or contact Firstruner for more information.
  *
  * @author    Firstruner and Contributors <contact@firstruner.fr>
- * @copyright Since 2024 Firstruner and Contributors
+ * @copyright 2024-2026 Firstruner and Contributors
  * @license   Proprietary
  * @version 2.0.0
  */
@@ -34,7 +34,7 @@ final class XMLStreamWriter
             file_put_contents($path, $output);
       }
 
-      private static function CreateStringElement(XMLElement $element, int $tabCount = 0) : string
+      private static function CreateStringElement(XMLElement $element, int $tabCount = 0): string
       {
             $output = "";
             $currentTabIndentation = "";
@@ -43,22 +43,18 @@ final class XMLStreamWriter
                   for ($i = 0; $i < $tabCount; $i++)
                         $currentTabIndentation .= "\t";
 
-            foreach ($element as $xmlKey => $xmlValue)
-            {
-                  if (is_array($xmlValue))
-                  {
+            foreach ($element as $xmlKey => $xmlValue) {
+                  if (is_array($xmlValue)) {
                         $output .= $currentTabIndentation . "<$xmlKey>" . PHP_EOL;
 
-                        foreach($xmlValue as $xmlElement)
+                        foreach ($xmlValue as $xmlElement)
                               $output .= XMLStreamWriter::CreateStringElement(
                                     $xmlElement,
                                     $tabCount + 1
                               );
 
                         $output .= $currentTabIndentation . "</$xmlKey>";
-                  }
-                  else
-                  {
+                  } else {
                         $output .= XMLStreamWriter::CreateStringXmlElement(
                               $xmlKey,
                               $xmlValue,
@@ -71,8 +67,10 @@ final class XMLStreamWriter
       }
 
       private static function CreateStringXmlElement(
-            string $elementKey, string $elementValue, string $indentation): string
-      {
+            string $elementKey,
+            string $elementValue,
+            string $indentation
+      ): string {
             return "\t<$elementKey>$elementValue</$elementKey>";
       }
 }
