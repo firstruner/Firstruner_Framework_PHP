@@ -49,8 +49,8 @@ class LinqIterator
         ILinqTyped,
         IFilter
 {
-    protected $objectType = null;
-    private $defaultValue = null;
+    protected mixed $objectType = null;
+    private mixed $defaultValue = null;
 
     /**
      * Class Part
@@ -78,7 +78,7 @@ class LinqIterator
 
     /**
      * Ajoute un élément à la liste
-     * @param type $item Élément à ajouter
+     * @param mixed $item Élément à ajouter
      */
     public function Add(mixed $item): void
     {
@@ -94,7 +94,7 @@ class LinqIterator
 
     /**
      * Ajoute des éléments à la liste
-     * @param type $item Élément à ajouter
+     * @param mixed $item Élément à ajouter
      */
     public function AddRange(array $items): void
     {
@@ -109,7 +109,7 @@ class LinqIterator
 
     /**
      * Retire un élément
-     * @param type $item Index de l'élément à retirer
+     * @param mixed $item Index de l'élément à retirer
      */
     public function Remove(int $index): void
     {
@@ -123,7 +123,7 @@ class LinqIterator
 
     /**
      * Retire des éléments
-     * @param type $item Index de l'élément à retirer
+     * @param mixed $item Index de l'élément à retirer
      */
     public function RemoveItems(array $indexes): void
     {
@@ -144,7 +144,7 @@ class LinqIterator
 
     /**
      * Retourne un élément du tableau
-     * @param type $index Index de l'élément à retourner
+     * @param mixed $index Index de l'élément à retourner
      */
     public function Get(int $index): mixed
     {
@@ -158,7 +158,7 @@ class LinqIterator
 
     /**
      * Retourne une nouvelle instance du tableau d'éléments
-     * @return type Tableau d'éléments
+     * @return mixed Tableau d'éléments
      */
     public function CopyTo(): self
     {
@@ -211,8 +211,8 @@ class LinqIterator
 
     /**
      * Vérifie la présence d'un élément dans la liste
-     * @param type $item Élément dont la présence est à vérifier
-     * @return type Retourne un boolean
+     * @param mixed $item Élément dont la présence est à vérifier
+     * @return mixed Retourne un boolean
      */
     public function Contains(mixed $item): bool
     {
@@ -262,7 +262,7 @@ class LinqIterator
     /**
      * Retourne une collection triée dans l'ordre désirée
      */
-    public function OrderBy(string $predica, callable $closure = null): self
+    public function OrderBy(string $predica, ?callable $closure = null): self
     {
         if (_String::IsNullOrEmpty($predica)) throw new ArgumentNullException("predica is null or empty", CCollection_ErrorCodes::NullOrEmpty);
 
@@ -304,9 +304,13 @@ class LinqIterator
     /**
      * Retourne le 1er élément
      */
+    /**
+     * @suppress PHP6601
+     */
     public function First(): mixed
     {
         if ($this->IsEmpty())
+            /** @noinspection PhpFullyQualifiedNameUsageInspection */
             throw new \Exception("Collection do not contains valid elements");
 
         return $this[0];
@@ -315,9 +319,13 @@ class LinqIterator
     /**
      * Retourne le 1er élément selon les conditions where définie
      */
-    public function FirstWhere(string $predica, mixed $value, int $searchMethod, callable $closure = null): mixed
+    /**
+     * @suppress PHP6601
+     */
+    public function FirstWhere(string $predica, mixed $value, int $searchMethod, ?callable $closure = null): mixed
     {
         if ($this->IsEmpty())
+            /** @noinspection PhpFullyQualifiedNameUsageInspection */
             throw new \Exception("Collection do not contains valid elements");
 
         return $this->Where($predica, $value, $searchMethod, $closure)->First();
@@ -326,9 +334,13 @@ class LinqIterator
     /**
      * Retourne le 1er élément selon les conditions where définie ou Null ou l'élément par défaut
      */
-    public function FirstWhereOrDefault(string $predica, mixed $value, int $searchMethod, callable $closure = null): mixed
+    /**
+     * @suppress PHP6601
+     */
+    public function FirstWhereOrDefault(string $predica, mixed $value, int $searchMethod, ?callable $closure = null): mixed
     {
         if ($this->IsEmpty())
+            /** @noinspection PhpFullyQualifiedNameUsageInspection */
             throw new \Exception("Collection do not contains valid elements");
 
         return $this->Where($predica, $value, $searchMethod, $closure)->FirstOrDefault();
@@ -349,9 +361,13 @@ class LinqIterator
     /**
      * Retourne le dernier élément
      */
+    /**
+     * @suppress PHP6601
+     */
     public function Last(): mixed
     {
         if ($this->IsEmpty())
+            /** @noinspection PhpFullyQualifiedNameUsageInspection */
             throw new \Exception("Collection do not contains valid elements");
 
         return $this[$this->count() - 1];
@@ -360,9 +376,13 @@ class LinqIterator
     /**
      * Retourne le dernier élément selon les conditions where définie
      */
-    public function LastWhere(string $predica, mixed $value, int $searchMethod, callable $closure = null): mixed
+    /**
+     * @suppress PHP6601
+     */
+    public function LastWhere(string $predica, mixed $value, int $searchMethod, ?callable $closure = null): mixed
     {
         if ($this->IsEmpty())
+            /** @noinspection PhpFullyQualifiedNameUsageInspection */
             throw new \Exception("Collection do not contains valid elements");
 
         return $this->Where($predica, $value, $searchMethod, $closure)->Last();
@@ -371,9 +391,13 @@ class LinqIterator
     /**
      * Retourne le dernier élément selon les conditions where définie ou Null ou l'élément par défaut
      */
-    public function LastWhereOrDefault(string $predica, mixed $value, int $searchMethod, callable $closure = null): mixed
+    /**
+     * @suppress PHP6601
+     */
+    public function LastWhereOrDefault(string $predica, mixed $value, int $searchMethod, ?callable $closure = null): mixed
     {
         if ($this->IsEmpty())
+            /** @noinspection PhpFullyQualifiedNameUsageInspection */
             throw new \Exception("Collection do not contains valid elements");
 
         return $this->Where($predica, $value, $searchMethod, $closure)->LastOrDefault();
@@ -490,7 +514,7 @@ class LinqIterator
         string $predica,
         mixed $value,
         int $searchMethod,
-        callable $closure = null
+        ?callable $closure = null
     ): self {
         $this->checkPredica($predica, $value, $searchMethod);
 
@@ -567,7 +591,7 @@ class LinqIterator
         string $predica,
         mixed $value,
         int $searchMethod,
-        callable $closure = null
+        ?callable $closure = null
     ): self {
         $this->checkPredica($predica, $value, $searchMethod);
 
@@ -656,7 +680,7 @@ class LinqIterator
     /**
      * Retourne des collections groupée par le prédica
      */
-    function GroupBy(string $predica, callable $closure = null): self
+    function GroupBy(string $predica, ?callable $closure = null): self
     {
         $arrayGroup = array();
         $fctAddCollection = function ($index) use (&$arrayGroup) {
@@ -697,7 +721,7 @@ class LinqIterator
     /**
      * Retourne la plus petite valeur selon le prédica
      */
-    function Min(string $predica, callable $closure = null): mixed
+    function Min(string $predica, ?callable $closure = null): mixed
     {
         if ($predica == null) throw new ArgumentNullException("Argument is null", CCollection_ErrorCodes::Null);
         if ($this->IsEmpty()) return 0;
@@ -727,7 +751,7 @@ class LinqIterator
     /**
      * Retourne la plus grande valeur selon le prédica
      */
-    function Max(string $predica, callable $closure = null): mixed
+    function Max(string $predica, ?callable $closure = null): mixed
     {
         if ($predica == null) throw new ArgumentNullException("Argument is null", CCollection_ErrorCodes::Null);
         if ($this->IsEmpty()) return 0;
@@ -757,7 +781,7 @@ class LinqIterator
     /**
      * Retourne la somme des valeurs selon le prédica
      */
-    function Sum(string $predica, callable $closure = null): mixed
+    function Sum(string $predica, ?callable $closure = null): mixed
     {
         if ($predica == null) throw new ArgumentNullException("Argument is null", CCollection_ErrorCodes::Null);
         if ($this->IsEmpty()) return 0;
@@ -786,7 +810,7 @@ class LinqIterator
     /**
      * Retourne la moyenne des valeurs selon le prédica
      */
-    function Avg(string $predica, callable $closure = null): mixed
+    function Avg(string $predica, ?callable $closure = null): mixed
     {
         if ($predica == null) throw new ArgumentNullException("Argument is null", CCollection_ErrorCodes::Null);
         if ($this->IsEmpty()) return 0;

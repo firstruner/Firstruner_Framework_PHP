@@ -29,7 +29,7 @@ use System\Exceptions\ArgumentException;
 final class ULong
 {
       public const Min = 0;
-      public const Max = 18446744073709551615;
+      public const Max = PHP_INT_MAX;
 
       private float $valeur;
 
