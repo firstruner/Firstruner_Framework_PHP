@@ -52,7 +52,7 @@ stages:
 loader-test:
   stage: test
   script:
-    - php ./loader.php
+    - php ./loader.php --debug
 
 push_to_github:
   stage: pushToGitHub
