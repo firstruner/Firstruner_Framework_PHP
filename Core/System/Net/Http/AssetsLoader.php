@@ -49,9 +49,12 @@ abstract class AssetsLoader
       public static function LoadDir(
             string $directory,
             string $tag,
-            string $baseUrl = Http::Site_URL(),
+            ?string $baseUrl = null,
             array $excludePatterns = []
       ): string {
+            if (!$baseUrl)
+                  $baseUrl = Http::Site_URL();
+
             $tags = [];
 
             $root = realpath($directory) ?: $directory;
