@@ -38,6 +38,7 @@ use System\_String;
 
 final class Uri
 {
+      //TODO : Check relative URL Type
       private $base_url;
       private $components = [];
       private $relativeUrl = null;
