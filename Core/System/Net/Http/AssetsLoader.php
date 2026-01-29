@@ -46,7 +46,7 @@ abstract class AssetsLoader
        * @param string $baseUrl Base URL
        * @param array $excludePatterns Patterns à exclure si présents dans le chemin relatif
        */
-      public static function loadDir(
+      public static function LoadDir(
             string $directory,
             string $tag,
             string $baseUrl = Http::Site_URL(),
