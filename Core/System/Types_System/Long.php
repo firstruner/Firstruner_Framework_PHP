@@ -28,8 +28,8 @@ use System\Exceptions\ArgumentException;
 
 final class Long
 {
-      public const Min = -9223372036854775808;
-      public const Max = 9223372036854775807;
+      public const Min = PHP_INT_MIN;
+      public const Max = PHP_INT_MAX;
 
       private float $valeur;
 
