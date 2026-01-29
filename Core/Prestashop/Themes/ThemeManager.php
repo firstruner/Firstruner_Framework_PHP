@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright since 2024 Firstruner and Contributors
+ * Copyright 2024-2026 Firstruner and Contributors
  * Firstruner is an Registered Trademark & Property of Christophe BOULAS
  *
  * NOTICE OF LICENSE
@@ -17,7 +17,7 @@
  * Please refer to https://firstruner.fr/ or contact Firstruner for more information.
  *
  * @author    Firstruner and Contributors <contact@firstruner.fr>
- * @copyright Since 2024 Firstruner and Contributors
+ * @copyright 2024-2026 Firstruner and Contributors
  * @license   Proprietary
  * @version 2.0.0
  */
@@ -26,7 +26,8 @@ namespace PrestaShop\Themes;
 
 use PrestaShop\Config\DB;
 
-abstract class ThemeManager {
+abstract class ThemeManager
+{
       public static function GetActiveTheme(string $psRoot, int $idShop = 1, ?string $scheme = null): array
       {
             $db = DB::LoadDbConfig($psRoot);
@@ -47,16 +48,17 @@ abstract class ThemeManager {
             if (!$themeName) {
                   $themesDir = $psRoot . '/themes';
                   if (is_dir($themesDir)) {
-                        $dirs = array_values(array_filter(scandir($themesDir), fn($d) =>
-                        $d[0] !== '.' && is_dir($themesDir . '/' . $d)
+                        $dirs = array_values(array_filter(
+                              scandir($themesDir),
+                              fn($d) =>
+                              $d[0] !== '.' && is_dir($themesDir . '/' . $d)
                         ));
                         $themeName = $dirs[0] ?? null;
                   }
             }
 
-            if (!$themeName) {
+            if (!$themeName)
                   throw new \RuntimeException("Impossible de déterminer le thème actif.");
-            }
 
             $stmt = $pdo->prepare("
                   SELECT domain, domain_ssl, physical_uri
@@ -75,9 +77,8 @@ abstract class ThemeManager {
             $physicalUri = '/' . trim($physicalUri, '/') . '/';
             $physicalUri = ($physicalUri === '//') ? '/' : $physicalUri;
 
-            if ($scheme !== 'http' && $scheme !== 'https') {
+            if ($scheme !== 'http' && $scheme !== 'https')
                   $scheme = (!empty($_SERVER['HTTPS']) && strtolower((string)$_SERVER['HTTPS']) !== 'off') ? 'https' : 'https';
-            }
 
             $themePath = $psRoot . '/themes/' . $themeName . '/';
             $themeUrl  = $domainSsl

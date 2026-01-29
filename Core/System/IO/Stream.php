@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright since 2024 Firstruner and Contributors
+ * Copyright 2024-2026 Firstruner and Contributors
  * Firstruner is an Registered Trademark & Property of Christophe BOULAS
  *
  * NOTICE OF LICENSE
@@ -17,7 +17,7 @@
  * Please refer to https://firstruner.fr/ or contact Firstruner for more information.
  *
  * @author    Firstruner and Contributors <contact@firstruner.fr>
- * @copyright Since 2024 Firstruner and Contributors
+ * @copyright 2024-2026 Firstruner and Contributors
  * @license   Proprietary
  * @version 2.0.0
  */
@@ -42,7 +42,7 @@ abstract class Stream implements IDisposable
       /// <exception cref="T:System.NotSupportedException">The stream does not support reading.</exception>
       /// <exception cref="T:System.ObjectDisposedException">Methods were called after the stream was closed.</exception>
       //#[__DynamicallyInvokable]
-      public abstract function Read(int $offset, int $count) : array | int;
+      public abstract function Read(int $offset, int $count): array | int;
 
       /// <summary>When overridden in a derived class, writes a sequence of bytes to the current stream and advances the current position within this stream by the number of bytes written.</summary>
       /// <param name="buffer">An array of bytes. This method copies <paramref name="count" /> bytes from <paramref name="buffer" /> to the current stream.</param>
@@ -58,5 +58,5 @@ abstract class Stream implements IDisposable
       /// <exception cref="T:System.ObjectDisposedException">
       /// <see cref="M:System.IO.Stream.Write(System.Byte[],System.Int32,System.Int32)" /> was called after the stream was closed.</exception>
       //#[__DynamicallyInvokable]
-      public abstract function Write(array $buffer, int $offset, int $count) : int;
+      public abstract function Write(array $buffer, int $offset, int $count): int;
 }

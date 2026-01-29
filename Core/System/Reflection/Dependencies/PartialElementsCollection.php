@@ -5,7 +5,7 @@
  */
 
 /**
- * Copyright since 2024 Firstruner and Contributors
+ * Copyright 2024-2026 Firstruner and Contributors
  * Firstruner is an Registered Trademark & Property of Christophe BOULAS
  *
  * NOTICE OF LICENSE
@@ -21,7 +21,7 @@
  * Please refer to https://firstruner.fr/ or contact Firstruner for more information.
  *
  * @author    Firstruner and Contributors <contact@firstruner.fr>
- * @copyright Since 2024 Firstruner and Contributors
+ * @copyright 2024-2026 Firstruner and Contributors
  * @license   https://wikipedia.org/wiki/Freemium Freemium License
  * @version 2.0.0
  */
@@ -233,8 +233,7 @@ final class PartialElementsCollection implements Iterator
             $Implements = "";
             $Contents = "";
 
-            foreach ($this->elements as $partial)
-            {
+            foreach ($this->elements as $partial) {
                   $UsesTagFiles .= $partial->Tag_File . PHP_EOL;
                   array_push($UsesArray, $partial->Uses);
 
@@ -307,9 +306,7 @@ final class PartialElementsCollection implements Iterator
 
                   eval($finalClass);
                   return true;
-            }
-            catch (\Error $err) 
-            {
+            } catch (\Error $err) {
                   echo new \Exception(
                         PartialMessages::ExceptionOnLoading .
                               " on " . $ElementName . " - " .

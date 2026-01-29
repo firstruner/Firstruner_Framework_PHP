@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright since 2024 Firstruner and Contributors
+ * Copyright 2024-2026 Firstruner and Contributors
  * Firstruner is an Registered Trademark & Property of Christophe BOULAS
  *
  * NOTICE OF LICENSE
@@ -17,7 +17,7 @@
  * Please refer to https://firstruner.fr/ or contact Firstruner for more information.
  *
  * @author    Firstruner and Contributors <contact@firstruner.fr>
- * @copyright Since 2024 Firstruner and Contributors
+ * @copyright 2024-2026 Firstruner and Contributors
  * @license   Proprietary
  * @version 2.0.0
  */
@@ -31,41 +31,41 @@ use System\Data\IServer;
 use System\Diagnostics\ILogger;
 use System\DynamicClass;
 
-abstract class AServer implements IServer {
+abstract class AServer implements IServer
+{
     protected ILogger $Logger;
-    
+
     #[Obselete()]
-    function ConvertIntoDataAdapter(IteratorAggregate $iterator) : CCollection
+    function ConvertIntoDataAdapter(IteratorAggregate $iterator): CCollection
     {
         return $this->_ConvertIntoDataAdapter($iterator->getIterator());
     }
 
-    protected function _ConvertIntoDataAdapter(IteratorAggregate $iterator) : CCollection
+    protected function _ConvertIntoDataAdapter(IteratorAggregate $iterator): CCollection
     {
         $backValues = new CCollection();
-        
-        foreach($iterator as $row)
+
+        foreach ($iterator as $row)
             $backValues->Add($row);
-        
+
         return $backValues;
     }
 
-    function ConvertIntoDataAdapterFromFullArray(array $iterator) : CCollection
+    function ConvertIntoDataAdapterFromFullArray(array $iterator): CCollection
     {
         $backValues = new CCollection();
-        
-        foreach($iterator as $row)
+
+        foreach ($iterator as $row)
             $backValues->Add($row);
-        
+
         return $backValues;
     }
 
-    function ConvertIntoDynamicObjectFromFullArray(array $iterator) : CCollection
+    function ConvertIntoDynamicObjectFromFullArray(array $iterator): CCollection
     {
         $backValues = new CCollection();
-        
-        foreach($iterator as $row)
-        {
+
+        foreach ($iterator as $row) {
             $dynamicItem = new DynamicClass();
 
             foreach ($row as $key => $value)
@@ -73,7 +73,7 @@ abstract class AServer implements IServer {
 
             $backValues->Add($dynamicItem);
         }
-        
+
         return $backValues;
     }
 }

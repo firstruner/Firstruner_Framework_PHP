@@ -1,26 +1,26 @@
 <?php
 
 /**
-* Copyright since 2024 Firstruner and Contributors
-* Firstruner is an Registered Trademark & Property of Christophe BOULAS
-*
-* NOTICE OF LICENSE
-*
-* This source file is subject to the Freemium License
-* If you did not receive a copy of the license and are unable to
-* obtain it through the world-wide-web, please send an email
-* to contact@firstruner.fr so we can send you a copy immediately.
-*
-* DISCLAIMER
-*
-* Do not edit, reproduce ou modify this file.
-* Please refer to https://firstruner.fr/ or contact Firstruner for more information.
-*
-* @author    Firstruner and Contributors <contact@firstruner.fr>
-* @copyright Since 2024 Firstruner and Contributors
-* @license   Proprietary
-* @version 2.0.0
-*/
+ * Copyright 2024-2026 Firstruner and Contributors
+ * Firstruner is an Registered Trademark & Property of Christophe BOULAS
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Freemium License
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to contact@firstruner.fr so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit, reproduce ou modify this file.
+ * Please refer to https://firstruner.fr/ or contact Firstruner for more information.
+ *
+ * @author    Firstruner and Contributors <contact@firstruner.fr>
+ * @copyright 2024-2026 Firstruner and Contributors
+ * @license   Proprietary
+ * @version 2.0.0
+ */
 
 namespace Firstruner\Cryptography;
 
@@ -78,7 +78,7 @@ final class EncryptDecryptModule
       private string $init_privateKey;
 
       // Properties
-      public function LockKey(bool $value) : void
+      public function LockKey(bool $value): void
       {
             $this->_LockKey = $value;
             if (!$value)
@@ -101,18 +101,20 @@ final class EncryptDecryptModule
 
             if (($numArgs == 2)
                   && (gettype($args[0]) == _string::ClassName)
-                  && (gettype($args[1]) == _string::ClassName))
+                  && (gettype($args[1]) == _string::ClassName)
+            )
                   $this->init_ByKeys($args[0], $args[1]);
 
             if (($numArgs == 3)
                   && (gettype($args[0]) == _string::ClassName)
                   && (gettype($args[1]) == _string::ClassName)
-                  && (gettype($args[2]) == _string::ClassName))
+                  && (gettype($args[2]) == _string::ClassName)
+            )
                   $this->init_ByFile($args[0], $args[1], $args[2]);
       }
 
       // Constructor / Deconstructor
-      private function init_ByKeys(?string $PublicKey = null, ?string $PrivateKey = null) : void
+      private function init_ByKeys(?string $PublicKey = null, ?string $PrivateKey = null): void
       {
             $this->init_publicKey = $PublicKey;
             $this->init_privateKey = $PrivateKey;
@@ -125,10 +127,9 @@ final class EncryptDecryptModule
             $this->CryptoKeys = $keys_list;
       }
 
-      private function init_ByFile(string $keyFile, int $mode, SecureString $password) : void
+      private function init_ByFile(string $keyFile, int $mode, SecureString $password): void
       {
-            switch ($mode)
-            {
+            switch ($mode) {
                   case EncryptionMode::MD5_Value:
                         $this->MD5_LoadKeysFile($keyFile);
                         break;
@@ -144,7 +145,8 @@ final class EncryptDecryptModule
                   case EncryptionMode::AES_Value:
                         $this->AES_LoadKeysFromFile(
                               explode($keyFile, '|')[0],
-                              explode($keyFile, '|')[1]);
+                              explode($keyFile, '|')[1]
+                        );
                         break;
 
                   default:
@@ -152,7 +154,7 @@ final class EncryptDecryptModule
             }
       }
 
-      private function Private_Decrypt_RSA(CryptedValue $CValue, bool $RSAMode, string $privateKey) : string
+      private function Private_Decrypt_RSA(CryptedValue $CValue, bool $RSAMode, string $privateKey): string
       {
             if (!$RSAMode)
                   return $this->Private_Decrypt_Main($CValue, EncryptionMode::RSA_Value);
@@ -160,14 +162,12 @@ final class EncryptDecryptModule
             return $this->RSA_DecryptFromByteArray($CValue->ByteValue(), $privateKey);
       }
 
-      private function Private_Decrypt_Main(CryptedValue $CValue, int $mode, string $specKey = _string::EmptyString) : string|null
+      private function Private_Decrypt_Main(CryptedValue $CValue, int $mode, string $specKey = _string::EmptyString): string|null
       {
             $index = $CValue->ID_Key();
 
-            try
-            {
-                  switch ($mode)
-                  {
+            try {
+                  switch ($mode) {
                         case EncryptionMode::MD5_Value:
                               return $this->MD5_Decrypt($CValue->Value(), $index, true);
 
@@ -190,15 +190,13 @@ final class EncryptDecryptModule
                   }
 
                   return null;
-            }
-            catch (\Exception $e)
-            {
+            } catch (\Exception $e) {
                   //Console.WriteLine(e.Message);
                   return null;
             }
       }
 
-      private function Private_EncryptRSAByPublicKey(string $value, bool $RSAMode, string $publicKey) : CryptedValue
+      private function Private_EncryptRSAByPublicKey(string $value, bool $RSAMode, string $publicKey): CryptedValue
       {
             if (!$RSAMode)
                   return $this->Private_EncryptMain($value, EncryptionMode::RSA_Value);
@@ -206,7 +204,7 @@ final class EncryptDecryptModule
             return $this->RSA_EncryptFromStringPublicKey($value, $publicKey);
       }
 
-      private function Private_EncryptByKey(string $value, int $key, int $mode) : CryptedValue
+      private function Private_EncryptByKey(string $value, int $key, int $mode): CryptedValue
       {
             $this->_LockKey = true;
             $this->k = $key;
@@ -215,12 +213,11 @@ final class EncryptDecryptModule
             return $value2;
       }
 
-      private function Private_EncryptMain(string $value, int $mode, string $specKey = _string::EmptyString) : ?CryptedValue
+      private function Private_EncryptMain(string $value, int $mode, string $specKey = _string::EmptyString): ?CryptedValue
       {
             $i = $this->k;
 
-            if ($mode != EncryptionMode::Caesar_Value)
-            {
+            if ($mode != EncryptionMode::Caesar_Value) {
                   $i = (new Random())->Next(0, count($this->CryptoKeys) - 1);
 
                   if ($this->_LockKey && ($this->k >= 0))
@@ -230,10 +227,8 @@ final class EncryptDecryptModule
                         $this->k = $i;
             }
 
-            try
-            {
-                  switch ($mode)
-                  {
+            try {
+                  switch ($mode) {
                         case EncryptionMode::AES_Value:
                               return new CryptedValue($this->AES_Encrypt($value));
 
@@ -257,9 +252,7 @@ final class EncryptDecryptModule
                         case EncryptionMode::PlayFair_Value:
                               return new CryptedValue($this->PlayFair_Encrypt($value, $specKey ?? $this->CryptoKeys[0]));
                   }
-            }
-            catch (\Exception $e)
-            {
+            } catch (\Exception $e) {
                   //Console.WriteLine(e.Message);
                   return null;
             }
@@ -267,7 +260,7 @@ final class EncryptDecryptModule
             return null;
       }
 
-      private function Private_AES_GenerateNewKeys(int $size) : void
+      private function Private_AES_GenerateNewKeys(int $size): void
       {
             $this->myRijndael->KeySize($size > 256 ? 256 : $size);
             $this->myRijndael->GenerateKey();
@@ -292,47 +285,54 @@ final class EncryptDecryptModule
       // Methods
 
       #region DecryptCallMethods
-      public function Decrypt() : ?string
+      public function Decrypt(): ?string
       {
             $args = func_get_args();
             $numArgs = func_num_args();
 
             if (($numArgs == 2)
                   && ($args[0] instanceof CryptedValue)
-                  && (is_int($args[1])))
+                  && (is_int($args[1]))
+            )
                   return $this->Decrypt_A($args[0], $args[1]);
-            
+
             if (($numArgs == 3)
                   && ($args[0] instanceof CryptedValue)
                   && (is_bool($args[1]))
-                  && (is_string($args[2])))
+                  && (is_string($args[2]))
+            )
                   return $this->Decrypt_B($args[0], $args[1], $args[2]);
 
             if (($numArgs == 2)
                   && (is_string($args[0]))
-                  && (is_int($args[1])))
+                  && (is_int($args[1]))
+            )
                   return $this->Decrypt_C($args[0], $args[1]);
 
             if (($numArgs == 3)
                   && (is_string($args[0]))
                   && (is_int($args[1]))
-                  && (is_int($args[2])))
+                  && (is_int($args[2]))
+            )
                   return $this->Decrypt_D($args[0], $args[1], $args[2]);
 
             if (($numArgs == 2)
                   && (is_string($args[0]))
-                  && ($args[1] instanceof Tuple))
+                  && ($args[1] instanceof Tuple)
+            )
                   return $this->Decrypt_E($args[0], $args[1]);
 
             if (($numArgs == 3)
                   && (is_string($args[0]))
                   && ($args[1] instanceof RsaEncryptionType)
-                  && (is_string($args[2])))
+                  && (is_string($args[2]))
+            )
                   return $this->Decrypt_RSA($args[0], $args[1], $args[2]);
 
             if (($numArgs == 2)
                   && ($args[0] instanceof X509Certificate2)
-                  && (is_string($args[1])))
+                  && (is_string($args[1]))
+            )
                   return $this->Decrypt_Cert($args[0], $args[1]);
 
             return null;
@@ -343,12 +343,12 @@ final class EncryptDecryptModule
       /// </summary>
       /// <param name="mode">SHA non disponible</param>
       /// <returns></returns>
-      private function Decrypt_A(CryptedValue $CValue, int $mode) : string
+      private function Decrypt_A(CryptedValue $CValue, int $mode): string
       {
             return $this->Private_Decrypt_Main($CValue, $mode);
       }
 
-      public function Decrypt_B(CryptedValue $CValue, bool $RSAkey, string $privateKey) : string
+      public function Decrypt_B(CryptedValue $CValue, bool $RSAkey, string $privateKey): string
       {
             if (!$RSAkey)
                   return $this->Decrypt_A($CValue, EncryptionMode::RSA_Value);
@@ -356,17 +356,17 @@ final class EncryptDecryptModule
             return $this->Private_Decrypt_RSA($CValue, $RSAkey, $privateKey);
       }
 
-      public function Decrypt_C(string $CValue, int $mode) : string
+      public function Decrypt_C(string $CValue, int $mode): string
       {
             return $this->Decrypt_A(new CryptedValue($CValue), $mode);
       }
 
-      public function Decrypt_D(string $CValue, int $mode, int $keyCode) : string
+      public function Decrypt_D(string $CValue, int $mode, int $keyCode): string
       {
             return $this->Decrypt_A(new CryptedValue($CValue, $keyCode), $mode);
       }
 
-      public function Decrypt_E(string $CValue, Tuple $MethodKey) : string
+      public function Decrypt_E(string $CValue, Tuple $MethodKey): string
       {
             if ($MethodKey->Item1() == EncryptionMode::PlayFair_Value)
                   return $this->PlayFair_Decrypt($CValue, $MethodKey->Item2());
@@ -375,29 +375,28 @@ final class EncryptDecryptModule
       }
 
       /** <summary>
-      *
-      * </summary>
-      * <param name="CValue">Valeur à crypter</param>
-      * <param name="RSA_EncryptionType">Type d'encryptage RSA<remarks>
-      * Init : Utilise la clé fournie à l'instanciation,
-      * User : Utilise la clé fournie dans la méthode,
-      * Auto : Non utilisable,
-      * Default : Non utilisate,
-      * PreCalculate : Utilise une clé standard
-      * </remarks></param>
-      * <param name="_privateKey">Clé public fourni par l'utilisateur</param>
-      * <returns></returns>
-      */
-      public function Decrypt_RSA(string $CValue, RsaEncryptionType $RSA_EncryptionType, ?string $_privateKey = null) : string
+       *
+       * </summary>
+       * <param name="CValue">Valeur à crypter</param>
+       * <param name="RSA_EncryptionType">Type d'encryptage RSA<remarks>
+       * Init : Utilise la clé fournie à l'instanciation,
+       * User : Utilise la clé fournie dans la méthode,
+       * Auto : Non utilisable,
+       * Default : Non utilisate,
+       * PreCalculate : Utilise une clé standard
+       * </remarks></param>
+       * <param name="_privateKey">Clé public fourni par l'utilisateur</param>
+       * <returns></returns>
+       */
+      public function Decrypt_RSA(string $CValue, RsaEncryptionType $RSA_EncryptionType, ?string $_privateKey = null): string
       {
-            switch ($RSA_EncryptionType)
-            {
+            switch ($RSA_EncryptionType) {
                   case RsaEncryptionType::Init:
                         return $this->Decrypt(new CryptedValue($CValue), true, $this->init_privateKey);
 
                   case RsaEncryptionType::User:
                         if (is_null($_privateKey))
-                        throw new \Exception("Clé indiponible");
+                              throw new \Exception("Clé indiponible");
 
                         return $this->Decrypt(new CryptedValue($CValue), true, $_privateKey);
 
@@ -410,17 +409,14 @@ final class EncryptDecryptModule
             }
       }
 
-      public function Decrypt_Cert(X509Certificate2 $cert, string $value) : string
+      public function Decrypt_Cert(X509Certificate2 $cert, string $value): string
       {
             if (!$cert->HasPrivateKey())
                   throw new PrivateKeyUnavailableException();
 
-            try
-            {
+            try {
                   ObjectExtension::IsNull($cert->PrivateKey());
-            }
-            catch (\Exception $e)
-            {
+            } catch (\Exception $e) {
                   if (Marshal::GetHRForException($e) == -2146893802) // Clé indisponible car non admin
                         throw new NeedAdministratorAccesException($e->getMessage());
             }
@@ -432,49 +428,53 @@ final class EncryptDecryptModule
 
       #region EncryptCallMethods
 
-      public function Encrypt() : ?CryptedValue
+      public function Encrypt(): ?CryptedValue
       {
             $args = func_get_args();
             $numArgs = func_num_args();
 
             if (($numArgs == 2)
                   && (is_string($args[0]))
-                  && (is_int($args[1])))
+                  && (is_int($args[1]))
+            )
                   return $this->Encrypt_A($args[0], $args[1]);
 
             if (($numArgs == 3)
                   && (is_string($args[0]))
                   && (is_int($args[1]))
-                  && (is_int($args[2])))
+                  && (is_int($args[2]))
+            )
                   return $this->Encrypt_B($args[0], $args[1], $args[2]);
 
             if (($numArgs == 4)
                   && (is_string($args[0]))
                   && ($args[1] instanceof RsaEncryptionType)
                   && (is_string($args[2]))
-                  && (is_int($args[3])))
+                  && (is_int($args[3]))
+            )
                   return $this->Encrypt_RSA($args[0], (int)$args[1], $args[2], $args[3]);
 
-            
+
             if (($numArgs == 2)
                   && ($args[0] instanceof X509Certificate2)
-                  && (is_string($args[1])))
+                  && (is_string($args[1]))
+            )
                   return $this->Encrypt_Cert($args[0], $args[1]);
 
             return null;
       }
 
-      private function Encrypt_A(string $value, int $mode) : CryptedValue
+      private function Encrypt_A(string $value, int $mode): CryptedValue
       {
             return $this->Private_EncryptMain($value, $mode);
       }
 
-      private function Encrypt_B(string $value, int $mode, int $keyCode) : CryptedValue
+      private function Encrypt_B(string $value, int $mode, int $keyCode): CryptedValue
       {
             return $this->Private_EncryptByKey($value, $keyCode, $mode);
       }
 
-      private function Encrypt_C(string $CValue, Tuple $MethodKey) : CryptedValue
+      private function Encrypt_C(string $CValue, Tuple $MethodKey): CryptedValue
       {
             if ($MethodKey->Item1() == EncryptionMode::PlayFair_Value)
                   return new CryptedValue($this->PlayFair_Encrypt($CValue, $MethodKey->Item2()));
@@ -500,10 +500,9 @@ final class EncryptDecryptModule
             string $value,
             int $RSA_EncryptionType,
             string $_publicKey = null,
-            int $ECSize = EncryptionSize::encAuto) : CryptedValue
-      {
-            switch ($RSA_EncryptionType)
-            {
+            int $ECSize = EncryptionSize::encAuto
+      ): CryptedValue {
+            switch ($RSA_EncryptionType) {
                   case RsaEncryptionType::PreCalculate:
                         return $this->RSA_EncryptFromStringEncryptionSize($value, $ECSize);
 
@@ -533,7 +532,7 @@ final class EncryptDecryptModule
       //       return $this->Private_Encrypt(value, key, mode);
       // }
 
-      private function Encrypt_Cert(X509Certificate2 $cert, string $value) : CryptedValue
+      private function Encrypt_Cert(X509Certificate2 $cert, string $value): CryptedValue
       {
             return $this->X509_Encrypt($cert, $value);
       }
@@ -667,7 +666,7 @@ final class EncryptDecryptModule
 
       #region MD5
 
-      private function MD5_LoadKeysFile(string $path) : void
+      private function MD5_LoadKeysFile(string $path): void
       {
             $sr = new StreamReader($path);
             $content = $sr->ReadToEnd();
@@ -676,21 +675,18 @@ final class EncryptDecryptModule
             $this->CryptoKeys = explode('\n', str_replace("\r", _string::EmptyString, $content));
       }
 
-      private function MD5_Encrypt(string $toEncrypt, int $IDCrypto, bool $useHashing) : string
+      private function MD5_Encrypt(string $toEncrypt, int $IDCrypto, bool $useHashing): string
       {
             $buffer = [];
             $bytes = UTF8::GetBytes($toEncrypt);
             //AppSettingsReader reader = new AppSettingsReader();
             $s = $this->CryptoKeys[$IDCrypto];
 
-            if ($useHashing)
-            {
+            if ($useHashing) {
                   $provider = new MD5CryptoServiceProvider();
                   $buffer = $provider->ComputeHash($s);
                   $provider->Clear();
-            }
-            else
-            {
+            } else {
                   $buffer = UTF8::GetBytes($s);
             }
 
@@ -704,21 +700,18 @@ final class EncryptDecryptModule
             return $inBase64;
       }
 
-      private function MD5_Decrypt(string $cipherString, int $IDCrypto, bool $useHashing) : string
+      private function MD5_Decrypt(string $cipherString, int $IDCrypto, bool $useHashing): string
       {
             $buffer = [];
             $inputBuffer = System_String::FromBase64($cipherString);
             //AppSettingsReader reader = new AppSettingsReader();
             $s = $this->CryptoKeys[$IDCrypto];
 
-            if ($useHashing)
-            {
+            if ($useHashing) {
                   $provider = new MD5CryptoServiceProvider();
                   $buffer = $provider->ComputeHash($s);
                   $provider->Clear();
-            }
-            else
-            {
+            } else {
                   $buffer = UTF8::GetBytes($s);
             }
 
@@ -736,7 +729,7 @@ final class EncryptDecryptModule
 
       #region RSA
 
-      private function RSA_DecryptFromString(string $data) : string
+      private function RSA_DecryptFromString(string $data): string
       {
             //$dataArray = explode($data, ',');
             $dataByte = System_String::ToByteArray($data);
@@ -745,7 +738,7 @@ final class EncryptDecryptModule
             return (new UnicodeEncoding())->GetString($decryptedByte);
       }
 
-      private function RSA_DecryptFromByteArray(array $encryptBytes, string $privateKey) : string
+      private function RSA_DecryptFromByteArray(array $encryptBytes, string $privateKey): string
       {
             $cspParams = new CspParameters();
             $cspParams->ProviderType(1);
@@ -760,7 +753,7 @@ final class EncryptDecryptModule
             return $plainText;
       }
 
-      private function RSA_EncryptFromString(string $data) : string
+      private function RSA_EncryptFromString(string $data): string
       {
             $dataToEncrypt = (new UnicodeEncoding())->GetBytes($data);
             $encryptedByteArray = System_String::ToByteArray($this->rsa->Encrypt($dataToEncrypt, false));
@@ -768,8 +761,7 @@ final class EncryptDecryptModule
             $item = 0;
             $sb = new StringBuilder();
 
-            foreach ($encryptedByteArray as $x)
-            {
+            foreach ($encryptedByteArray as $x) {
                   $item++;
                   $sb->Append($x);
 
@@ -780,29 +772,24 @@ final class EncryptDecryptModule
             return $sb->ToString();
       }
 
-      private function RSA_EncryptFromStringEncryptionSize(string $data, int $size) : CryptedValue
+      private function RSA_EncryptFromStringEncryptionSize(string $data, int $size): CryptedValue
       {
             $dataSize = count(UTF8::GetBytes($data));
             $maxSize = (((int)$size - 384) / 8) + 37;
 
             $k = _string::EmptyString;
 
-            if ($size == EncryptionSize::encAuto)
-            {
+            if ($size == EncryptionSize::encAuto) {
                   $notEnouth = true;
                   $valK = 512;
 
-                  do
-                  {
+                  do {
                         $size = $valK;
                         $maxSize = (((int)$size - 384) / 8) + 37;
 
-                        if ($maxSize < $dataSize)
-                        {
+                        if ($maxSize < $dataSize) {
                               $valK *= 2;
-                        }
-                        else
-                        {
+                        } else {
                               $notEnouth = false;
                               break;
                         }
@@ -810,15 +797,12 @@ final class EncryptDecryptModule
                         if (($valK > 4096) && $notEnouth)
                               throw new \Exception("Taille de cryptage indisponible");
                   } while ($notEnouth);
-            }
-            else
-            {
+            } else {
                   if ($maxSize < $dataSize)
                         throw new \Exception("Taille de cryptage invalide");
             }
 
-            switch ($size)
-            {
+            switch ($size) {
                   // case EncryptionSize::enc512:
                   //       k = Firstruner.Security.Keys.PublicKey_512;
                   //       break;
@@ -836,7 +820,6 @@ final class EncryptDecryptModule
                   //       break;
                   default:
                         throw new NotImplementedException("Non disponible dans ce langage");
-                  
             }
 
             $cv = $this->RSA_EncryptFromStringPublicKey($data, $k);
@@ -844,7 +827,7 @@ final class EncryptDecryptModule
             return $cv;
       }
 
-      private function RSA_EncryptFromStringPublicKey(string $data, string $publicKey) : CryptedValue
+      private function RSA_EncryptFromStringPublicKey(string $data, string $publicKey): CryptedValue
       {
             $cspParams = new CspParameters();
             $cspParams->ProviderType(1);
@@ -858,7 +841,7 @@ final class EncryptDecryptModule
             return new CryptedValue($encryptedBytes);
       }
 
-      private function RSA_loadKeyFromFile(string $filename) : void
+      private function RSA_loadKeyFromFile(string $filename): void
       {
             $sr = new StreamReader($filename);
             $value = $sr->ReadToEnd();
@@ -871,11 +854,10 @@ final class EncryptDecryptModule
 
       #region SHA1/SHA256/SHA512
 
-      private function SHA_Encrypt(int $mode, string $value) : CryptedValue
+      private function SHA_Encrypt(int $mode, string $value): CryptedValue
       {
             $algorithm = new SHA1Managed();
-            switch ($mode)
-            {
+            switch ($mode) {
                   case EncryptionMode::SHA1_Value:
                         $algorithm = new SHA1Managed();
                         break;
@@ -897,18 +879,18 @@ final class EncryptDecryptModule
 
       #region X509
 
-      private function X509_LoadKeyFromFile(string $path, SecureString $password) : void
+      private function X509_LoadKeyFromFile(string $path, SecureString $password): void
       {
             $this->certX509 = new X509Certificate2($path, $password->ToString());
       }
 
-      private function X509_EncryptFromString(string $value) : array
+      private function X509_EncryptFromString(string $value): array
       {
             $publicKey = $this->certX509->PublicKey()->Key();
             return $publicKey->Encrypt((new ASCIIEncoding())->GetBytes($value), false);
       }
 
-      private function X509_DecryptFromArray(array $datas) : string
+      private function X509_DecryptFromArray(array $datas): string
       {
             if (!$this->certX509->HasPrivateKey())
                   throw new \Exception("Not privateKey");
@@ -917,7 +899,7 @@ final class EncryptDecryptModule
             return UTF8::GetString($privateKey->Decrypt($datas, false));
       }
 
-      private function X509_GetSignature(string $value, int $mode) : array
+      private function X509_GetSignature(string $value, int $mode): array
       {
             if (!$this->certX509->HasPrivateKey())
                   throw new \Exception("Not privateKey");
@@ -926,13 +908,13 @@ final class EncryptDecryptModule
             return $privateKey->SignData((new ASCIIEncoding())->GetBytes($value), strval($mode));
       }
 
-      private function X509_CheckSignature(string $value, int $mode, array $sign) : bool
+      private function X509_CheckSignature(string $value, int $mode, array $sign): bool
       {
             $publicKey = $this->certX509->PublicKey()->Key;
             return $publicKey->VerifyData((new ASCIIEncoding())->GetBytes($value), strval($mode), $sign);
       }
 
-      private function X509_Encrypt(X509Certificate2 $x509, string $value) : CryptedValue
+      private function X509_Encrypt(X509Certificate2 $x509, string $value): CryptedValue
       {
             if (is_null($x509) || System_String::IsNullOrEmpty($value))
                   throw new \Exception("A x509 certificate and string for encryption must be provided");
@@ -943,7 +925,7 @@ final class EncryptDecryptModule
             return new CryptedValue(System_String::ToBase64($encryptedBytes));
       }
 
-      private function X509_Decrypt(X509Certificate2 $x509, string $value) : string
+      private function X509_Decrypt(X509Certificate2 $x509, string $value): string
       {
             if (is_null($x509) || System_String::IsNullOrEmpty($value))
                   throw new \Exception("A x509 certificate and string for decryption must be provided");
@@ -963,18 +945,18 @@ final class EncryptDecryptModule
       #region AES
 
       /// <param name="size">Maximum size : 256</param>
-      public function AES_GenerateNewKeys(int $size = 256) : void
+      public function AES_GenerateNewKeys(int $size = 256): void
       {
             $this->Private_AES_GenerateNewKeys($size);
       }
 
-      private function AES_LoadKeysFromFile(string $pkFile, string $IVFile) : void
+      private function AES_LoadKeysFromFile(string $pkFile, string $IVFile): void
       {
             $this->myRijndael->Key(File::ReadAllText($pkFile));
             $this->myRijndael->IV(File::ReadAllText($IVFile));
       }
 
-      private function AES_Encrypt(string $plainText) : array
+      private function AES_Encrypt(string $plainText): array
       {
             // Check arguments.
             if (is_null($plainText) || strlen($plainText) <= 0)
@@ -1009,7 +991,7 @@ final class EncryptDecryptModule
             return $encrypted;
       }
 
-      private function AES_Decrypt(array $cipherText) : string
+      private function AES_Decrypt(array $cipherText): string
       {
             // Check arguments.
             if (is_null($cipherText) || strlen(System_String::FromByteArray($cipherText)) <= 0)
@@ -1033,10 +1015,11 @@ final class EncryptDecryptModule
 
             // Create the streams used for decryption.
             $srDecrypt = new CryptoStream(
-                        System_String::FromByteArray($cipherText),
-                        $decryptor->Key(),
-                        $decryptor->IV(),
-                        CryptoStreamMode::Read);
+                  System_String::FromByteArray($cipherText),
+                  $decryptor->Key(),
+                  $decryptor->IV(),
+                  CryptoStreamMode::Read
+            );
 
             // Read the decrypted bytes from the decrypting stream
             // and place them in a string.
@@ -1058,23 +1041,23 @@ final class EncryptDecryptModule
       {
             $isLower = ctype_lower($char);  // Vérifie si le caractère est une minuscule
             $base = $isLower ? ord('a') : ord('A');  // Définit la base (soit 'a' soit 'A')
-            
+
             $newChar = chr(($ord = ord($char)) - $base + $shift) % 26 + $base;  // Applique le décalage
 
             return $newChar;
       }
 
-      private function Caesar_EncryptDecrypt(string $value, int $decal) : CryptedValue
+      private function Caesar_EncryptDecrypt(string $value, int $decal): CryptedValue
       {
             $result = '';
-            
+
             foreach (str_split($value) as $char) {
-                if (ctype_alpha($char)) {
-                    $shiftedChar = $this->shiftChar($char, $decal);
-                    $result .= $shiftedChar;
-                } else {
-                    $result .= $char; // On conserve les autres caractères tels quels (espace, ponctuation)
-                }
+                  if (ctype_alpha($char)) {
+                        $shiftedChar = $this->shiftChar($char, $decal);
+                        $result .= $shiftedChar;
+                  } else {
+                        $result .= $char; // On conserve les autres caractères tels quels (espace, ponctuation)
+                  }
             }
 
             return new CryptedValue($result, $decal);

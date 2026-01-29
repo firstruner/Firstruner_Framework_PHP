@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright since 2024 Firstruner and Contributors
+ * Copyright 2024-2026 Firstruner and Contributors
  * Firstruner is an Registered Trademark & Property of Christophe BOULAS
  *
  * NOTICE OF LICENSE
@@ -17,28 +17,29 @@
  * Please refer to https://firstruner.fr/ or contact Firstruner for more information.
  *
  * @author    Firstruner and Contributors <contact@firstruner.fr>
- * @copyright Since 2024 Firstruner and Contributors
+ * @copyright 2024-2026 Firstruner and Contributors
  * @license   Proprietary
  * @version 2.0.0
  */
 
- namespace System\Net\Keys;
+namespace System\Net\Keys;
 
- /* PHP 8+
+/* PHP 8+
  enum EAppParams
  {
      //case ...;
  }
  */
- 
- /* PHP 7+*/
- abstract class ServerKeys
- {
-      public const UserAgent = "HTTP_USER_AGENT";
-      public const IPClient = "REMOTE_ADDR";
-      public const IPClient_Forwarded = "HTTP_X_FORWARDED_FOR";
-      public const IPClient_HttpClient = "HTTP_CLIENT_IP";
-      public const IPClient_Localhost = "127.0.0.1";
-      public const IPClient_Localhost_name = "localhost";
-      public const IPClient_Localhost_Short = "::1";
+
+/* PHP 7+*/
+
+abstract class ServerKeys
+{
+    public const UserAgent = "HTTP_USER_AGENT";
+    public const IPClient = "REMOTE_ADDR";
+    public const IPClient_Forwarded = "HTTP_X_FORWARDED_FOR";
+    public const IPClient_HttpClient = "HTTP_CLIENT_IP";
+    public const IPClient_Localhost = "127.0.0.1";
+    public const IPClient_Localhost_name = "localhost";
+    public const IPClient_Localhost_Short = "::1";
 }

@@ -1,26 +1,26 @@
 <?php
 
 /**
-* Copyright since 2024 Firstruner and Contributors
-* Firstruner is an Registered Trademark & Property of Christophe BOULAS
-*
-* NOTICE OF LICENSE
-*
-* This source file is subject to the Freemium License
-* If you did not receive a copy of the license and are unable to
-* obtain it through the world-wide-web, please send an email
-* to contact@firstruner.fr so we can send you a copy immediately.
-*
-* DISCLAIMER
-*
-* Do not edit, reproduce ou modify this file.
-* Please refer to https://firstruner.fr/ or contact Firstruner for more information.
-*
-* @author    Firstruner and Contributors <contact@firstruner.fr>
-* @copyright Since 2024 Firstruner and Contributors
-* @license   Proprietary
-* @version 2.0.0
-*/
+ * Copyright 2024-2026 Firstruner and Contributors
+ * Firstruner is an Registered Trademark & Property of Christophe BOULAS
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Freemium License
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to contact@firstruner.fr so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit, reproduce ou modify this file.
+ * Please refer to https://firstruner.fr/ or contact Firstruner for more information.
+ *
+ * @author    Firstruner and Contributors <contact@firstruner.fr>
+ * @copyright 2024-2026 Firstruner and Contributors
+ * @license   Proprietary
+ * @version 2.0.0
+ */
 /*
  * This file is part of the Symfony package.
  *
@@ -45,9 +45,7 @@ class HeaderUtils
     /**
      * This class should not be instantiated.
      */
-    private function __construct()
-    {
-    }
+    private function __construct() {}
 
     /**
      * Splits an HTTP header by one or more separators.
@@ -79,13 +77,13 @@ class HeaderUtils
                         "(?:[^"\\\\]|\\\\.)*(?:"|\\\\|$)
                     |
                         # token
-                        [^"'.$quotedSeparators.']+
+                        [^"' . $quotedSeparators . ']+
                     )+
                 (?<!\s)
             |
                 # separator
                 \s*
-                (?<separator>['.$quotedSeparators.'])
+                (?<separator>[' . $quotedSeparators . '])
                 \s*
             /x', trim($header), $matches, \PREG_SET_ORDER);
 
@@ -136,11 +134,11 @@ class HeaderUtils
             if (true === $value) {
                 $parts[] = $name;
             } else {
-                $parts[] = $name.'='.self::quote($value);
+                $parts[] = $name . '=' . self::quote($value);
             }
         }
 
-        return implode($separator.' ', $parts);
+        return implode($separator . ' ', $parts);
     }
 
     /**
@@ -156,7 +154,7 @@ class HeaderUtils
             return $s;
         }
 
-        return '"'.addcslashes($s, '"\\"').'"';
+        return '"' . addcslashes($s, '"\\"') . '"';
     }
 
     /**
@@ -210,10 +208,10 @@ class HeaderUtils
 
         $params = ['filename' => $filenameFallback];
         if ($filename !== $filenameFallback) {
-            $params['filename*'] = "utf-8''".rawurlencode($filename);
+            $params['filename*'] = "utf-8''" . rawurlencode($filename);
         }
 
-        return $disposition.'; '.self::toString($params, ';');
+        return $disposition . '; ' . self::toString($params, ';');
     }
 
     /**
@@ -249,9 +247,9 @@ class HeaderUtils
             }
 
             if (false === $i = strpos($k, '[')) {
-                $q[] = bin2hex($k).$v;
+                $q[] = bin2hex($k) . $v;
             } else {
-                $q[] = bin2hex(substr($k, 0, $i)).rawurlencode(substr($k, $i)).$v;
+                $q[] = bin2hex(substr($k, 0, $i)) . rawurlencode(substr($k, $i)) . $v;
             }
         }
 
@@ -265,7 +263,7 @@ class HeaderUtils
 
         foreach ($q as $k => $v) {
             if (false !== $i = strpos($k, '_')) {
-                $query[substr_replace($k, hex2bin(substr($k, 0, $i)).'[', 0, 1 + $i)] = $v;
+                $query[substr_replace($k, hex2bin(substr($k, 0, $i)) . '[', 0, 1 + $i)] = $v;
             } else {
                 $query[hex2bin($k)] = $v;
             }
@@ -317,4 +315,3 @@ class HeaderUtils
         return $parts;
     }
 }
-

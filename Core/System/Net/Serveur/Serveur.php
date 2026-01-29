@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright since 2024 Firstruner and Contributors
+ * Copyright 2024-2026 Firstruner and Contributors
  * Firstruner is an Registered Trademark & Property of Christophe BOULAS
  *
  * NOTICE OF LICENSE
@@ -17,7 +17,7 @@
  * Please refer to https://firstruner.fr/ or contact Firstruner for more information.
  *
  * @author    Firstruner and Contributors <contact@firstruner.fr>
- * @copyright Since 2024 Firstruner and Contributors
+ * @copyright 2024-2026 Firstruner and Contributors
  * @license   Proprietary
  * @version 2.0.0
  */
@@ -30,7 +30,7 @@ use System\Net\Keys\ServerKeys;
 
 class Serveur
 {
-    public static function Get(string $serveurName, $defaultValue = null) : ?string
+    public static function Get(string $serveurName, $defaultValue = null): ?string
     {
         try {
             return Serveur::Exists($serveurName) ? $_SERVER[$serveurName] : $defaultValue;
@@ -42,12 +42,12 @@ class Serveur
         }
     }
 
-    public static function Set(string $serveurName, string $value) : void
+    public static function Set(string $serveurName, string $value): void
     {
         throw new NotImplementedException("Non implementée");
     }
 
-    public static function Exists(string $serveurName) : bool
+    public static function Exists(string $serveurName): bool
     {
         try {
             return isset($_SERVER[$serveurName]);
@@ -56,7 +56,7 @@ class Serveur
         }
     }
 
-    public static function IPClient() : string
+    public static function IPClient(): string
     {
         $ip = Serveur::Get(ServerKeys::IPClient_HttpClient);
 
@@ -65,6 +65,7 @@ class Serveur
 
         return Serveur::Get(
             ServerKeys::IPClient_Forwarded,
-            Serveur::Get(ServerKeys::IPClient, ServerKeys::IPClient_Localhost_name));
+            Serveur::Get(ServerKeys::IPClient, ServerKeys::IPClient_Localhost_name)
+        );
     }
 }

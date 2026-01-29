@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright since 2024 Firstruner and Contributors
+ * Copyright 2024-2026 Firstruner and Contributors
  * Firstruner is an Registered Trademark & Property of Christophe BOULAS
  *
  * NOTICE OF LICENSE
@@ -17,7 +17,7 @@
  * Please refer to https://firstruner.fr/ or contact Firstruner for more information.
  *
  * @author    Firstruner and Contributors <contact@firstruner.fr>
- * @copyright Since 2024 Firstruner and Contributors
+ * @copyright 2024-2026 Firstruner and Contributors
  * @license   Proprietary
  * @version 2.0.0
  */
@@ -30,22 +30,22 @@ class Http
 {
       private static function detect_scheme(?string $scheme = null): string
       {
-            if ($scheme === 'http' || $scheme === 'https') return $scheme;
+            if ($scheme == 'http' || $scheme == 'https') return $scheme;
 
             $xfp = $_SERVER['HTTP_X_FORWARDED_PROTO'] ?? _string::EmptyString;
 
             if ($xfp) {
                   $first = strtolower(trim(explode(',', $xfp)[0]));
-                  if ($first === 'https' || $first === 'http') return $first;
+                  if ($first == 'https' || $first == 'http') return $first;
             }
 
-            if (!empty($_SERVER['HTTPS']) && strtolower((string)$_SERVER['HTTPS']) !== 'off')
+            if (!empty($_SERVER['HTTPS']) && strtolower((string)$_SERVER['HTTPS']) != 'off')
                   return 'https';
 
-            if (($_SERVER['HTTP_X_FORWARDED_SSL'] ?? '') === 'on')
+            if (($_SERVER['HTTP_X_FORWARDED_SSL'] ?? '') == 'on')
                   return 'https';
 
-            if (isset($_SERVER['SERVER_PORT']) && (int)$_SERVER['SERVER_PORT'] === 443)
+            if (isset($_SERVER['SERVER_PORT']) && (int)$_SERVER['SERVER_PORT'] == 443)
                   return 'https';
 
             return 'http';
@@ -70,9 +70,9 @@ class Http
       private static function detect_base_path(int $depth = 0): string
       {
             $forced = getenv('SITE_BASE_PATH');
-            if ($forced !== false && $forced !== '') {
+            if ($forced != false && $forced !== '') {
                   $forced = '/' . trim($forced, '/');
-                  return ($forced === '/') ? _string::EmptyString : $forced;
+                  return ($forced == '/') ? _string::EmptyString : $forced;
             }
 
             if ($depth <= 0) {
@@ -80,7 +80,7 @@ class Http
             }
 
             $uri = $_SERVER['REQUEST_URI'] ?? _string::EmptyString;
-            if ($uri === _string::EmptyString) {
+            if ($uri == _string::EmptyString) {
                   return _string::EmptyString;
             }
 
@@ -110,35 +110,37 @@ class Http
       }
 
       public static function Site_URL(
-            ?string $path = '',
+            ?string $path = _string::EmptyString,
             ?string $scheme = null,
-            int $basePathDepth = 0): string
-      {
+            int $basePathDepth = 0
+      ): string {
             $env = getenv('SITE_URL');
-            $base = ($env !== false && $env !== '') ? $env : '';
+            $base = ($env != false && $env !== _string::EmptyString)
+                  ? $env
+                  : _string::EmptyString;
 
-            if ($base === '') {
+            if ($base == '') {
                   $detectedScheme = Http::detect_scheme($scheme);
                   $host = Http::detect_host();
                   $basePath = Http::detect_base_path($basePathDepth);
 
-                  if ($host == '') {
+                  if ($host == _string::EmptyString) {
                         if ((php_sapi_name() == "cli"))
                               return "http://127.0.0.1";
 
                         throw new \RuntimeException(
-                        "Impossible de déterminer l'host (pas de contexte HTTP). Définis SITE_URL."
+                              "Impossible de déterminer l'host (pas de contexte HTTP). Définis SITE_URL."
                         );
                   }
 
                   $base = $detectedScheme . '://' . $host . $basePath;
-            } elseif ($scheme !== null) {
+            } elseif ($scheme != null) {
                   $base = preg_replace('~^https?://~i', Http::detect_scheme($scheme) . '://', $base);
             }
 
             $base = rtrim($base, '/');
 
-            if ($path !== null && $path !== '') {
+            if ($path != null && $path != '') {
                   return $base . '/' . ltrim($path, '/');
             }
 

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright since 2024 Firstruner and Contributors
+ * Copyright 2024-2026 Firstruner and Contributors
  * Firstruner is an Registered Trademark & Property of Christophe BOULAS
  *
  * NOTICE OF LICENSE
@@ -17,7 +17,7 @@
  * Please refer to https://firstruner.fr/ or contact Firstruner for more information.
  *
  * @author    Firstruner and Contributors <contact@firstruner.fr>
- * @copyright Since 2024 Firstruner and Contributors
+ * @copyright 2024-2026 Firstruner and Contributors
  * @license   Proprietary
  * @version 2.0.0
  */
@@ -36,7 +36,7 @@ final class PersonalName
       private string $_firstname = _string::EmptyString;
       public bool $IsWoman;
 
-      public function Nom() : string
+      public function Nom(): string
       {
             return strtoupper($this->_lastname);
       }
@@ -46,7 +46,7 @@ final class PersonalName
             $this->_lastname = $value;
       }
 
-      public function Prenom() : string
+      public function Prenom(): string
       {
             return System_String::ToCamelCase($this->_firstname);
       }
@@ -54,7 +54,7 @@ final class PersonalName
       public function SetPrenom(string $value)
       {
             $this->_firstname = $value;
-      }      
+      }
 
       function __construct(string $nom = _string::EmptyString, string $prenom = _string::EmptyString, bool $Woman = false)
       {
@@ -68,20 +68,15 @@ final class PersonalName
             return $this->ToString();
       }
 
-      public function ToString(int $format = FormatName::PrenomNom) : string
+      public function ToString(int $format = FormatName::PrenomNom): string
       {
             $titre = ($this->IsWoman ? Gender::Miss : Gender::Mister);
 
-            if ($format == FormatName::Nom)
-            {
+            if ($format == FormatName::Nom) {
                   return (Enumerations::HasFlag($format, FormatName::Titre) ? $titre . " " : _string::EmptyString) . $this->Nom();
-            }
-            else if ($format == FormatName::Prenom)
-            {
+            } else if ($format == FormatName::Prenom) {
                   return (Enumerations::HasFlag($format, FormatName::Titre) ? $titre . " " : _string::EmptyString) . $this->Prenom();
-            }
-            else
-            {
+            } else {
                   return (Enumerations::HasFlag($format, FormatName::Titre) ? $titre . " " : _string::EmptyString) . $this->Prenom() . " " . $this->Nom();
             }
       }

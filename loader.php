@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright since 2024 Firstruner and Contributors
+ * Copyright 2024-2026 Firstruner and Contributors
  * Firstruner is an Registered Trademark & Property of Christophe BOULAS
  *
  * NOTICE OF LICENSE
@@ -17,7 +17,7 @@
  * Please refer to https://firstruner.fr/ or contact Firstruner for more information.
  *
  * @author    Firstruner and Contributors <contact@firstruner.fr>
- * @copyright Since 2024 Firstruner and Contributors
+ * @copyright 2024-2026 Firstruner and Contributors
  * @license   Proprietary
  * @version 2.0.0
  */
@@ -51,8 +51,12 @@ function do_loading(bool $debug, bool $passErrors): array
     Framework_Symfony::$VendorLoading = false;
     Framework_Symfony::Load();
 
-    if (!Framework::IsLoaded()) { echo "FIRSTRUNER FRAMEWORK : LOADER FAILURE !"; }
-    if (!Framework_Symfony::IsLoaded()) { echo "SYMFONY FRAMEWORK : LOADER FAILURE !"; }
+    if (!Framework::IsLoaded()) {
+        echo "FIRSTRUNER FRAMEWORK : LOADER FAILURE !";
+    }
+    if (!Framework_Symfony::IsLoaded()) {
+        echo "SYMFONY FRAMEWORK : LOADER FAILURE !";
+    }
 
 
     $includedAfter = get_included_files();
@@ -62,18 +66,16 @@ function do_loading(bool $debug, bool $passErrors): array
     return $diff;
 }
 
-if (isset($argv))
-{
+if (isset($argv)) {
     $flags = new CliFlags($argv);
     $debug = $flags->has('--debug');
     $details = $flags->has('--details');
     $includeFiles = $flags->has('--includeFiles');
     $passErrors = $flags->has('--passErrors');
 
-    if ($flags->has('--help') || $flags->has('--h'))
-    {
+    if ($flags->has('--help') || $flags->has('--h')) {
         echo
-            "Arguments :" . PHP_EOL .
+        "Arguments :" . PHP_EOL .
             "  --help / --h     Affiche l'aide" . PHP_EOL .
             "  --debug          Affiche un diagnostique rapide" . PHP_EOL .
             "  --details        Affiche le détails des chargements" . PHP_EOL .
@@ -92,17 +94,14 @@ if (isset($argv))
 
 $loadedFiles = do_loading($debug, $passErrors);
 
-if (isset($argv))
-{
+if (isset($argv)) {
     $afterLoading = snapshot_declared();
     $report = diff_snapshot($beforeLoading, $afterLoading);
 
-    if ($debug)
-    {
+    if ($debug) {
         $report->printSummary($details);
 
-        if ($includeFiles)
-        {
+        if ($includeFiles) {
             echo PHP_EOL . "[Debug] Fichiers inclus (" . count($loadedFiles) . ")\n";
             echo "-------------------------\n";
             sort($loadedFiles, SORT_STRING);

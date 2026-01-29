@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright since 2024 Firstruner and Contributors
+ * Copyright 2024-2026 Firstruner and Contributors
  * Firstruner is an Registered Trademark & Property of Christophe BOULAS
  *
  * NOTICE OF LICENSE
@@ -17,7 +17,7 @@
  * Please refer to https://firstruner.fr/ or contact Firstruner for more information.
  *
  * @author    Firstruner and Contributors <contact@firstruner.fr>
- * @copyright Since 2024 Firstruner and Contributors
+ * @copyright 2024-2026 Firstruner and Contributors
  * @license   Proprietary
  * @version 2.0.0
  */
@@ -36,7 +36,8 @@ final class IBAN extends AbsBankingAccounts
     //     return trim(chunk_split($chaine, 4, ' '));
     // }
 
-    public function IBAN_GetKey(string $codePays, string $rib) : string {
+    public function IBAN_GetKey(string $codePays, string $rib): string
+    {
         $ribNum = $this->Sanitize_IBAN($rib);
         $codePaysNum = $this->Sanitize_IBAN($codePays);
 
@@ -60,7 +61,8 @@ final class IBAN extends AbsBankingAccounts
         return $codePays . $cleStr . $rib;
     }
 
-    private function Sanitize_IBAN(string $chaineNombre) : string {
+    private function Sanitize_IBAN(string $chaineNombre): string
+    {
         $chaine = $chaineNombre;
         $result = _string::EmptyString;
 
@@ -81,7 +83,8 @@ final class IBAN extends AbsBankingAccounts
         return $result;
     }
 
-    public function IBAN_Check($iban) : bool {
+    public function IBAN_Check($iban): bool
+    {
         $ibanClean = $this->SpaceRemove($iban);
         $pays = substr($ibanClean, 0, 2);
         $cle = substr($ibanClean, 2, 2);

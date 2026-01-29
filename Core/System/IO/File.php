@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright since 2024 Firstruner and Contributors
+ * Copyright 2024-2026 Firstruner and Contributors
  * Firstruner is an Registered Trademark & Property of Christophe BOULAS
  *
  * NOTICE OF LICENSE
@@ -17,7 +17,7 @@
  * Please refer to https://firstruner.fr/ or contact Firstruner for more information.
  *
  * @author    Firstruner and Contributors <contact@firstruner.fr>
- * @copyright Since 2024 Firstruner and Contributors
+ * @copyright 2024-2026 Firstruner and Contributors
  * @license   Proprietary
  * @version 2.0.0
  */
@@ -28,10 +28,9 @@ use System\Exceptions\IOException;
 
 abstract class File implements IRepository_Reader, IRepository_Writer
 {
-      public static function ReadAllText(string $path) : string
+      public static function ReadAllText(string $path): string
       {
-            try
-            {
+            try {
                   // if (!file_exists($path)) throw new IOException("Fichier inexistant");
 
                   // return file_get_contents($path);
@@ -39,50 +38,38 @@ abstract class File implements IRepository_Reader, IRepository_Writer
                   if (filter_var($path, FILTER_VALIDATE_URL)) {
                         // URL
                         $content = file_get_contents($path);
-                    } else {
+                  } else {
                         // Local file
                         if (!file_exists($path)) throw new IOException("Fichier inexistant");
                         $content = file_get_contents($path);
-                    }
-            
-                    return $content;
-            }
-            catch (\Exception $ex)
-            {
+                  }
+
+                  return $content;
+            } catch (\Exception $ex) {
                   throw new IOException("Erreur lors du chargement du fichier/URL '$path' : " . $ex->getMessage());
-            }
-            catch (IOException $io_ex)
-            {
+            } catch (IOException $io_ex) {
                   throw new IOException("Erreur d'accès au fichier/URL '$path' : " . $io_ex->getMessage());
             }
       }
 
       public static function WriteAllText(string $path, string $content, bool $overwrite = false)
       {
-            try
-            {
+            try {
                   if (file_exists($path) && !$overwrite) throw new IOException("Le fichier existe déjà");
 
                   return file_put_contents($path, $content);
-            }
-            catch (\Exception $ex)
-            {
+            } catch (\Exception $ex) {
                   throw new IOException("Erreur lors du chargement du fichier '$path' : " . $ex->getMessage());
-            }
-            catch (IOException $io_ex)
-            {
+            } catch (IOException $io_ex) {
                   throw new IOException("Erreur d'accès au fichier '$path' : " . $io_ex->getMessage());
             }
       }
 
-      public static function Exists(string $path) : bool
+      public static function Exists(string $path): bool
       {
-            try
-            {
+            try {
                   return file_exists($path);
-            }
-            catch (\Exception $ex)
-            {
+            } catch (\Exception $ex) {
                   throw new IOException($ex->getMessage(), $ex->getCode(), $ex);
             }
       }
@@ -103,7 +90,7 @@ abstract class File implements IRepository_Reader, IRepository_Writer
             return array_values(unpack("C*", $data));
       }
 
-      public static function Delete(string $path) : bool
+      public static function Delete(string $path): bool
       {
             return unlink($path);
       }

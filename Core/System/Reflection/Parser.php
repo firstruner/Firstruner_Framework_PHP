@@ -5,7 +5,7 @@
  */
 
 /**
- * Copyright since 2024 Firstruner and Contributors
+ * Copyright 2024-2026 Firstruner and Contributors
  * Firstruner is an Registered Trademark & Property of Christophe BOULAS
  *
  * NOTICE OF LICENSE
@@ -21,7 +21,7 @@
  * Please refer to https://firstruner.fr/ or contact Firstruner for more information.
  *
  * @author    Firstruner and Contributors <contact@firstruner.fr>
- * @copyright Since 2024 Firstruner and Contributors
+ * @copyright 2024-2026 Firstruner and Contributors
  * @license   https://wikipedia.org/wiki/Freemium Freemium License
  * @version 2.0.0
  */
@@ -80,7 +80,7 @@ final class Parser
        * @param object $sourceObject
        * @return object
        */
-      public static function TryParse(string $targetInstance, $sourceObject, &$output = null) : bool
+      public static function TryParse(string $targetInstance, $sourceObject, &$output = null): bool
       {
             $output = Parser::getInstance($targetInstance);
             $sourceProperties = Parser::getInstanceProperties($sourceObject);
@@ -88,8 +88,7 @@ final class Parser
             $targetInstanceReflection = new \ReflectionObject($output);
 
             foreach ($sourceProperties as $sourceProperty) {
-                  try
-                  {
+                  try {
                         $sourceProperty->setAccessible(true);
                         $name = $sourceProperty->getName();
                         $value = $sourceProperty->getValue($sourceObject);
@@ -97,9 +96,7 @@ final class Parser
                         $propDest = $targetInstanceReflection->getProperty($name);
                         $propDest->setAccessible(true);
                         $propDest->setValue($targetInstance, $value);
-                  }
-                  catch (\Error $er)
-                  {
+                  } catch (\Error $er) {
                         unset($output);
                         return false;
                   }

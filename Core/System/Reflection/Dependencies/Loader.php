@@ -5,7 +5,7 @@
  */
 
 /**
- * Copyright since 2024 Firstruner and Contributors
+ * Copyright 2024-2026 Firstruner and Contributors
  * Firstruner is an Registered Trademark & Property of Christophe BOULAS
  *
  * NOTICE OF LICENSE
@@ -21,7 +21,7 @@
  * Please refer to https://firstruner.fr/ or contact Firstruner for more information.
  *
  * @author    Firstruner and Contributors <contact@firstruner.fr>
- * @copyright Since 2024 Firstruner and Contributors
+ * @copyright 2024-2026 Firstruner and Contributors
  * @license   https://wikipedia.org/wiki/Freemium Freemium License
  * @version 2.0.0
  */
@@ -53,7 +53,7 @@ function InitializePartialLoader(): bool
       foreach ($libs as $lib)
             if (!in_array(realpath($lib), get_included_files()))
                   Loader::StandardPHP_LoadDependency(realpath($lib));
-      
+
       if (strpos(get_included_files()[0], "/") < 0)
             Loader::SetEscapeChar('\\', '/');
 
@@ -72,7 +72,7 @@ final class Loader
       private static array $includedPath = array();
       private static bool $log_active = false;
       private static array $log = array();
-      private static array $escapesChars = [ "/", "\\"];
+      private static array $escapesChars = ["/", "\\"];
       public static bool $debug = false;
       public static bool $passErrors = false;
 
@@ -84,7 +84,7 @@ final class Loader
 
       public static function SetEscapeChar(string $origin, string $fixed)
       {
-            Loader::$escapesChars = [ $origin, $fixed ];
+            Loader::$escapesChars = [$origin, $fixed];
       }
 
       /**
@@ -313,7 +313,7 @@ final class Loader
                   foreach (scandir($path) as $filename) {
                         $currentPath = $path . '/' . $filename;
 
-                        if (Loader::IsNotLoadable($currentPath))//, $filename))
+                        if (Loader::IsNotLoadable($currentPath)) //, $filename))
                               continue;
 
                         if (is_file($currentPath)) {
@@ -374,10 +374,8 @@ final class Loader
       {
             Loader::CheckPartialMessagesKeysLoaded();
 
-            for ($index = 0; $index < count(Loader::$dependants); $index++)
-            {
-                  try
-                  {
+            for ($index = 0; $index < count(Loader::$dependants); $index++) {
+                  try {
                         if (Loader::$log_active) Loader::AddToLog(
                               str_replace('{0}', Loader::$dependants[$index], PartialMessages::LogAddPreLoad)
                         );
@@ -389,9 +387,7 @@ final class Loader
                         );
 
                         array_push(Loader::$dependants_Loaded, $index);
-                  }
-                  catch (\Error $e)
-                  {
+                  } catch (\Error $e) {
                         if (Loader::$log_active) Loader::AddToLog($e->getMessage());
                   }
             }
@@ -499,27 +495,22 @@ final class Loader
             Loader::InitializeLoadingValues();
             $path = realpath(str_replace('/', Loader::$escapesChars[0], $path));
 
-            if (!in_array($path, haystack: get_included_files()))
-            {
+            if (!in_array($path, haystack: get_included_files())) {
                   set_error_handler(function ($severity, $message, $file, $line) {
                         throw new \ErrorException($message, 0, $severity, $file, $line);
                   });
 
-                  try
-                  {
-                        if ($OnceOnly)
-                        {
+                  try {
+                        if ($OnceOnly) {
                               require_once($path);
-                        }
-                        else
-                        {
+                        } else {
                               if (Loader::$passErrors) {
                                     spl_autoload_register(function ($path) {
                                           if (is_file($path)) {
                                                 require $path;
                                           }
                                     });
-                              } else  {
+                              } else {
                                     if (is_file($path)) require($path);
                               }
                         }

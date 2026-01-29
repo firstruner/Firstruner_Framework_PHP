@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright since 2024 Firstruner and Contributors
+ * Copyright 2024-2026 Firstruner and Contributors
  * Firstruner is an Registered Trademark & Property of Christophe BOULAS
  *
  * NOTICE OF LICENSE
@@ -17,7 +17,7 @@
  * Please refer to https://firstruner.fr/ or contact Firstruner for more information.
  *
  * @author    Firstruner and Contributors <contact@firstruner.fr>
- * @copyright Since 2024 Firstruner and Contributors
+ * @copyright 2024-2026 Firstruner and Contributors
  * @license   Proprietary
  * @version 2.0.0
  */
@@ -41,13 +41,13 @@ use System\Linq\Operators;
  * Class d'itération prenant en charge des fonctions Linq
  */
 class LinqIterator
-    extends ArrayIterator
-    implements
-        Iterator_Extension,
-        ISorter,
-        ILinq,
-        ILinqTyped,
-        IFilter
+extends ArrayIterator
+implements
+    Iterator_Extension,
+    ISorter,
+    ILinq,
+    ILinqTyped,
+    IFilter
 {
     protected mixed $objectType = null;
     private mixed $defaultValue = null;
@@ -884,19 +884,19 @@ class LinqIterator
     {
         $arrTemp = null;
 
-        if ($through)
-        {
+        if ($through) {
             $arrTemp = array_filter(
                 $this->ToArray(),
-                function($a) { return $a != null; }
+                function ($a) {
+                    return $a != null;
+                }
             );
-        }
-        else
-        {
+        } else {
             $arrTemp = $this->ToArray();
             while (
                 !empty($arrTemp)
-                && end($arrTemp) === null)
+                && end($arrTemp) === null
+            )
                 array_pop($arrTemp);
         }
 

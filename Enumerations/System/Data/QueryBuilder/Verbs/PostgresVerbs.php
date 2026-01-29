@@ -1,6 +1,6 @@
 <?php
 // ============================================================
-// Copyright since 2026 Firstruner and Contributors
+// Copyright 2024-2026 Firstruner and Contributors
 // Firstruner is a Registered Trademark & Property of Christophe BOULAS
 //
 // NOTICE OF LICENSE
@@ -16,7 +16,7 @@
 // Please refer to https://firstruner.fr/ or contact Firstruner for more information.
 //
 // Author    : Firstruner and Contributors <contact@firstruner.fr>
-// Copyright : Since 2026 Firstruner and Contributors
+// Copyright : 2024-2026 Firstruner and Contributors
 // License   : Proprietary
 // Version   : 2.0.0
 // ============================================================
@@ -25,7 +25,4 @@
 
 namespace System\Data\QueryBuilder\Verbs;
 
-abstract class PostgresType
-{
-
-}
+abstract class PostgresType {}

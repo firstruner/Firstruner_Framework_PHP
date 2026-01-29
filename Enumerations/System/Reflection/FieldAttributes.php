@@ -1,26 +1,26 @@
 <?php
 
 /**
-* Copyright since 2024 Firstruner and Contributors
-* Firstruner is an Registered Trademark & Property of Christophe BOULAS
-*
-* NOTICE OF LICENSE
-*
-* This source file is subject to the Freemium License
-* If you did not receive a copy of the license and are unable to
-* obtain it through the world-wide-web, please send an email
-* to contact@firstruner.fr so we can send you a copy immediately.
-*
-* DISCLAIMER
-*
-* Do not edit, reproduce ou modify this file.
-* Please refer to https://firstruner.fr/ or contact Firstruner for more information.
-*
-* @author    Firstruner and Contributors <contact@firstruner.fr>
-* @copyright Since 2024 Firstruner and Contributors
-* @license   Proprietary
-* @version 2.0.0
-*/
+ * Copyright 2024-2026 Firstruner and Contributors
+ * Firstruner is an Registered Trademark & Property of Christophe BOULAS
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Freemium License
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to contact@firstruner.fr so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit, reproduce ou modify this file.
+ * Please refer to https://firstruner.fr/ or contact Firstruner for more information.
+ *
+ * @author    Firstruner and Contributors <contact@firstruner.fr>
+ * @copyright 2024-2026 Firstruner and Contributors
+ * @license   Proprietary
+ * @version 2.0.0
+ */
 
 namespace System\Reflection;
 
@@ -35,7 +35,7 @@ class FieldAttributes
     const Family = 0x0004;    // Accessible only by type and sub-types.
     const FamORAssem = 0x0005;    // Accessibly by sub-types anywhere, plus anyone in assembly.
     const Public = 0x0006;    // Accessibly by anyone who has visibility to this scope.
-                              // end member access mask
+    // end member access mask
 
     // field contract attributes.
     const Static = 0x0010;        // Defined on type, else per instance.
@@ -55,4 +55,3 @@ class FieldAttributes
 
     const ReservedMask = 0x9500;
 }
-

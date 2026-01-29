@@ -1,26 +1,26 @@
 <?php
 
 /**
-* Copyright since 2024 Firstruner and Contributors
-* Firstruner is an Registered Trademark & Property of Christophe BOULAS
-*
-* NOTICE OF LICENSE
-*
-* This source file is subject to the Freemium License
-* If you did not receive a copy of the license and are unable to
-* obtain it through the world-wide-web, please send an email
-* to contact@firstruner.fr so we can send you a copy immediately.
-*
-* DISCLAIMER
-*
-* Do not edit, reproduce ou modify this file.
-* Please refer to https://firstruner.fr/ or contact Firstruner for more information.
-*
-* @author    Firstruner and Contributors <contact@firstruner.fr>
-* @copyright Since 2024 Firstruner and Contributors
-* @license   Proprietary
-* @version 2.0.0
-*/
+ * Copyright 2024-2026 Firstruner and Contributors
+ * Firstruner is an Registered Trademark & Property of Christophe BOULAS
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Freemium License
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to contact@firstruner.fr so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit, reproduce ou modify this file.
+ * Please refer to https://firstruner.fr/ or contact Firstruner for more information.
+ *
+ * @author    Firstruner and Contributors <contact@firstruner.fr>
+ * @copyright 2024-2026 Firstruner and Contributors
+ * @license   Proprietary
+ * @version 2.0.0
+ */
 
 namespace System\Data;
 
@@ -57,19 +57,15 @@ final class DataSet
 
             $this->Tables->Clear();
 
-            foreach($xml as $xmlElement)
-            {
+            foreach ($xml as $xmlElement) {
                   $dataTable = null;
 
-                  if ($this->Tables->Contains($xmlElement->getName()))
-                  {
+                  if ($this->Tables->Contains($xmlElement->getName())) {
                         $dataTable = $this->Tables->Find($xmlElement->getName());
-                  }
-                  else
-                  {
+                  } else {
                         $dataTable = new DataTable($xmlElement->getName());
 
-                        foreach($xmlElement as $column => $value)
+                        foreach ($xmlElement as $column => $value)
                               $dataTable->Columns->AddColumn($column);
 
                         $this->Tables->Add($dataTable);
@@ -77,7 +73,7 @@ final class DataSet
 
                   $dr = $dataTable->NewRow();
 
-                  foreach($xmlElement as $column => $value)
+                  foreach ($xmlElement as $column => $value)
                         $dr[$column] = $value;
 
                   $dataTable->Rows->Add($dr);
@@ -94,16 +90,15 @@ final class DataSet
             $output = DataSet::XMLHeader . PHP_EOL .
                   "<" . $this->Name . ">" . PHP_EOL;
 
-            foreach($this->Tables as $table)
-                  foreach($table->Rows as $row)
-                  {
+            foreach ($this->Tables as $table)
+                  foreach ($table->Rows as $row) {
                         $output .= "\t<" . $table->GetName() . ">" . PHP_EOL;
 
-                        foreach($row as $col => $value)
+                        foreach ($row as $col => $value)
                               $output .=
                                     "\t\t<" . $col . ">" .
-                                          $value .
-                                    "</" . $col . ">". PHP_EOL;
+                                    $value .
+                                    "</" . $col . ">" . PHP_EOL;
 
                         $output .= "\t</" . $table->GetName() . ">" . PHP_EOL;
                   }

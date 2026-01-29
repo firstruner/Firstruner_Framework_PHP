@@ -1,26 +1,27 @@
 <?php
 
 /**
-* Copyright since 2024 Firstruner and Contributors
-* Firstruner is an Registered Trademark & Property of Christophe BOULAS
-*
-* NOTICE OF LICENSE
-*
-* This source file is subject to the Freemium License
-* If you did not receive a copy of the license and are unable to
-* obtain it through the world-wide-web, please send an email
-* to contact@firstruner.fr so we can send you a copy immediately.
-*
-* DISCLAIMER
-*
-* Do not edit, reproduce ou modify this file.
-* Please refer to https://firstruner.fr/ or contact Firstruner for more information.
-*
-* @author    Firstruner and Contributors <contact@firstruner.fr>
-* @copyright Since 2024 Firstruner and Contributors
-* @license   Proprietary
-* @version 2.0.0
-*/
+ * Copyright 2024-2026 Firstruner and Contributors
+ * Firstruner is an Registered Trademark & Property of Christophe BOULAS
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Freemium License
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to contact@firstruner.fr so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit, reproduce ou modify this file.
+ * Please refer to https://firstruner.fr/ or contact Firstruner for more information.
+ *
+ * @author    Firstruner and Contributors <contact@firstruner.fr>
+ * @copyright 2024-2026 Firstruner and Contributors
+ * @license   Proprietary
+ * @version 2.0.0
+ */
+
 namespace System\Runtime\Serialization;
 
 use System\IO\Stream;
@@ -36,16 +37,13 @@ class XmlSerializer extends Serializer
        */
       public function Serialize($object, string $rootName = 'root', ?array $_parameters = null)
       {
-            try
-            {
+            try {
                   return $this->_serialize(
                         $object,
                         $rootName,
                         isset($__parameters) ? (bool)$_parameters["pretty"] : true
                   );
-            }
-            catch (\Exception $ex)
-            {
+            } catch (\Exception $ex) {
                   throw new ArgumentException();
             }
       }
@@ -59,16 +57,13 @@ class XmlSerializer extends Serializer
        */
       public function Deserialize(string $input, Stream $output, ?array $_parameters = null)
       {
-            try
-            {
+            try {
                   return $this->_deserialize(
                         $input,
                         isset($__parameters) ? (array)$_parameters["allowedClasses"] : [],
                         isset($__parameters) ? (bool)$_parameters["strictClasses"] : true
                   );
-            }
-            catch (\Exception $ex)
-            {
+            } catch (\Exception $ex) {
                   throw new ArgumentException();
             }
       }
@@ -132,38 +127,32 @@ class XmlSerializer extends Serializer
 
       private function appendValue(\DOMDocument $dom, \DOMElement $parent, mixed $value, \SplObjectStorage $visited): void
       {
-            if ($value === null)
-            {
+            if ($value === null) {
                   $parent->setAttribute('xsi:nil', 'true');
                   return;
             }
 
-            if (is_bool($value))
-            {
+            if (is_bool($value)) {
                   $parent->appendChild($dom->createTextNode($value ? 'true' : 'false'));
                   return;
             }
 
-            if (is_int($value) || is_float($value) || is_string($value))
-            {
+            if (is_int($value) || is_float($value) || is_string($value)) {
                   $parent->appendChild($dom->createTextNode((string)$value));
                   return;
             }
 
-            if ($value instanceof \DateTimeInterface)
-            {
+            if ($value instanceof \DateTimeInterface) {
                   $parent->appendChild($dom->createTextNode($value->format(DATE_ATOM)));
                   return;
             }
 
-            if (is_array($value))
-            {
+            if (is_array($value)) {
                   self::appendArray($dom, $parent, $value, $visited);
                   return;
             }
 
-            if (is_object($value))
-            {
+            if (is_object($value)) {
                   self::appendObject($dom, $parent, $value, $visited);
                   return;
             }
@@ -175,24 +164,17 @@ class XmlSerializer extends Serializer
       {
             $isList = array_keys($arr) === range(0, count($arr) - 1);
 
-            foreach ($arr as $key => $val)
-            {
-                  if ($isList)
-                  {
+            foreach ($arr as $key => $val) {
+                  if ($isList) {
                         $child = $dom->createElement('item');
                         $child->setAttribute('index', (string)$key);
-                  }
-                  else
-                  {
+                  } else {
                         $safeKey = self::sanitizeXmlName((string)$key);
 
-                        if ($safeKey === '' || $safeKey !== (string)$key)
-                        {
+                        if ($safeKey === '' || $safeKey !== (string)$key) {
                               $child = $dom->createElement('entry');
                               $child->setAttribute('key', (string)$key);
-                        }
-                        else
-                        {
+                        } else {
                               $child = $dom->createElement($safeKey);
                         }
                   }
@@ -204,8 +186,7 @@ class XmlSerializer extends Serializer
 
       private function appendObject(\DOMDocument $dom, \DOMElement $parent, object $obj, \SplObjectStorage $visited): void
       {
-            if ($visited->contains($obj))
-            {
+            if ($visited->contains($obj)) {
                   $parent->setAttribute('circularRef', 'true');
                   return;
             }
@@ -217,8 +198,7 @@ class XmlSerializer extends Serializer
             $ref = new \ReflectionObject($obj);
             $props = $ref->getProperties();
 
-            foreach ($props as $prop)
-            {
+            foreach ($props as $prop) {
                   if ($prop->isStatic())
                         continue;
 
@@ -227,7 +207,7 @@ class XmlSerializer extends Serializer
 
                   $name = $prop->getName();
                   $safeName = self::sanitizeXmlName($name);
-                  
+
                   if ($safeName === '')
                         $safeName = 'property';
 
@@ -237,12 +217,9 @@ class XmlSerializer extends Serializer
                   if ($safeName === 'property' && $name !== 'property')
                         $child->setAttribute('name', $name);
 
-                  try
-                  {
+                  try {
                         $val = $prop->getValue($obj);
-                  }
-                  catch (\Throwable $e)
-                  {
+                  } catch (\Throwable $e) {
                         $child->setAttribute('unreadable', 'true');
                         $child->setAttribute('error', $e->getMessage());
                         continue;
@@ -267,7 +244,7 @@ class XmlSerializer extends Serializer
 
             if (preg_match('/^xml/i', $name))
                   $name = '_' . $name;
-            
+
             return $name;
       }
 
@@ -279,116 +256,116 @@ class XmlSerializer extends Serializer
       {
             // null ?
             if (self::isNil($el)) {
-            return null;
+                  return null;
             }
 
             // circularRef marker ?
             if ($el->hasAttribute('circularRef') && $el->getAttribute('circularRef') === 'true') {
-            // On ne peut pas reconstruire la ref circulaire sans un système d'ID/références.
-            // On renvoie une valeur spéciale, ou null.
-            return null;
+                  // On ne peut pas reconstruire la ref circulaire sans un système d'ID/références.
+                  // On renvoie une valeur spéciale, ou null.
+                  return null;
             }
 
             // Objet ?
             if ($el->hasAttribute('class')) {
-            $class = $el->getAttribute('class');
+                  $class = $el->getAttribute('class');
 
-            $canInstantiate = in_array($class, $allowedClasses, true);
+                  $canInstantiate = in_array($class, $allowedClasses, true);
 
-            if (!$canInstantiate) {
-                  if ($strictClasses) {
-                        throw new \RuntimeException("Class not allowed for deserialization: {$class}");
-                  }
-                  // fallback array
-                  return self::readAsAssociativeArray($el, $allowedClasses, $strictClasses);
-            }
-
-            if (!class_exists($class)) {
-                  if ($strictClasses) {
-                        throw new \RuntimeException("Class does not exist: {$class}");
-                  }
-                  return self::readAsAssociativeArray($el, $allowedClasses, $strictClasses);
-            }
-
-            $obj = self::instantiateWithoutConstructor($class);
-
-            // Remplir propriétés
-            $ref = new \ReflectionObject($obj);
-
-            foreach (self::childElements($el) as $child) {
-                  $propName = $child->tagName;
-
-                  // Si fallback "property" avec attribut name="..."
-                  if ($propName === 'property' && $child->hasAttribute('name')) {
-                        $propName = $child->getAttribute('name');
-                  }
-
-                  $value = self::readElement($child, $allowedClasses, $strictClasses);
-
-                  // Affectation property si elle existe
-                  if ($ref->hasProperty($propName)) {
-                        $rp = $ref->getProperty($propName);
-                        if ($rp->isStatic()) {
-                        continue;
+                  if (!$canInstantiate) {
+                        if ($strictClasses) {
+                              throw new \RuntimeException("Class not allowed for deserialization: {$class}");
                         }
-                        if (!$rp->isPublic()) {
-                        $rp->setAccessible(true);
+                        // fallback array
+                        return self::readAsAssociativeArray($el, $allowedClasses, $strictClasses);
+                  }
+
+                  if (!class_exists($class)) {
+                        if ($strictClasses) {
+                              throw new \RuntimeException("Class does not exist: {$class}");
+                        }
+                        return self::readAsAssociativeArray($el, $allowedClasses, $strictClasses);
+                  }
+
+                  $obj = self::instantiateWithoutConstructor($class);
+
+                  // Remplir propriétés
+                  $ref = new \ReflectionObject($obj);
+
+                  foreach (self::childElements($el) as $child) {
+                        $propName = $child->tagName;
+
+                        // Si fallback "property" avec attribut name="..."
+                        if ($propName === 'property' && $child->hasAttribute('name')) {
+                              $propName = $child->getAttribute('name');
                         }
 
-                        // Option: coercition simple typée
-                        $value = self::coerceToPropertyType($rp, $value);
+                        $value = self::readElement($child, $allowedClasses, $strictClasses);
 
-                        try {
-                        $rp->setValue($obj, $value);
-                        } catch (\Throwable $e) {
-                        // si impossible, on ignore ou on lève
-                        // Ici: lever pour diagnostic
-                        throw new \RuntimeException("Failed to set {$class}::\${$propName}: " . $e->getMessage(), 0, $e);
+                        // Affectation property si elle existe
+                        if ($ref->hasProperty($propName)) {
+                              $rp = $ref->getProperty($propName);
+                              if ($rp->isStatic()) {
+                                    continue;
+                              }
+                              if (!$rp->isPublic()) {
+                                    $rp->setAccessible(true);
+                              }
+
+                              // Option: coercition simple typée
+                              $value = self::coerceToPropertyType($rp, $value);
+
+                              try {
+                                    $rp->setValue($obj, $value);
+                              } catch (\Throwable $e) {
+                                    // si impossible, on ignore ou on lève
+                                    // Ici: lever pour diagnostic
+                                    throw new \RuntimeException("Failed to set {$class}::\${$propName}: " . $e->getMessage(), 0, $e);
+                              }
+                        } else {
+                              // Propriété inexistante: ignorer (ou stocker ailleurs)
+                              // Ici: on ignore
                         }
-                  } else {
-                        // Propriété inexistante: ignorer (ou stocker ailleurs)
-                        // Ici: on ignore
                   }
-            }
 
-            return $obj;
+                  return $obj;
             }
 
             // Tableau ?
             $children = self::childElements($el);
             if (count($children) > 0) {
-            // Détecter liste vs assoc
-            $isList = self::looksLikeList($children);
+                  // Détecter liste vs assoc
+                  $isList = self::looksLikeList($children);
 
-            if ($isList) {
+                  if ($isList) {
+                        $out = [];
+                        foreach ($children as $child) {
+                              // attend <item index="n">
+                              $idx = $child->hasAttribute('index') ? (int)$child->getAttribute('index') : null;
+                              $val = self::readElement($child, $allowedClasses, $strictClasses);
+
+                              if ($idx !== null) {
+                                    $out[$idx] = $val;
+                              } else {
+                                    $out[] = $val;
+                              }
+                        }
+                        // Re-indexer si besoin
+                        ksort($out);
+                        return array_values($out);
+                  }
+
+                  // assoc
                   $out = [];
                   foreach ($children as $child) {
-                        // attend <item index="n">
-                        $idx = $child->hasAttribute('index') ? (int)$child->getAttribute('index') : null;
-                        $val = self::readElement($child, $allowedClasses, $strictClasses);
-
-                        if ($idx !== null) {
-                        $out[$idx] = $val;
+                        if ($child->tagName === 'entry' && $child->hasAttribute('key')) {
+                              $key = $child->getAttribute('key');
                         } else {
-                        $out[] = $val;
+                              $key = $child->tagName;
                         }
+                        $out[$key] = self::readElement($child, $allowedClasses, $strictClasses);
                   }
-                  // Re-indexer si besoin
-                  ksort($out);
-                  return array_values($out);
-            }
-
-            // assoc
-            $out = [];
-            foreach ($children as $child) {
-                  if ($child->tagName === 'entry' && $child->hasAttribute('key')) {
-                        $key = $child->getAttribute('key');
-                  } else {
-                        $key = $child->tagName;
-                  }
-                  $out[$key] = self::readElement($child, $allowedClasses, $strictClasses);
-            }
-            return $out;
+                  return $out;
             }
 
             // Scalaire (texte)
@@ -402,9 +379,9 @@ class XmlSerializer extends Serializer
       {
             $children = [];
             foreach ($el->childNodes as $n) {
-            if ($n instanceof \DOMElement) {
-                  $children[] = $n;
-            }
+                  if ($n instanceof \DOMElement) {
+                        $children[] = $n;
+                  }
             }
             return $children;
       }
@@ -413,8 +390,8 @@ class XmlSerializer extends Serializer
       {
             // si tous les enfants sont <item>, on considère une liste
             foreach ($children as $c) {
-            if (!$c instanceof \DOMElement) continue;
-            if ($c->tagName !== 'item') return false;
+                  if (!$c instanceof \DOMElement) continue;
+                  if ($c->tagName !== 'item') return false;
             }
             return count($children) > 0;
       }
@@ -423,15 +400,15 @@ class XmlSerializer extends Serializer
       {
             $out = [];
             foreach (self::childElements($el) as $child) {
-            $key = $child->tagName;
-            if ($key === 'property' && $child->hasAttribute('name')) {
-                  $key = $child->getAttribute('name');
-            }
-            $out[$key] = self::readElement($child, $allowedClasses, $strictClasses);
+                  $key = $child->tagName;
+                  if ($key === 'property' && $child->hasAttribute('name')) {
+                        $key = $child->getAttribute('name');
+                  }
+                  $out[$key] = self::readElement($child, $allowedClasses, $strictClasses);
             }
             // Garder aussi la classe en méta si besoin
             if ($el->hasAttribute('class')) {
-            $out['@class'] = $el->getAttribute('class');
+                  $out['@class'] = $el->getAttribute('class');
             }
             return $out;
       }
@@ -440,10 +417,10 @@ class XmlSerializer extends Serializer
       {
             // support "xsi:nil=true" même sans namespace déclaré
             if ($el->hasAttribute('xsi:nil')) {
-            return strtolower($el->getAttribute('xsi:nil')) === 'true';
+                  return strtolower($el->getAttribute('xsi:nil')) === 'true';
             }
             if ($el->hasAttribute('nil')) {
-            return strtolower($el->getAttribute('nil')) === 'true';
+                  return strtolower($el->getAttribute('nil')) === 'true';
             }
             return false;
       }
@@ -452,7 +429,7 @@ class XmlSerializer extends Serializer
       {
             $ref = new \ReflectionClass($class);
             if (method_exists($ref, 'newInstanceWithoutConstructor')) {
-            return $ref->newInstanceWithoutConstructor();
+                  return $ref->newInstanceWithoutConstructor();
             }
             // fallback très rare
             return new $class();
@@ -461,7 +438,7 @@ class XmlSerializer extends Serializer
       private function inferScalar(string $text): mixed
       {
             if ($text === '') {
-            return '';
+                  return '';
             }
 
             $lower = strtolower($text);
@@ -470,23 +447,23 @@ class XmlSerializer extends Serializer
 
             // int (attention: "01" -> int 1, si vous tenez aux zéros, désactivez)
             if (preg_match('/^-?\d+$/', $text)) {
-            // éviter overflow en restant en string si trop grand
-            // mais en pratique on convertit
-            return (int)$text;
+                  // éviter overflow en restant en string si trop grand
+                  // mais en pratique on convertit
+                  return (int)$text;
             }
 
             // float
             if (preg_match('/^-?\d+\.\d+$/', $text)) {
-            return (float)$text;
+                  return (float)$text;
             }
 
             // Date ISO-8601 (produit par DATE_ATOM)
             if (preg_match('/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/', $text)) {
-            try {
-                  return new \DateTimeImmutable($text);
-            } catch (\Throwable) {
-                  // ignore
-            }
+                  try {
+                        return new \DateTimeImmutable($text);
+                  } catch (\Throwable) {
+                        // ignore
+                  }
             }
 
             return $text;
@@ -496,24 +473,24 @@ class XmlSerializer extends Serializer
       {
             $type = $rp->getType();
             if (!$type) {
-            return $value;
+                  return $value;
             }
 
             // Union types: on applique une coercition minimale
             if ($type instanceof \ReflectionUnionType) {
-            foreach ($type->getTypes() as $t) {
-                  $coerced = self::coerceToNamedType($t, $value);
-                  // si coercition plausible, on retourne
-                  if ($coerced !== self::COERCE_FAILED) {
-                        return $coerced;
+                  foreach ($type->getTypes() as $t) {
+                        $coerced = self::coerceToNamedType($t, $value);
+                        // si coercition plausible, on retourne
+                        if ($coerced !== self::COERCE_FAILED) {
+                              return $coerced;
+                        }
                   }
-            }
-            return $value;
+                  return $value;
             }
 
             if ($type instanceof \ReflectionNamedType) {
-            $coerced = self::coerceToNamedType($type, $value);
-            return $coerced === self::COERCE_FAILED ? $value : $coerced;
+                  $coerced = self::coerceToNamedType($type, $value);
+                  return $coerced === self::COERCE_FAILED ? $value : $coerced;
             }
 
             return $value;
@@ -526,34 +503,37 @@ class XmlSerializer extends Serializer
             $name = $type->getName();
 
             if ($value === null) {
-            return $type->allowsNull() ? null : self::COERCE_FAILED;
+                  return $type->allowsNull() ? null : self::COERCE_FAILED;
             }
 
             if ($type->isBuiltin()) {
-            return match ($name) {
-                  'int' => is_numeric($value) ? (int)$value : self::COERCE_FAILED,
-                  'float' => is_numeric($value) ? (float)$value : self::COERCE_FAILED,
-                  'string' => is_scalar($value) ? (string)$value : self::COERCE_FAILED,
-                  'bool' => is_bool($value) ? $value : (is_string($value) ? in_array(strtolower($value), ['1','true','yes'], true) : self::COERCE_FAILED),
-                  'array' => is_array($value) ? $value : self::COERCE_FAILED,
-                  default => self::COERCE_FAILED,
-            };
+                  return match ($name) {
+                        'int' => is_numeric($value) ? (int)$value : self::COERCE_FAILED,
+                        'float' => is_numeric($value) ? (float)$value : self::COERCE_FAILED,
+                        'string' => is_scalar($value) ? (string)$value : self::COERCE_FAILED,
+                        'bool' => is_bool($value) ? $value : (is_string($value) ? in_array(strtolower($value), ['1', 'true', 'yes'], true) : self::COERCE_FAILED),
+                        'array' => is_array($value) ? $value : self::COERCE_FAILED,
+                        default => self::COERCE_FAILED,
+                  };
             }
 
             // Non-builtin: classe/interface
             if (is_object($value) && is_a($value, $name)) {
-            return $value;
+                  return $value;
             }
 
             // Cas \DateTimeInterface si valeur est \DateTimeImmutable
             if (in_array($name, [\DateTimeInterface::class, \DateTimeImmutable::class, \DateTime::class], true)) {
-            if ($value instanceof \DateTimeInterface) return $value;
-            if (is_string($value)) {
-                  try { return new \DateTimeImmutable($value); } catch (\Throwable) { return self::COERCE_FAILED; }
-            }
+                  if ($value instanceof \DateTimeInterface) return $value;
+                  if (is_string($value)) {
+                        try {
+                              return new \DateTimeImmutable($value);
+                        } catch (\Throwable) {
+                              return self::COERCE_FAILED;
+                        }
+                  }
             }
 
             return self::COERCE_FAILED;
       }
 }
-

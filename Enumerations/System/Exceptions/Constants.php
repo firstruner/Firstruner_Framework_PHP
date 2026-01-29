@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright since 2024 Firstruner and Contributors
+ * Copyright 2024-2026 Firstruner and Contributors
  * Firstruner is an Registered Trademark & Property of Christophe BOULAS
  *
  * NOTICE OF LICENSE
@@ -17,12 +17,12 @@
  * Please refer to https://firstruner.fr/ or contact Firstruner for more information.
  *
  * @author    Firstruner and Contributors <contact@firstruner.fr>
- * @copyright Since 2024 Firstruner and Contributors
+ * @copyright 2024-2026 Firstruner and Contributors
  * @license   Proprietary
  * @version 2.0.0
  */
 
- namespace System\Exceptions;
+namespace System\Exceptions;
 
 /* PHP 8+
 enum EStyleTags
@@ -35,25 +35,24 @@ enum EStyleTags
 
 abstract class Constants
 {
-      const ArgumentOutOfRange_BadHourMinuteSecond = "ArgumentOutOfRange_BadHourMinuteSecond";
-      const ArgumentNull_String = "ArgumentNull_String";
-      const ArgumentOutOfRange_AddValue = "ArgumentOutOfRange_AddValue";
-      const Argument_ResultCalendarRange = "Argument_ResultCalendarRange";
-      const Argument_CultureNotSupported = "Argument_CultureNotSupported";
-      const ArgumentOutOfRange_Range = "ArgumentOutOfRange_Range";
-      const ArgumentOutOfRange_NeedPosNum = "ArgumentOutOfRange_NeedPosNum";      
-      const Argument_InvalidResourceCultureName = "Argument_InvalidResourceCultureName";
-      const ArgumentNull_Obj = "ArgumentNull_Obj";
-      const ArgumentOutOfRange_NeedNonNegNum = "ArgumentOutOfRange_NeedNonNegNum";
-      const Argument_OneOfCulturesNotSupported = "Argument_OneOfCulturesNotSupported";
-      const Argument_CultureIetfNotSupported = "Argument_CultureIetfNotSupported";
-      const Argument_NoRegionInvariantCulture = "Argument_NoRegionInvariantCulture";
-      const Argument_CultureIsNeutral = "Argument_CultureIsNeutral";
-      const Argument_CustomCultureCannotBePassedByNumber = "Argument_CustomCultureCannotBePassedByNumber";
-      const Argument_InvalidCultureName = "Argument_InvalidCultureName";
-      const Argument_InvalidNeutralRegionName = "Argument_InvalidNeutralRegionName";
+    const ArgumentOutOfRange_BadHourMinuteSecond = "ArgumentOutOfRange_BadHourMinuteSecond";
+    const ArgumentNull_String = "ArgumentNull_String";
+    const ArgumentOutOfRange_AddValue = "ArgumentOutOfRange_AddValue";
+    const Argument_ResultCalendarRange = "Argument_ResultCalendarRange";
+    const Argument_CultureNotSupported = "Argument_CultureNotSupported";
+    const ArgumentOutOfRange_Range = "ArgumentOutOfRange_Range";
+    const ArgumentOutOfRange_NeedPosNum = "ArgumentOutOfRange_NeedPosNum";
+    const Argument_InvalidResourceCultureName = "Argument_InvalidResourceCultureName";
+    const ArgumentNull_Obj = "ArgumentNull_Obj";
+    const ArgumentOutOfRange_NeedNonNegNum = "ArgumentOutOfRange_NeedNonNegNum";
+    const Argument_OneOfCulturesNotSupported = "Argument_OneOfCulturesNotSupported";
+    const Argument_CultureIetfNotSupported = "Argument_CultureIetfNotSupported";
+    const Argument_NoRegionInvariantCulture = "Argument_NoRegionInvariantCulture";
+    const Argument_CultureIsNeutral = "Argument_CultureIsNeutral";
+    const Argument_CustomCultureCannotBePassedByNumber = "Argument_CustomCultureCannotBePassedByNumber";
+    const Argument_InvalidCultureName = "Argument_InvalidCultureName";
+    const Argument_InvalidNeutralRegionName = "Argument_InvalidNeutralRegionName";
 
-      const InvalidOperation_ReadOnly = "InvalidOperation_ReadOnly";
-      const InvalidOperation_SubclassedObject = "InvalidOperation_SubclassedObject";
-
+    const InvalidOperation_ReadOnly = "InvalidOperation_ReadOnly";
+    const InvalidOperation_SubclassedObject = "InvalidOperation_SubclassedObject";
 }

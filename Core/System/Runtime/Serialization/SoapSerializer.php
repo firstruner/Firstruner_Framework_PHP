@@ -1,26 +1,27 @@
 <?php
 
 /**
-* Copyright since 2024 Firstruner and Contributors
-* Firstruner is an Registered Trademark & Property of Christophe BOULAS
-*
-* NOTICE OF LICENSE
-*
-* This source file is subject to the Freemium License
-* If you did not receive a copy of the license and are unable to
-* obtain it through the world-wide-web, please send an email
-* to contact@firstruner.fr so we can send you a copy immediately.
-*
-* DISCLAIMER
-*
-* Do not edit, reproduce ou modify this file.
-* Please refer to https://firstruner.fr/ or contact Firstruner for more information.
-*
-* @author    Firstruner and Contributors <contact@firstruner.fr>
-* @copyright Since 2024 Firstruner and Contributors
-* @license   Proprietary
-* @version 2.0.0
-*/
+ * Copyright 2024-2026 Firstruner and Contributors
+ * Firstruner is an Registered Trademark & Property of Christophe BOULAS
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Freemium License
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to contact@firstruner.fr so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit, reproduce ou modify this file.
+ * Please refer to https://firstruner.fr/ or contact Firstruner for more information.
+ *
+ * @author    Firstruner and Contributors <contact@firstruner.fr>
+ * @copyright 2024-2026 Firstruner and Contributors
+ * @license   Proprietary
+ * @version 2.0.0
+ */
+
 namespace System\Runtime\Serialization;
 
 use System\IO\Stream;
@@ -33,28 +34,22 @@ class SoapSerializer extends Serializer
 
       public function Serialize($object, string $rootName = 'root', ?array $_parameters = null)
       {
-            try
-            {
+            try {
                   $pretty = isset($__parameters) ? (bool)$_parameters["pretty"] : true;
                   $soapVersion = isset($__parameters) ? (string)$_parameters["soapVersion"] : '1.1'; // '1.1' or '1.2'
                   return $this->_serialize($object, $rootName, $pretty, $soapVersion);
-            }
-            catch (\Throwable $ex)
-            {
+            } catch (\Throwable $ex) {
                   throw new ArgumentException();
             }
       }
 
       public function Deserialize(string $input, Stream $output, ?array $_parameters = null)
       {
-            try
-            {
+            try {
                   $allowed = isset($__parameters) ? (array)$_parameters["allowedClasses"] : [];
                   $strict  = isset($__parameters) ? (bool)$_parameters["strictClasses"] : true;
                   return $this->_deserialize($input, $allowed, $strict);
-            }
-            catch (\Throwable $ex)
-            {
+            } catch (\Throwable $ex) {
                   throw new ArgumentException();
             }
       }
@@ -106,12 +101,9 @@ class SoapSerializer extends Serializer
 
             // Chercher Body puis le 1er élément payload
             $elements = null;
-            foreach ($root->getElementsByTagNameNS('*', 'Body') as $body)
-            {
-                  foreach ($body->childNodes as $n)
-                  {
-                        if ($n instanceof \DOMElement)
-                        {
+            foreach ($root->getElementsByTagNameNS('*', 'Body') as $body) {
+                  foreach ($body->childNodes as $n) {
+                        if ($n instanceof \DOMElement) {
                               $elements = $n;
                               break 2;
                         }
@@ -128,28 +120,24 @@ class SoapSerializer extends Serializer
 
       private function appendTypedValue(\DOMDocument $dom, \DOMElement $parent, mixed $value, \SplObjectStorage $visited): void
       {
-            if ($value === null)
-            {
+            if ($value === null) {
                   $parent->setAttribute('xsi:nil', 'true');
                   return;
             }
 
-            if (is_bool($value) || is_int($value) || is_float($value) || is_string($value))
-            {
+            if (is_bool($value) || is_int($value) || is_float($value) || is_string($value)) {
                   $parent->setAttribute('type', gettype($value));
                   $parent->appendChild($dom->createTextNode((string)$value));
                   return;
             }
 
-            if ($value instanceof \DateTimeInterface)
-            {
+            if ($value instanceof \DateTimeInterface) {
                   $parent->setAttribute('type', 'datetime');
                   $parent->appendChild($dom->createTextNode($value->format(DATE_ATOM)));
                   return;
             }
 
-            if (is_array($value))
-            {
+            if (is_array($value)) {
                   $parent->setAttribute('type', 'array');
                   foreach ($value as $k => $v) {
                         $child = $dom->createElement('item');
@@ -161,10 +149,8 @@ class SoapSerializer extends Serializer
                   return;
             }
 
-            if (is_object($value))
-            {
-                  if ($visited->contains($value))
-                  {
+            if (is_object($value)) {
+                  if ($visited->contains($value)) {
                         $parent->setAttribute('ref', 'circular');
                         return;
                   }
@@ -175,9 +161,8 @@ class SoapSerializer extends Serializer
                   $parent->setAttribute('class', $value::class);
 
                   $ref = new \ReflectionObject($value);
-                  
-                  foreach ($ref->getProperties() as $prop)
-                  {
+
+                  foreach ($ref->getProperties() as $prop) {
                         if ($prop->isStatic())
                               continue;
 
@@ -187,12 +172,9 @@ class SoapSerializer extends Serializer
                         $child = $dom->createElement($this->sanitizeXmlName($prop->getName()));
                         $parent->appendChild($child);
 
-                        try
-                        {
+                        try {
                               $this->appendTypedValue($dom, $child, $prop->getValue($value), $visited);
-                        }
-                        catch (\Throwable $e)
-                        {
+                        } catch (\Throwable $e) {
                               $child->setAttribute('unreadable', 'true');
                               $child->setAttribute('error', $e->getMessage());
                         }
@@ -228,25 +210,19 @@ class SoapSerializer extends Serializer
             if ($type === 'string')
                   return (string)trim($el->textContent);
 
-            if ($type === 'datetime')
-            {
+            if ($type === 'datetime') {
                   $t = trim($el->textContent);
-                  try
-                  {
+                  try {
                         return new \DateTimeImmutable($t);
-                  }
-                  catch (\Throwable)
-                  {
+                  } catch (\Throwable) {
                         return $t;
                   }
             }
 
-            if ($type === 'array')
-            {
+            if ($type === 'array') {
                   $out = [];
 
-                  foreach ($el->childNodes as $n)
-                  {
+                  foreach ($el->childNodes as $n) {
                         if (!$n instanceof \DOMElement || $n->tagName !== 'item')
                               continue;
 
@@ -257,30 +233,27 @@ class SoapSerializer extends Serializer
                   return $out;
             }
 
-            if ($type === 'object')
-            {
+            if ($type === 'object') {
                   $class = $el->getAttribute('class');
                   $canInstantiate = in_array($class, $allowedClasses, true);
 
-                  if (!$canInstantiate || !class_exists($class))
-                  {
+                  if (!$canInstantiate || !class_exists($class)) {
                         if ($strictClasses)
                               throw new \RuntimeException("Class not allowed for deserialization: {$class}");
-                        
+
                         // fallback array
                         $out = ['@class' => $class];
 
                         foreach ($this->childElements($el) as $child)
                               $out[$child->tagName] = $this->readTypedElement($child, $allowedClasses, $strictClasses);
-                              
+
                         return $out;
                   }
 
                   $obj = $this->instantiateWithoutConstructor($class);
                   $ref = new \ReflectionObject($obj);
 
-                  foreach ($this->childElements($el) as $child)
-                  {
+                  foreach ($this->childElements($el) as $child) {
                         $propName = $child->tagName;
                         $val = $this->readTypedElement($child, $allowedClasses, $strictClasses);
 
@@ -361,10 +334,8 @@ class SoapSerializer extends Serializer
             if (!$type)
                   return $value;
 
-            if ($type instanceof \ReflectionUnionType)
-            {
-                  foreach ($type->getTypes() as $t)
-                  {
+            if ($type instanceof \ReflectionUnionType) {
+                  foreach ($type->getTypes() as $t) {
                         $coerced = $this->coerceToNamedType($t, $value);
 
                         if ($coerced !== SoapSerializer::COERCE_FAILED)
@@ -374,8 +345,7 @@ class SoapSerializer extends Serializer
                   return $value;
             }
 
-            if ($type instanceof \ReflectionNamedType)
-            {
+            if ($type instanceof \ReflectionNamedType) {
                   $coerced = $this->coerceToNamedType($type, $value);
                   return $coerced === SoapSerializer::COERCE_FAILED
                         ? $value
@@ -391,14 +361,12 @@ class SoapSerializer extends Serializer
 
             if ($value === null) return $type->allowsNull() ? null : SoapSerializer::COERCE_FAILED;
 
-            if ($type->isBuiltin())
-            {
-                  return match ($name)
-                  {
+            if ($type->isBuiltin()) {
+                  return match ($name) {
                         'int'    => is_numeric($value) ? (int)$value : SoapSerializer::COERCE_FAILED,
                         'float'  => is_numeric($value) ? (float)$value : SoapSerializer::COERCE_FAILED,
                         'string' => is_scalar($value) ? (string)$value : SoapSerializer::COERCE_FAILED,
-                        'bool'   => is_bool($value) ? $value : (is_string($value) ? in_array(strtolower($value), ['1','true','yes'], true) : SoapSerializer::COERCE_FAILED),
+                        'bool'   => is_bool($value) ? $value : (is_string($value) ? in_array(strtolower($value), ['1', 'true', 'yes'], true) : SoapSerializer::COERCE_FAILED),
                         'array'  => is_array($value) ? $value : SoapSerializer::COERCE_FAILED,
                         default  => SoapSerializer::COERCE_FAILED,
                   };
@@ -407,18 +375,14 @@ class SoapSerializer extends Serializer
             if (is_object($value) && is_a($value, $name))
                   return $value;
 
-            if (in_array($name, [\DateTimeInterface::class, \DateTimeImmutable::class, \DateTime::class], true))
-            {
+            if (in_array($name, [\DateTimeInterface::class, \DateTimeImmutable::class, \DateTime::class], true)) {
                   if ($value instanceof \DateTimeInterface)
                         return $value;
 
                   if (is_string($value)) {
-                        try
-                        {
+                        try {
                               return new \DateTimeImmutable($value);
-                        }
-                        catch (\Throwable)
-                        {
+                        } catch (\Throwable) {
                               return SoapSerializer::COERCE_FAILED;
                         }
                   }

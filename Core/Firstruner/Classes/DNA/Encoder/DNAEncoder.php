@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright since 2024 Firstruner and Contributors
+ * Copyright 2024-2026 Firstruner and Contributors
  * Firstruner is an Registered Trademark & Property of Christophe BOULAS
  *
  * NOTICE OF LICENSE
@@ -17,7 +17,7 @@
  * Please refer to https://firstruner.fr/ or contact Firstruner for more information.
  *
  * @author    Firstruner and Contributors <contact@firstruner.fr>
- * @copyright Since 2024 Firstruner and Contributors
+ * @copyright 2024-2026 Firstruner and Contributors
  * @license   Proprietary
  * @version 2.0.0
  */
@@ -48,7 +48,7 @@ final class DNAEncoder
         $this->DNAToBinMapping = DNAMapper::Map(MappingMode::ToBINARY);
     }
 
-    public function StringToDNA($string) : string
+    public function StringToDNA($string): string
     {
         $binaryString = $this->stringToBinary($string);
         $rowDNA = $this->binaryToDNA($binaryString);
@@ -58,7 +58,7 @@ final class DNAEncoder
         return $DNARules->insertNonCodingBases($rowDNA);
     }
 
-    public function DNAToString(string $DNASequence) : string
+    public function DNAToString(string $DNASequence): string
     {
         $codingDNA = $this->extractCodingBases($DNASequence);
 
@@ -78,7 +78,7 @@ final class DNAEncoder
         return $stringMessage;
     }
 
-    private function stringToBinary(string $stringValue) : string
+    private function stringToBinary(string $stringValue): string
     {
         $binaryString = _String::EmptyString;
         for ($i = 0; $i < strlen($stringValue); $i++) {
@@ -89,7 +89,7 @@ final class DNAEncoder
         return $binaryString;
     }
 
-    private function binaryToDNA(string $binaryValue) : string
+    private function binaryToDNA(string $binaryValue): string
     {
         $DNASequence = _String::EmptyString;
         for ($i = 0; $i < strlen($binaryValue); $i += 2) {
@@ -103,7 +103,7 @@ final class DNAEncoder
         return $DNASequence;
     }
 
-    private function extractCodingBases(string $DNASequence) : string
+    private function extractCodingBases(string $DNASequence): string
     {
         $codingDNA = _String::EmptyString;
         $length = strlen($DNASequence);

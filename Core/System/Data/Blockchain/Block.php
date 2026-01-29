@@ -1,26 +1,26 @@
 <?php
 
 /**
-* Copyright since 2024 Firstruner and Contributors
-* Firstruner is an Registered Trademark & Property of Christophe BOULAS
-*
-* NOTICE OF LICENSE
-*
-* This source file is subject to the Freemium License
-* If you did not receive a copy of the license and are unable to
-* obtain it through the world-wide-web, please send an email
-* to contact@firstruner.fr so we can send you a copy immediately.
-*
-* DISCLAIMER
-*
-* Do not edit, reproduce ou modify this file.
-* Please refer to https://firstruner.fr/ or contact Firstruner for more information.
-*
-* @author    Firstruner and Contributors <contact@firstruner.fr>
-* @copyright Since 2024 Firstruner and Contributors
-* @license   Proprietary
-* @version 2.0.0
-*/
+ * Copyright 2024-2026 Firstruner and Contributors
+ * Firstruner is an Registered Trademark & Property of Christophe BOULAS
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Freemium License
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to contact@firstruner.fr so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit, reproduce ou modify this file.
+ * Please refer to https://firstruner.fr/ or contact Firstruner for more information.
+ *
+ * @author    Firstruner and Contributors <contact@firstruner.fr>
+ * @copyright 2024-2026 Firstruner and Contributors
+ * @license   Proprietary
+ * @version 2.0.0
+ */
 
 namespace System\Data\Blockchain;
 
@@ -57,7 +57,7 @@ class Block implements IDisposable, \Serializable
       private string $controlKey = _string::EmptyString;
       public readonly string $Guid; // New on Constructor
 
-      public function PreviousHash(?string $value = null) : string|null
+      public function PreviousHash(?string $value = null): string|null
       {
             if (!is_null($value))
                   return $this->previousHash;
@@ -66,7 +66,7 @@ class Block implements IDisposable, \Serializable
             return null;
       }
 
-      public function MineIncludeGuid(bool $value = false) : bool
+      public function MineIncludeGuid(bool $value = false): bool
       {
             if (!is_null($value))
                   return $this->mineIncludeGuid;
@@ -75,7 +75,7 @@ class Block implements IDisposable, \Serializable
             return $this->mineIncludeGuid;
       }
 
-      public function AutoMining(bool $value = true) : bool
+      public function AutoMining(bool $value = true): bool
       {
             if (!is_null($value))
                   return $this->autoMining;
@@ -84,19 +84,21 @@ class Block implements IDisposable, \Serializable
             return $this->autoMining;
       }
 
-      public function Hash() : string
+      public function Hash(): string
       {
             if (!$this->locked)
                   throw new \Exception("Non verrouillé");
 
             return $this->hash;
       }
-      
-      public function Data() : string {
+
+      public function Data(): string
+      {
             return $this->data;
       }
 
-      public function IsLock() : bool {
+      public function IsLock(): bool
+      {
             return $this->locked;
       }
 
@@ -114,8 +116,8 @@ class Block implements IDisposable, \Serializable
                   && (gettype($args[1]) == _string::ClassName)
                   && (gettype($args[2]) == _int::ClassName)
                   && (gettype($args[3]) == _string::ClassName)
-                  && (gettype($args[4]) == _string::ClassName))
-            {
+                  && (gettype($args[4]) == _string::ClassName)
+            ) {
                   $this->Index = $args[2];
 
                   $this->ctor_previous(
@@ -127,8 +129,7 @@ class Block implements IDisposable, \Serializable
                   );
             }
 
-            if (($argsCount == 1) && (gettype($args[0]) == _string::ClassName))
-            {
+            if (($argsCount == 1) && (gettype($args[0]) == _string::ClassName)) {
                   $arrayDatas = explode(';', $args[0]);
 
                   $this->Index = intval($arrayDatas[1]);
@@ -144,8 +145,8 @@ class Block implements IDisposable, \Serializable
             string $data,
             int $id = 0,
             ?string $sign = null,
-            ?string $controlFormat = null)
-      {
+            ?string $controlFormat = null
+      ) {
             $this->previousHash = $previousHash;
             $this->sign = $sign;
             $this->formatControl = $controlFormat;
@@ -165,7 +166,7 @@ class Block implements IDisposable, \Serializable
             $this->controlKey = $datas[9];
 
             $final = _string::EmptyString;
-            
+
             for ($i = 11; $i < count($datas); $i++)
                   $final .= $datas[$i];
 
@@ -173,7 +174,8 @@ class Block implements IDisposable, \Serializable
       }
 
       // Déstructeur pour s'assurer que dispose() est appelé automatiquement
-      public function __destruct() {
+      public function __destruct()
+      {
             $this->dispose();
       }
 
@@ -200,7 +202,8 @@ class Block implements IDisposable, \Serializable
             throw new \Exception("Not unserialisable");
       }
 
-      public function serialize() {
+      public function serialize()
+      {
             return $this->TimeStamp->format('Y-m-d H:i:s') + ";" +
                   $this->Index + ";" +
                   ($this->previousHash ?? _string::EmptyString) + ";" +
@@ -214,12 +217,13 @@ class Block implements IDisposable, \Serializable
                   $this->Guid + ";" +
                   ($this->data ?? _string::EmptyString);
       }
-      
-      public function unserialize($data) {
+
+      public function unserialize($data)
+      {
             throw new \Exception("Not unserialisable");
       }
 
-      public function AddData(string $data) : void
+      public function AddData(string $data): void
       {
             if ($this->locked)
                   throw new \Exception("Block miné, ajout impossible");
@@ -231,10 +235,10 @@ class Block implements IDisposable, \Serializable
             $this->hash = $this->calculateHash();
       }
 
-      private function calculateHash() : string
+      private function calculateHash(): string
       {
             $input = ($this->mineIncludeGuid ? "{" . $this->Guid . "}-" : '') .
-                  $this->TimeStamp->format('c') . "-" . 
+                  $this->TimeStamp->format('c') . "-" .
                   ($this->previousHash ?? '') . "-" .
                   $this->data .
                   ($this->sign !== null ? "-{$this->sign}" : '') .
@@ -245,12 +249,12 @@ class Block implements IDisposable, \Serializable
             return base64_encode($outputBytes);
       }
 
-      public function ComputeHash() : string
+      public function ComputeHash(): string
       {
             return $this->calculateHash();
       }
 
-      public function Mine(?string $format = null) : bool
+      public function Mine(?string $format = null): bool
       {
             if ($this->IsLock())
                   return true;
@@ -259,21 +263,20 @@ class Block implements IDisposable, \Serializable
                   $this->formatControl = $format;
 
             if (($this->formatControl == null)
-                  || ($this->sign == null))
+                  || ($this->sign == null)
+            )
                   return false;
 
             $_isValidByFormat = false;
-            
-            do
-            {
+
+            do {
                   $this->controlKey = System_String::CreateRandomString();
                   $this->hash = $this->calculateHash();
 
                   $fControl = explode(';', $this->formatControl);
                   $o = System_String::ToByteArrayBrutUTF8($this->hash);
 
-                  switch ($fControl[0])
-                  {
+                  switch ($fControl[0]) {
                         case "B":
                               $_isValidByFormat = (System_String::StartsWith($o, $fControl[1]));
                               break;

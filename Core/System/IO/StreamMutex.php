@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright since 2024 Firstruner and Contributors
+ * Copyright 2024-2026 Firstruner and Contributors
  * Firstruner is an Registered Trademark & Property of Christophe BOULAS
  *
  * NOTICE OF LICENSE
@@ -17,7 +17,7 @@
  * Please refer to https://firstruner.fr/ or contact Firstruner for more information.
  *
  * @author    Firstruner and Contributors <contact@firstruner.fr>
- * @copyright Since 2024 Firstruner and Contributors
+ * @copyright 2024-2026 Firstruner and Contributors
  * @license   Proprietary
  * @version 2.0.0
  */
@@ -38,8 +38,8 @@ class StreamMutex implements IDisposable
 
       public function __construct(
             IStream $_stream,
-            string $_AccessMode = AccessMode::ReadWriteBinary)
-      {
+            string $_AccessMode = AccessMode::ReadWriteBinary
+      ) {
             $this->mutex = new Mutex();
             $this->stream = $_stream;
             $this->accessMode = $_AccessMode;
@@ -56,7 +56,7 @@ class StreamMutex implements IDisposable
             $this->__destruct();
       }
 
-      function Read(int $offset, int $count, int $timeout = 60) : array | int
+      function Read(int $offset, int $count, int $timeout = 60): array | int
       {
             if (in_array(
                   $this->accessMode,
@@ -67,26 +67,21 @@ class StreamMutex implements IDisposable
                         AccessMode::WriteOnly_CreateIfNotExists,
                         AccessMode::AppendOnly
                   ]
-                  ))
+            ))
                   throw new IOException("Mode incompatible");
 
             $this->mutex->WaitOne($timeout);
 
-            try
-            {
+            try {
                   return $this->stream->Read($offset, $count);
-            }
-            catch (\Exception $io)
-            {
+            } catch (\Exception $io) {
                   throw $io;
-            }
-            finally
-            {
+            } finally {
                   $this->mutex->ReleaseMutex();
             }
       }
 
-      function Write(array $buffer, int $offset, int $count, int $timeout = 60) : int
+      function Write(array $buffer, int $offset, int $count, int $timeout = 60): int
       {
             if (in_array(
                   $this->accessMode,
@@ -94,21 +89,16 @@ class StreamMutex implements IDisposable
                         AccessMode::ReadBinary,
                         AccessMode::ReadOnly_FromStart
                   ]
-                  ))
+            ))
                   throw new IOException("Mode incompatible");
 
             $this->mutex->WaitOne($timeout);
 
-            try
-            {
+            try {
                   return $this->stream->Write($buffer, $offset, $count);
-            }
-            catch (\Exception $io)
-            {
+            } catch (\Exception $io) {
                   throw $io;
-            }
-            finally
-            {
+            } finally {
                   $this->mutex->ReleaseMutex();
             }
       }
