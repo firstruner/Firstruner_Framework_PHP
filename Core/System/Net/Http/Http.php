@@ -67,20 +67,37 @@ class Http
             return $host;
       }
 
-      private static function detect_base_path(): string
+      private static function detect_base_path(int $depth = 0): string
       {
-            $scriptName = $_SERVER['SCRIPT_NAME'] ?? _string::EmptyString;
+            $forced = getenv('SITE_BASE_PATH');
+            if ($forced !== false && $forced !== '') {
+                  $forced = '/' . trim($forced, '/');
+                  return ($forced === '/') ? _string::EmptyString : $forced;
+            }
 
-            if ($scriptName == _string::EmptyString)
+            if ($depth <= 0) {
                   return _string::EmptyString;
+            }
 
-            $dir = rtrim(str_replace('\\', '/', dirname($scriptName)), '/');
-
-            if ($dir == _string::EmptyString || $dir === '.')
+            $uri = $_SERVER['REQUEST_URI'] ?? _string::EmptyString;
+            if ($uri === _string::EmptyString) {
                   return _string::EmptyString;
+            }
 
-            return $dir;
+            $path = parse_url($uri, PHP_URL_PATH) ?? _string::EmptyString;
+            $segments = array_values(
+                  array_filter(explode('/', trim($path, '/')))
+            );
+
+            if (empty($segments)) {
+                  return _string::EmptyString;
+            }
+
+            $baseSegments = array_slice($segments, 0, $depth);
+
+            return '/' . implode('/', $baseSegments);
       }
+
 
       public static function HttpsRedirection()
       {
@@ -92,7 +109,10 @@ class Http
             }
       }
 
-      public static function Site_URL(?string $path = '', ?string $scheme = null): string
+      public static function Site_URL(
+            ?string $path = '',
+            ?string $scheme = null,
+            int $basePathDepth = 0): string
       {
             $env = getenv('SITE_URL');
             $base = ($env !== false && $env !== '') ? $env : '';
@@ -100,7 +120,7 @@ class Http
             if ($base === '') {
                   $detectedScheme = Http::detect_scheme($scheme);
                   $host = Http::detect_host();
-                  $basePath = Http::detect_base_path();
+                  $basePath = Http::detect_base_path($basePathDepth);
 
                   if ($host == '') {
                         if ((php_sapi_name() == "cli"))
