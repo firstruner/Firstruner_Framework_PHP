@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 /**
  * Copyright 2024-2026 Firstruner and Contributors
@@ -22,33 +22,12 @@
  * @version 2.0.0
  */
 
+header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
+header("Last-Modified: ".gmdate("D, d M Y H:i:s")." GMT");
 
-/* 
- * -- File description --
- * @Type : Enumerate
- * @Mode : XP/BDD Creation
- * @Author : Christophe
- * @Update on : 11/02/2026 by : Christophe BOULAS
- */
+header("Cache-Control: no-store, no-cache, must-revalidate");
+header("Cache-Control: post-check=0, pre-check=0", false);
+header("Pragma: no-cache");
 
-namespace System;
-
-use System\Default\_string;
-
-/* PHP 8+
-enum EAppParams
-{
-    //case ...;
-}
-*/
-
-/* PHP 7+*/
-
-abstract class AppStaticParams
-{
-    const SessionKey_OAuth = "OAuth_Token";
-
-    const RequestKey_Debug = "debug";
-
-    const CommonValues_DateTimeFormat = "d/m/Y h:i:s";
-}
+header("Location: ../");
+exit;

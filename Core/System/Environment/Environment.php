@@ -33,7 +33,7 @@ use System\Net\Keys\ServerKeys;
  * @Type : Class
  * @Mode : XP/BDD Creation
  * @Author : Christophe
- * @Update on : 19/06/2024 by : Patience KORIBIRAM
+ * @Update on : 11/02/2026 by : Christophe BOULAS
  */
 
 class Client
