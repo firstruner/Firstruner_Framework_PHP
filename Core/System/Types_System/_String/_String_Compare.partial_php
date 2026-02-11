@@ -1,0 +1,77 @@
+<?php
+
+/**
+ * Copyright 2024 Firstruner and Contributors
+ * Firstruner is an Registered Trademark & Property of Christophe BOULAS
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Freemium License
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to contact@firstruner.fr so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit, reproduce ou modify this file.
+ * Please refer to https://firstruner.fr/ or contact Firstruner for more information.
+ *
+ * @author    Firstruner and Contributors <contact@firstruner.fr>
+ * @copyright 2024 Firstruner and Contributors
+ * @license   Proprietary
+ * @version 2.0.0
+ */
+
+namespace System;
+
+use System\Attributes\Partial;
+use System\Comparison\StringComparison;
+use System\Exceptions\ArgumentException;
+
+#[Partial()]
+class _String
+{
+      public static function Compare(string $strA, string $strB, int $comparisonType = 0)
+      {
+            if (($comparisonType - 0) > 5)
+                  throw new ArgumentException(
+                        "NotSupported_StringComparison : comparisonType"
+                  );
+
+            //if ($strA == $strB) return 0;
+            if ($strA == null) return false;
+            if ($strB == null) return false;
+
+            switch ($comparisonType) {
+                  case StringComparison::CurrentCulture:
+                  case StringComparison::InvariantCulture:
+                  case StringComparison::Ordinal:
+                        return ($strA == $strB);
+                  case StringComparison::CurrentCultureIgnoreCase:
+                  case StringComparison::InvariantCultureIgnoreCase:
+                  case StringComparison::OrdinalIgnoreCase:
+                        return (strtolower($strA) == strtolower($strB));
+                  default:
+                        throw new \Exception("NotSupported_StringComparison");
+            }
+      }
+
+      public static function Compare_Approximativly(string $source, array $possibilities): string
+      {
+            $shortest = -1;
+
+            foreach ($possibilities as $word) {
+                  $lev = levenshtein($source, $word);
+
+                  if ($lev == 0)
+                        return $word;
+
+                  if ($lev <= $shortest || $shortest < 0) {
+                        $closest  = $word;
+                        $shortest = $lev;
+                  }
+            }
+
+            return $closest;
+      }
+}

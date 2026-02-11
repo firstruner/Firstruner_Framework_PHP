@@ -1,0 +1,88 @@
+<?php
+
+/**
+ * Copyright 2024 Firstruner and Contributors
+ * Firstruner is an Registered Trademark & Property of Christophe BOULAS
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Freemium License
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to contact@firstruner.fr so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit, reproduce ou modify this file.
+ * Please refer to https://firstruner.fr/ or contact Firstruner for more information.
+ *
+ * @author    Firstruner and Contributors <contact@firstruner.fr>
+ * @copyright 2024 Firstruner and Contributors
+ * @license   Proprietary
+ * @version 2.0.0
+ */
+
+
+
+/** 
+ * -- File description --
+ * @Type : MethodClass
+ * @Mode : DDD Creation
+ * @Author : Nadia TRABELSI
+ * @Update on : 14/03/2025 by : Nadia TRABELSI
+ */
+
+namespace DatasDNA\Enumerations;
+
+use DatasDNA\Classes\Bases\Adenine;
+use DatasDNA\Classes\Bases\Thymine;
+use DatasDNA\Classes\Bases\Cytosine;
+use DatasDNA\Classes\Bases\Guanine;
+use DatasDNA\Classes\Exceptions\InvalidBaseException;
+use DatasDNA\Interfaces\INucleic;
+use DatasDNA\Classes\Exceptions\ATCG_Pair_Exception;
+
+abstract class ENucleicBases
+{
+
+
+    // Récupérer toutes les bases
+    public static function GetAll(): array
+    {
+        return [
+            Adenine::class,
+            Thymine::class,
+            Cytosine::class,
+            Guanine::class
+        ];
+    }
+
+    // Vérifier si une base est valide
+    public static function IsValid(INucleic $base): void
+    {
+        if (!in_array(get_class($base), self::GetAll(), true)) {
+            throw new InvalidBaseException($base::Symbol());
+        }
+    }
+
+    // Vérification des paires AT-CG
+    public static function IsValidPair(INucleic $base1, INucleic $base2): void
+    {
+        $pairs = [
+            Adenine::class => Thymine::class,
+            Thymine::class => Adenine::class,
+            Cytosine::class => Guanine::class,
+            Guanine::class => Cytosine::class
+        ];
+
+        if (get_class($base1) !== get_class($base2)) {
+            throw new ATCG_Pair_Exception;
+        }
+    }
+
+    // Méthode pour obtenir le poids d'une base
+    public static function Weight(INucleic $base): float
+    {
+        return $base::Weight();
+    }
+}

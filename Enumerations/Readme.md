@@ -1,0 +1,1 @@
+# Déposez ici les énumérations utilisées par le site

@@ -1,0 +1,144 @@
+<?php
+
+/**
+ * Copyright 2024 Firstruner and Contributors
+ * Firstruner is an Registered Trademark & Property of Christophe BOULAS
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Freemium License
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to contact@firstruner.fr so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit, reproduce ou modify this file.
+ * Please refer to https://firstruner.fr/ or contact Firstruner for more information.
+ *
+ * @author    Firstruner and Contributors <contact@firstruner.fr>
+ * @copyright 2024 Firstruner and Contributors
+ * @license   Proprietary
+ * @version 2.0.0
+ */
+
+namespace System;
+
+use System\Attributes\Partial;
+use System\Default\_array;
+use System\Default\_string;
+
+#[Partial()]
+final class Guid implements IGuid
+{
+      // instance
+      protected string $defaultValue = '00000000-0000-0000-0000-000000000000';
+      private $values = array('0000', '0000', '0000', '0000', '0000', '0000', '0000', '0000');
+
+      function __construct($values = null)
+      {
+            switch (gettype($values)) {
+                  case _string::ClassName:
+                        $this->fromStringValue($values);
+                        break;
+                  case _array::ClassName:
+                        $method = array_filter($values, 'is_int')
+                              ? 'fromByteArray'
+                              : 'fromStringArray';
+
+                        $this->$method($values);
+                        break;
+                  default:
+                        $this->fromStringValue($this->defaultValue);
+                        break;
+            }
+      }
+
+      private function fromStringValue(string $value)
+      {
+            if (strlen($value) == 32) {
+                  $value = implode(
+                        '-',
+                        [
+                              substr($value, 0, 8),
+                              substr($value, 8, 4),
+                              substr($value, 12, 4),
+                              substr($value, 16, 4),
+                              substr($value, 20)
+                        ]
+                  );
+            }
+
+            if (strlen(36)) {
+                  $cur_values = explode('-', $value);
+                  $this->values = array_merge(
+                        array_map('hexdec', str_split($cur_values[0], 4)),
+                        array_map('hexdec', array_slice($cur_values, 1, 3)),
+                        array_map('hexdec', str_split($cur_values[4], 4))
+                  );
+            } else {
+                  $this->fromStringValue($this->defaultValue);
+            }
+      }
+
+      private function fromByteArray(array $bytes)
+      {
+            $this->fromStringValue(implode(array_map("chr", $bytes)));
+      }
+
+      private function fromStringArray(array $values)
+      {
+            $normArray = array();
+
+            if (count($values) == 5) {
+                  if ((strlen($values[0] . $values[1] . $values[2] .
+                        $values[3] . $values[4]) == 32)) {
+                        $normArray = array_merge($normArray, [
+                              substr($values[0], 0, 4),
+                              substr($values[0], 4, 4),
+                              substr($values[1], 0, 4),
+                              substr($values[2], 0, 4),
+                              substr($values[3], 0, 4),
+                              substr($values[4], 0, 4),
+                              substr($values[4], 4, 4),
+                              substr($values[4], 8, 4)
+                        ]);
+                  }
+            } else if (count($values) == 8) {
+                  $normArray = $values;
+            }
+
+            if (count($normArray) == 8)
+                  $this->fromStringValue(
+                        $normArray[0] . $normArray[1] . '-' .
+                              $normArray[2] . '-' . $normArray[3] . '-' .
+                              $normArray[4] . '-' .
+                              $normArray[5] . $normArray[6] . $normArray[7]
+                  );
+      }
+
+      private function getString(): string
+      {
+            $parts = array_map(function ($value) {
+                  return str_pad(dechex($value), 4, "0", STR_PAD_LEFT);
+            }, array_slice($this->values, 0, 8));
+
+            return implode('-', [
+                  $parts[0] . $parts[1],
+                  $parts[2],
+                  $parts[3],
+                  $parts[4],
+                  $parts[5] . $parts[6] . $parts[7]
+            ]);
+      }
+
+      public function __toString()
+      {
+            return $this->getString();
+      }
+
+      public function ToByteArray()
+      {
+            return unpack('C*', $this->getString());
+      }
+}

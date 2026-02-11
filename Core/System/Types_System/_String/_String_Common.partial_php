@@ -1,0 +1,283 @@
+<?php
+
+/**
+ * Copyright 2024 Firstruner and Contributors
+ * Firstruner is an Registered Trademark & Property of Christophe BOULAS
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Freemium License
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to contact@firstruner.fr so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit, reproduce ou modify this file.
+ * Please refer to https://firstruner.fr/ or contact Firstruner for more information.
+ *
+ * @author    Firstruner and Contributors <contact@firstruner.fr>
+ * @copyright 2024 Firstruner and Contributors
+ * @license   Proprietary
+ * @version 2.0.0
+ */
+
+namespace System;
+
+use Obselete;
+use System\Attributes\Partial;
+use System\Default\_string as DefaultString;
+use System\Default\_string as Default_string;
+
+#[Partial()]
+class _String
+{
+      public static function IsLetterOrDigit($value): bool
+      {
+            return is_numeric($value) || preg_match('/[a-zA-Z]/', $value);
+      }
+
+      /// <summary>
+      /// Retourne au format Abcdef Abcdef
+      /// </summary>
+      /// <param name="the_string"></param>
+      /// <returns></returns>
+      public static function ToPascalCase(string $value): string
+      {
+            // If there are 0 or 1 characters, just return the string.
+            //if (the_string.IsNull()) return the_string;
+            if (strlen($value) < 2) return strtoupper($value);
+
+            // Split the string into words.
+            $words = explode(' ', $value);
+
+            // Combine the words.
+            $result = DefaultString::EmptyString;
+            foreach ($words as $word) {
+                  $result .=
+                        strtoupper(substr($word, 0, 1)) .
+                        substr($word, 1);
+            }
+
+            return $result;
+      }
+
+      /// <summary>
+      /// Retourne au format Abcdef en supprimant les espaces entre les mots
+      /// </summary>
+      /// <param name="the_string"></param>
+      /// <returns></returns>
+      public static function ToCamelCase(string $value): string
+      {
+            // If there are 0 or 1 characters, just return the string.
+            if ($value == null || strlen($value) < 2)
+                  return $value;
+
+            // Split the string into words.
+            $words = explode(' ', $value);
+
+            // Combine the words.
+            $result = strtolower($words[0]);
+            for ($i = 1; $i < count($words); $i++) {
+                  $result .=
+                        strtoupper(substr($words[$i], 0, 1)) .
+                        substr($words[$i], 1);
+            }
+
+            return $result;
+      }
+
+      /// <summary>
+      /// Retourne au format Abcdef
+      /// </summary>
+      /// <param name="the_string"></param>
+      /// <returns></returns>
+      public static function ToProperCase(string $value): string
+      {
+            // If there are 0 or 1 characters, just return the string.
+            //if (the_string.IsNull()) return the_string;
+            if (strlen($value) < 2) return strtoupper($value);
+
+            // Start with the first character.
+            $result = strtoupper(substr($value, 0, 1));
+
+            // Add the remaining characters.
+            for ($i = 1; $i < strlen($value); $i++) {
+                  if ($value[$i] == strtoupper($value[$i]))
+                        $result .= " ";
+
+                  $result .= $value[$i];
+            }
+
+            return $result;
+      }
+
+      public static function IsEmpty(string $value): bool
+      {
+            return $value == DefaultString::EmptyString;
+      }
+
+      public static function IsNullOrEmpty(?string $value): bool
+      {
+            if (!isset($value)) return true;
+
+            return $value == DefaultString::EmptyString;
+      }
+
+      public static function FromByteArray(array $buffer): string
+      {
+            return pack('C*', ...$buffer);
+      }
+
+      public static function GetBytes(string $stack): array
+      {
+            return _String::ToByteArray($stack);
+      }
+
+      #[Obselete("Use GetBytes")]
+      public static function ToByteArray(string $stack): array
+      {
+            return array_values(unpack('C*', $stack));
+      }
+
+      public static function ToBinary(string $stack): string
+      {
+            $binary = Default_string::EmptyString;
+
+            for ($i = 0; $i < strlen($stack); $i++)
+                  $binary .= sprintf("%08b", ord($stack[$i]));
+
+            return $binary;
+      }
+
+      public static function CharacterReversePosition($haystack, $needle, $part = false)
+      {
+            if (function_exists('\mb_strrchr'))
+                  return \mb_strrchr($haystack, $needle, $part);
+
+            return \strrchr($haystack, $needle);
+      }
+
+      public static function Length($string)
+      {
+            if (function_exists('\mb_strlen'))
+                  return \mb_strlen($string);
+
+            return \strlen($string);
+      }
+
+      public static function Position($haystack, $needle, $offset = 0)
+      {
+            if (function_exists('\mb_strpos'))
+                  return \mb_strpos($haystack, $needle, $offset);
+
+            return \strpos($haystack, $needle, $offset);
+      }
+
+      public static function ReversePosition($haystack, $needle, $offset = 0)
+      {
+            if (function_exists('\mb_strrpos'))
+                  return \mb_strrpos($haystack, $needle, $offset);
+
+            return \strrpos($haystack, $needle, $offset);
+      }
+
+      /**
+       * Return true when $haystack starts with $needle.
+       *
+       * @param       $haystack
+       * @param       $needle
+       * @return bool
+       */
+      public static function StartsWith($haystack, $needle): bool
+      {
+            return self::substring($haystack, 0, self::length($needle)) === $needle;
+      }
+
+      /**
+       * Return true when $haystack ends with $needle.
+       *
+       * @param       $haystack
+       * @param       $needle
+       * @return bool
+       */
+      public static function EndsWith($haystack, $needle): bool
+      {
+            return self::substring(
+                  $haystack,
+                  \strlen($haystack) - self::length($needle),
+                  self::length($needle)
+            ) === $needle;
+      }
+
+      /**
+       * Return true when $haystack ends with $needle.
+       *
+       * @param       $haystack
+       * @param       $needle
+       * @return bool
+       */
+      public static function EndWith($haystack, $needle): bool
+      {
+            return self::EndsWith($haystack, $needle);
+      }
+
+      /**
+       * Return true when $haystack contains $needle.
+       *
+       * @param       $haystack
+       * @param       $needle
+       * @return bool
+       */
+      public static function Contains($haystack, $needle): bool
+      {
+            return \strpos($haystack, $needle);
+      }
+
+      public static function Substring($string, $start, $length): string
+      {
+            if (function_exists('\mb_substr'))
+                  return \mb_substr($string, $start, $length);
+
+            return \substr($string, $start, $length);
+      }
+
+      public static function ToByteArrayBrutUTF8($string)
+      {
+            return array_values(unpack('C*', mb_convert_encoding($string, 'UTF-8', 'UTF-8')));
+      }
+
+      public static function CreateRandomString(
+            $length = 15,
+            $validCharacters = "ABCDEFGHJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*?_-"
+      ) {
+            $randomString = "";
+            $maxIndex = strlen($validCharacters) - 1;
+
+            for ($i = 0; $i < $length; $i++) {
+                  $randomString .= $validCharacters[random_int(0, $maxIndex)];
+            }
+
+            return $randomString;
+      }
+
+      public static function Chunk(string $haystack, int $lenght): array
+      {
+            return str_split($haystack, $lenght);
+      }
+
+      public static function ToBase64(string $haystack): string
+      {
+            return base64_encode($haystack);
+      }
+
+      public static function FromBase64(string $haystack): string
+      {
+            return base64_decode($haystack);
+      }
+
+      public static function Cut(string $haystack, int $size): array
+      {
+            return str_split($haystack, $size);
+      }
+}

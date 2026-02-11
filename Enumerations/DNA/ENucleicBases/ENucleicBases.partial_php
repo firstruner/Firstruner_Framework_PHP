@@ -1,0 +1,84 @@
+<?php
+
+/**
+ * Copyright 2024 Firstruner and Contributors
+ * Firstruner is an Registered Trademark & Property of Christophe BOULAS
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Freemium License
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to contact@firstruner.fr so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit, reproduce ou modify this file.
+ * Please refer to https://firstruner.fr/ or contact Firstruner for more information.
+ *
+ * @author    Firstruner and Contributors <contact@firstruner.fr>
+ * @copyright 2024 Firstruner and Contributors
+ * @license   Proprietary
+ * @version 2.0.0
+ */
+
+
+
+/** 
+ * -- File description --
+ * @Type : MethodClass
+ * @Mode : DDD Creation
+ * @Author : Nadia TRABELSI
+ * @Update on : 26/02/2025 by : Nadia TRABELSI
+ */
+
+namespace DatasDNA\Enumerations;
+
+use DatasDNA\Classes\Bases\Adenine;
+use DatasDNA\Classes\Bases\Thymine;
+use DatasDNA\Classes\Bases\Cytosine;
+use DatasDNA\Classes\Bases\Guanine;
+use DatasDNA\Classes\Bases\AbsNucleicBase;
+use DatasDNA\Classes\Exceptions\InvalidBaseException;
+use System\Attributes\Partial;
+use DatasDNA\Interfaces\INucleic;
+
+#[Partial]
+abstract class ENucleicBases
+{
+    // public static function GetNames(): array
+    // {
+    //     return [
+    //         Adenine::SYMBOL => ENucleicBases::ADENINE,
+    //         Thymine::SYMBOL => ENucleicBases::THYMINE,
+    //         Cytosine::SYMBOL => ENucleicBases::CYTOSINE,
+    //         Guanine::SYMBOL => ENucleicBases::GUANINE
+    //     ];
+    // }
+
+    // Constantes représentant les bases
+    public const ADENINE = 'A';
+    public const THYMINE = 'T';
+    public const CYTOSINE = 'C';
+    public const GUANINE = 'G';
+
+    // Poids pour chaque base (ajoutez si nécessaire)
+    public const ADENINE_VALUE = 135.13;
+    public const THYMINE_VALUE = 126.11;
+    public const CYTOSINE_VALUE = 111.10;
+    public const GUANINE_VALUE = 151.13;
+
+    // Tableau des noms des bases
+    public const NAMES = [
+        self::ADENINE => "Adénine",
+        self::THYMINE => "Thymine",
+        self::CYTOSINE => "Cytosine",
+        self::GUANINE => "Guanine",
+    ];
+
+    // Méthode pour obtenir le nom de la base à partir de la constante SYMBOL
+    public static function GetName(string $base): string
+    {
+        return self::NAMES[$base] ?? throw new InvalidBaseException($base);
+    }
+}
