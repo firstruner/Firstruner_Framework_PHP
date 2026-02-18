@@ -22,38 +22,14 @@
  * @version 2.0.0
  */
 
-use System\IO\XMLStreamWriter;
-use System\Xml\XMLElement;
+use Firstruner\Cryptography\EncryptDecryptModule;
+use System\Security\Cryptography\EncryptionMode;
 
 require_once('./loader.php');
 
-/*
-use System\Data\DataSet;
+$edm = new EncryptDecryptModule();
+$enc_val = $edm->Encrypt(
+      "Welcome to the real world !",
+      EncryptionMode::MD5_Value);
 
-$ds = new DataSet();
-$ds->LoadXML("output.xml");
-
-dumpexit($ds->ToXMLString());
-*/
-
-$elem1 = new XMLElement();
-$elem1["Name"] = "Toto";
-
-$elem2 = new XMLElement();
-$elem2["Name"] = "Tata";
-
-$elem3 = new XMLElement();
-$elem3["Name"] = "Titi";
-
-$elem4 = new XMLElement();
-$elem4["Name"] = "Tutu";
-
-$main = new XMLElement();
-$main["UserNames"] = [
-      $elem1,
-      $elem2,
-      $elem3,
-      $elem4
-];
-
-XMLStreamWriter::Write($main, "log.xml");
+echo $enc_val->Value();
