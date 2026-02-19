@@ -53,7 +53,7 @@ abstract class EncryptionMode
     public const Caesar_Value = 0x90;
     public const PlayFair_Value = 0x91;
 
-    public const AES_256_ProtocolName = "AES-256-CBC";
+    public const AES_256_ProtocolName = "aes-256-cbc";
     public const DES_ProtocolName = "des-ede3-cbc";
 
     public const Fractal = "[FRACTALS]";
