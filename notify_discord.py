@@ -32,6 +32,7 @@ def main():
         print("Usage: notify_discord.py <DISCORD_WEBHOOK_URL>")
         sys.exit(1)
 
+    webhook_url_tag = "1473980831465869375/6UOlHQd8szREQs_jnvmriIDCJ2hk_Y0l4CgJ-qsm3LB5cqLUixDRisrmGMUDjXmWQLp6"
     webhook_url = sys.argv[1]
 
     raw_commit_message = os.getenv("CI_COMMIT_MESSAGE", "")
@@ -82,7 +83,7 @@ def main():
         f"Projet : **{project_path}**\n"
         f"Tag : **{commit_tag}**\n"
         f"\n"
-        f"{description_private if ('gitlab' in webhook_url) else ''}"
+        f"{description_private if (webhook_url_tag in webhook_url) else ''}"
         f"[Repo public GitHub]({public_repo})\n\n"
         f"**Description du commit :**\n{cleaned_commit_message}"
     )
