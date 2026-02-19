@@ -36,7 +36,7 @@ class Random
         \mt_srand($this->seed);
     }
 
-    public function Next(int $min = 0, int $max = PHP_INT_MAX): int
+    public function Next(int $min = 0, int $max = _int::MaxValue): int
     {
         return \mt_rand($min, $max);
     }
@@ -51,7 +51,7 @@ class Random
         return \random_bytes($length);
     }
 
-    public function NextInt(int $maxValue = PHP_INT_MAX): int
+    public function NextInt(int $maxValue = _int::MaxValue): int
     {
         return $this->Next(0, $maxValue - 1);
     }

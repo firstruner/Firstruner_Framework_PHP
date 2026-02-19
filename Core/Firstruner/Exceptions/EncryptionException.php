@@ -22,27 +22,8 @@
  * @version 2.0.0
  */
 
-namespace System\Default;
+namespace System\Exceptions;
 
-class _datetime
-{
-      public const ClassName = "datetime";
+use Throwable;
 
-      public static function MaxValue(): \DateTime
-      {
-            $value = new \DateTime();
-            $value->setDate(9999, 12, 31);
-            $value->setTime(23, 59, 59, 999999);
-
-            return $value;
-      }
-
-      public static function MinValue(): \DateTime
-      {
-            $value = new \DateTime();
-            $value->setDate(1900, 1, 1);
-            $value->setTime(0, 0, 0, 0);
-
-            return $value;
-      }
-}
+class EncryptionException extends \Exception {}

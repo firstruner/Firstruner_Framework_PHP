@@ -29,6 +29,7 @@ use System\Default\_array;
 use System\Default\_string;
 use System\Exceptions\ArgumentNullException;
 use System\Exceptions\ArgumentOutOfRangeException;
+use System\Exceptions\EncryptionException;
 use System\Exceptions\NeedAdministratorAccesException;
 use System\Exceptions\NotImplementedException;
 use System\Exceptions\PrivateKeyUnavailableException;
@@ -67,7 +68,7 @@ use System\Tuple;
 final class EncryptDecryptModule
 {
       // Fields
-      private bool $_LockKey;
+      private bool $_LockKey = false;
       private array $CryptoKeys = array(0);
       private int $k = -1;
       private RSACryptoServiceProvider $rsa;
@@ -87,8 +88,8 @@ final class EncryptDecryptModule
 
       public function __construct()
       {
-            $this->rsa = new RSACryptoServiceProvider();
-            $this->myRijndael = new RijndaelManaged();
+            //$this->rsa = new RSACryptoServiceProvider();
+            //$this->myRijndael = new RijndaelManaged();
 
             $args = func_get_args();
             $numArgs = func_num_args();
@@ -217,7 +218,11 @@ final class EncryptDecryptModule
       {
             $i = $this->k;
 
-            if ($mode != EncryptionMode::Caesar_Value) {
+            if ($mode != EncryptionMode::Caesar_Value)
+            {
+                  if (count($this->CryptoKeys) == 0)
+                        throw new EncryptionException("No CryptoKeys defined");
+
                   $i = (new Random())->Next(0, count($this->CryptoKeys) - 1);
 
                   if ($this->_LockKey && ($this->k >= 0))
@@ -233,7 +238,10 @@ final class EncryptDecryptModule
                               return new CryptedValue($this->AES_Encrypt($value));
 
                         case EncryptionMode::MD5_Value:
-                              return new CryptedValue($this->MD5_Encrypt($value, $i, true), $i);
+                              return new CryptedValue(
+                                    $this->MD5_Encrypt($value, $i, true),
+                                    $i
+                                    );
 
                         case EncryptionMode::RSA_Value:
                               return new CryptedValue($this->RSA_EncryptFromString($value), 0);
@@ -680,20 +688,25 @@ final class EncryptDecryptModule
             $buffer = [];
             $bytes = UTF8::GetBytes($toEncrypt);
             //AppSettingsReader reader = new AppSettingsReader();
-            $s = $this->CryptoKeys[$IDCrypto];
+            //$s = $this->CryptoKeys[$IDCrypto];
 
-            if ($useHashing) {
-                  $provider = new MD5CryptoServiceProvider();
-                  $buffer = $provider->ComputeHash($s);
-                  $provider->Clear();
-            } else {
-                  $buffer = UTF8::GetBytes($s);
+            // if ($useHashing) {
+            //       $provider = new MD5CryptoServiceProvider();
+            //       $buffer = $provider->ComputeHash($s);
+            //       $provider->Clear();
+            // } else {
+            //       $buffer = UTF8::GetBytes($s);
+            // }
+            $buffer = hex2bin($this->CryptoKeys[$IDCrypto]);
+
+            try {
+                  $provider2 = new TripleDESCryptoServiceProvider();
+                  $provider2->Key($buffer);
+                  $provider2->Mode(CipherMode::ECB);
+                  $provider2->Padding(PaddingMode::PKCS7);
+            } catch (\Exception $e) {
+                  die($e->getMessage());
             }
-
-            $provider2 = new TripleDESCryptoServiceProvider();
-            $provider2->Key($buffer);
-            $provider2->Mode(CipherMode::ECB);
-            $provider2->Padding(PaddingMode::PKCS7);
 
             $inBase64 = System_String::ToBase64((string)$provider2->CreateEncryptor());
             $provider2->Clear();
@@ -742,7 +755,7 @@ final class EncryptDecryptModule
       {
             $cspParams = new CspParameters();
             $cspParams->ProviderType(1);
-            $rsaProvider = new RSACryptoServiceProvider($cspParams);
+            $rsaProvider = new RSACryptoServiceProvider(keySize: $cspParams);
 
             $rsaProvider->ImportCspBlob(System_String::FromBase64($privateKey));
 

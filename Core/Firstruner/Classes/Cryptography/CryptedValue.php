@@ -33,48 +33,26 @@ final class CryptedValue
 {
       // Fields
       private int $_ID_Key = -1;
-      private readonly string $_value;
-      private readonly array $_byteValue;
+      private string $_value;
+      private array $_byteValue;
 
-      public function __construct()
+      public function __construct(mixed $val, int $keyCode = -1)
       {
-            $args = func_get_args();
-            $numArgs = func_num_args();
+            $this->_ID_Key = $keyCode;
 
-            if (($numArgs == 1) && (gettype($args[0]) == _string::ClassName))
-                  $this->initByPair($args[0]);
+            $this->_value = _string::EmptyString;
+            $this->_byteValue = [];
 
-            if (($numArgs == 1) && (gettype($args[0]) == _array::ClassName))
-                  $this->initByByteArray($args[0]);
+            if (gettype($val) == _string::ClassName)
+                  $this->_value = $val;
 
-            if (($numArgs == 2)
-                  && (gettype($args[0]) == _string::ClassName)
-                  && (gettype($args[1]) == _int::ClassName)
-            )
-                  $this->initByPair($args[0], $args[1]);
+            if (gettype($val) == _array::ClassName)
+                  $this->_byteValue = $val;
       }
 
-      // Methods
-      private function initByPair(string $v, int $i = 0)
+      public function ID_Key(): int
       {
-            $this->_ID_Key = $i;
-            $this->_value = $v;
-      }
-
-      public function initByByteArray(array $v)
-      {
-            $this->_byteValue = $v;
-      }
-
-      // Properties
-      public function ID_Key(?int $value = null): int|null
-      {
-            if ($value == null) {
-                  $this->_ID_Key = $value;
-                  return null;
-            } else {
-                  return $this->_ID_Key;
-            }
+            return $this->_ID_Key;
       }
 
       public function Value(): string

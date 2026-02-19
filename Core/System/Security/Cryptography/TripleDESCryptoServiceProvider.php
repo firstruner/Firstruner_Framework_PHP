@@ -32,9 +32,9 @@ final class TripleDESCryptoServiceProvider
       private string $iv;
       private string $cipher = EncryptionMode::DES_ProtocolName; // Mode utilisé pour Triple DES
       private string $mode = CipherMode::CBC; // Mode de chiffrement, par défaut 'cbc'
-      private string $padding = PaddingMode::PKCS7; // Padding, par défaut OPENSSL_PKCS1_PADDING
+      private int $padding = PaddingMode::PKCS7; // Padding, par défaut OPENSSL_PKCS1_PADDING
 
-      public function __construct(?string $key = null, ?string $iv = null)
+      public function __construct(string $key = "", string $iv = "")
       {
             $this->key = $key ?? random_bytes(24); // Triple DES nécessite une clé de 192 bits (24 octets)
             $this->iv = $iv ?? random_bytes(8);   // Initialisation vector de 8 octets
