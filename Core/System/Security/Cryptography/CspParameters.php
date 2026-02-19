@@ -37,6 +37,7 @@ final class CspParameters
     // Constantes pour les types de fournisseurs et autres valeurs
     const PROV_RSA_FULL = 1;
     const PROV_RSA_SCHANNEL = 12;
+    const KeySize = 2048;
 
     // Constructeur
     public function __construct()

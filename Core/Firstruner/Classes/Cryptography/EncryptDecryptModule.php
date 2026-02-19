@@ -30,6 +30,7 @@ use System\Default\_string;
 use System\Exceptions\ArgumentNullException;
 use System\Exceptions\ArgumentOutOfRangeException;
 use System\Exceptions\EncryptionException;
+use System\Exceptions\IOException;
 use System\Exceptions\NeedAdministratorAccesException;
 use System\Exceptions\NotImplementedException;
 use System\Exceptions\PrivateKeyUnavailableException;
@@ -77,6 +78,7 @@ final class EncryptDecryptModule
       private X509Certificate2 $certX509;
       private string $init_publicKey;
       private string $init_privateKey;
+      private string $openSSLConfigFile = "";
 
       // Properties
       public function LockKey(bool $value): void
@@ -86,32 +88,43 @@ final class EncryptDecryptModule
                   $k = -1;
       }
 
-      public function __construct()
+      public function __construct(
+            array|string|null $keys = null,
+            string|int $encryption = -1,
+            ?SecureString $securePassword = null,
+            string $OpenSSLConfigFile = _string::EmptyString)
       {
-            //$this->rsa = new RSACryptoServiceProvider();
-            //$this->myRijndael = new RijndaelManaged();
+            $this->openSSLConfigFile = $OpenSSLConfigFile;
+            if ($OpenSSLConfigFile != _string::EmptyString)
+            {
+                  if (!File::Exists($OpenSSLConfigFile))
+                        throw new IOException("Fichier $OpenSSLConfigFile introuvable");
 
-            $args = func_get_args();
-            $numArgs = func_num_args();
+                  $this->rsa = new RSACryptoServiceProvider($OpenSSLConfigFile);
+            }
 
-            if ($numArgs == 0)
+            $this->myRijndael = new RijndaelManaged();
+
+            if (($keys == null)
+                  && ($encryption < 0)
+                  && ($securePassword == null))
                   $this->init_ByArray([]);
 
-            if (($numArgs == 1) && (gettype($args[0]) == _array::ClassName))
-                  $this->init_ByArray($args[0]);
+            if (gettype($keys) == _array::ClassName)
+                  $this->init_ByArray($keys);
 
-            if (($numArgs == 2)
-                  && (gettype($args[0]) == _string::ClassName)
-                  && (gettype($args[1]) == _string::ClassName)
+            if (
+                  (gettype($keys) == _string::ClassName)
+                  && (gettype($encryption) == _string::ClassName)
             )
-                  $this->init_ByKeys($args[0], $args[1]);
+                  $this->init_ByKeys($keys, $encryption);
 
-            if (($numArgs == 3)
-                  && (gettype($args[0]) == _string::ClassName)
-                  && (gettype($args[1]) == _string::ClassName)
-                  && (gettype($args[2]) == _string::ClassName)
+            if (
+                  (gettype($keys) == _string::ClassName)
+                  && (gettype($encryption) == _string::ClassName)
+                  && (gettype($securePassword) != null)
             )
-                  $this->init_ByFile($args[0], $args[1], $args[2]);
+                  $this->init_ByFile($keys, $encryption, $securePassword);
       }
 
       // Constructor / Deconstructor
@@ -218,11 +231,8 @@ final class EncryptDecryptModule
       {
             $i = $this->k;
 
-            if ($mode != EncryptionMode::Caesar_Value)
+            if ($mode == EncryptionMode::MD5_Value)
             {
-                  if (count($this->CryptoKeys) == 0)
-                        throw new EncryptionException("No CryptoKeys defined");
-
                   $i = (new Random())->Next(0, count($this->CryptoKeys) - 1);
 
                   if ($this->_LockKey && ($this->k >= 0))
@@ -238,6 +248,9 @@ final class EncryptDecryptModule
                               return new CryptedValue($this->AES_Encrypt($value));
 
                         case EncryptionMode::MD5_Value:
+                              if (count($this->CryptoKeys) == 0)
+                                    throw new EncryptionException("No CryptoKeys defined");
+
                               return new CryptedValue(
                                     $this->MD5_Encrypt($value, $i, true),
                                     $i
@@ -755,7 +768,9 @@ final class EncryptDecryptModule
       {
             $cspParams = new CspParameters();
             $cspParams->ProviderType(1);
-            $rsaProvider = new RSACryptoServiceProvider(keySize: $cspParams);
+            $rsaProvider = new RSACryptoServiceProvider(
+                  $this->openSSLConfigFile,
+                  $cspParams::KeySize);
 
             $rsaProvider->ImportCspBlob(System_String::FromBase64($privateKey));
 
@@ -844,7 +859,7 @@ final class EncryptDecryptModule
       {
             $cspParams = new CspParameters();
             $cspParams->ProviderType(1);
-            $rsaProvider = new RSACryptoServiceProvider($cspParams);
+            $rsaProvider = new RSACryptoServiceProvider($cspParams::KeySize);
 
             $rsaProvider->ImportCspBlob(System_String::FromBase64($publicKey));
 
