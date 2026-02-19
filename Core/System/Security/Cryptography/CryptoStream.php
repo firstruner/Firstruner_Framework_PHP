@@ -70,6 +70,17 @@ final class CryptoStream
         return \openssl_decrypt($encryptedData, $this->cipher, $this->key, OPENSSL_RAW_DATA, $this->iv);
     }
 
+    public function GetEncryptedBytes(): string
+    {
+        if ($this->mode !== OpenSSL::OPENSSL_ENCRYPT) {
+            throw new \RuntimeException("CryptoStream est en mode déchiffrement.");
+        }
+
+        rewind($this->stream);
+        return stream_get_contents($this->stream);
+    }
+
+
     public function Close(): void
     {
         fclose($this->stream);

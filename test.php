@@ -31,6 +31,6 @@ require_once('./loader.php');
 $edm = new EncryptDecryptModule(OpenSSLConfigFile:'C:/xampp_8/apache/conf/openssl.cnf');
 $enc_val = $edm->Encrypt(
        "Welcome to the real world !",
-       EncryptionMode::RSA_Value);
-
-echo $enc_val->Value();
+       EncryptionMode::AES_Value);
+      
+print_r($enc_val->ByteValue());

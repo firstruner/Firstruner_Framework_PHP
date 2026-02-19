@@ -1005,17 +1005,25 @@ final class EncryptDecryptModule
 
             // Create the streams used for encryption.
             $msEncrypt = new MemoryStream();
-            $csEncrypt = new CryptoStream($msEncrypt->ReadToString(), $encryptor->Key(), $encryptor->IV(), CryptoStreamMode::Write);
-            $swEncrypt = new StreamWriter($csEncrypt->Read());
+            $csEncrypt = new CryptoStream(
+                  EncryptionMode::AES_256_ProtocolName,
+                  $rijAlg->Key(),
+                  $rijAlg->IV(),
+                  CryptoStreamMode::Write);
+            
+            $csEncrypt->Write($plainText);
 
-            $swEncrypt->Write($plainText);
-            $encrypted = $msEncrypt->ToArray();
+            // récupère les bytes chiffrés
+            $encryptedRaw = $csEncrypt->GetEncryptedBytes();
 
-            unset($msEncrypt);
+            // si ton API attend un tableau de bytes:
+            $encrypted = array_values(unpack('C*', $encryptedRaw));
+
+            $csEncrypt->Close();
+
             unset($csEncrypt);
             unset($swEncrypt);
 
-            // Return the encrypted bytes from the memory stream.
             return $encrypted;
       }
 
