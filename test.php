@@ -23,14 +23,14 @@
  */
 
 use Firstruner\Cryptography\EncryptDecryptModule;
-use System\Guid;
 use System\Security\Cryptography\EncryptionMode;
 
 require_once('./loader.php');
 
-$edm = new EncryptDecryptModule(OpenSSLConfigFile:'C:/xampp_8/apache/conf/openssl.cnf');
+$edm = new EncryptDecryptModule();
 $enc_val = $edm->Encrypt(
        "Welcome to the real world !",
        EncryptionMode::AES_Value);
       
 print_r($enc_val->ByteValue());
+
