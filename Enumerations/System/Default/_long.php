@@ -27,7 +27,7 @@ namespace System\Default;
 class _long
 {
       public const ClassName = "long";
-      public const MinValue = PHP_INT_MIN;
-      public const MaxValue = PHP_INT_MAX;
+      public const MinValue = -9223372036854775808;
+      public const MaxValue = 9223372036854775807;
       public const Initial = 0;
 }

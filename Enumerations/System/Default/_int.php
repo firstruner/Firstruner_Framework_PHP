@@ -27,7 +27,7 @@ namespace System\Default;
 class _int
 {
       public const ClassName = "int";
-      public const MinValue =  PHP_INT_MIN; // old value : -2147483648;
-      public const MaxValue = PHP_INT_MAX; // old value : 2147483647;
+      public const MinValue =  -9223372036854775808; // old value : -2147483648;
+      public const MaxValue = 9223372036854775807; // old value : 2147483647;
       public const Initial = 0;
 }
