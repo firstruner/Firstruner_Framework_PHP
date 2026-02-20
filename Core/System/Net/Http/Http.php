@@ -120,20 +120,11 @@ class Http
                   : _string::EmptyString;
 
             if ($base == '') {
-                  $detectedScheme = Http::detect_scheme($scheme);
-                  $host = Http::detect_host();
-                  $basePath = Http::detect_base_path($basePathDepth);
+                  $scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? "https" : "http";
+                  $host   = $_SERVER['HTTP_HOST'];
+                  $uri    = $_SERVER['REQUEST_URI'];
 
-                  if ($host == _string::EmptyString) {
-                        if ((php_sapi_name() == "cli"))
-                              return "http://127.0.0.1";
-
-                        throw new \RuntimeException(
-                              "Impossible de déterminer l'host (pas de contexte HTTP). Définis SITE_URL."
-                        );
-                  }
-
-                  $base = $detectedScheme . '://' . $host . $basePath;
+                  $base = $scheme . "://" . $host . $uri;
             } elseif ($scheme != null) {
                   $base = preg_replace('~^https?://~i', Http::detect_scheme($scheme) . '://', $base);
             }
