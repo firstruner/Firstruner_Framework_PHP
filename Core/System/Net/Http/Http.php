@@ -110,28 +110,52 @@ class Http
       }
 
       public static function Site_URL(
-            ?string $path = _string::EmptyString,
-            ?string $scheme = null,
-            int $basePathDepth = 0
+      ?string $path = _string::EmptyString,
+      ?string $scheme = null,
+      int $basePathDepth = 0
       ): string {
             $env = getenv('SITE_URL');
-            $base = ($env != false && $env !== _string::EmptyString)
-                  ? $env
-                  : _string::EmptyString;
+            $base = ($env !== false && $env !== _string::EmptyString) ? $env : _string::EmptyString;
 
-            if ($base == '') {
-                  $scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? "https" : "http";
-                  $host   = $_SERVER['HTTP_HOST'];
-                  $uri    = $_SERVER['REQUEST_URI'];
+            if ($base === '') {
+                  $schemeDetected = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
+                  $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
 
-                  $base = $scheme . "://" . $host . $uri;
-            } elseif ($scheme != null) {
+                  // REQUEST_URI contient aussi ?query=...
+                  $requestUri = $_SERVER['REQUEST_URI'] ?? '/';
+                  $pathOnly = parse_url($requestUri, PHP_URL_PATH) ?: '/';
+
+                  // Normalise et découpe en segments
+                  $segments = array_values(array_filter(explode('/', trim($pathOnly, '/')), 'strlen'));
+
+                  // Si le dernier segment ressemble à un fichier (contient un ".") => on l'enlève
+                  if (!empty($segments)) {
+                        $last = end($segments);
+                        if (strpos($last, '.') !== false) {
+                        array_pop($segments);
+                        }
+                  }
+
+                  // Remonter de $basePathDepth niveaux
+                  for ($i = 0; $i < $basePathDepth; $i++) {
+                        if (!empty($segments)) {
+                        array_pop($segments);
+                        } else {
+                        break;
+                        }
+                  }
+
+                  $basePath = '/' . implode('/', $segments);
+                  $basePath = rtrim($basePath, '/');
+
+                  $base = $schemeDetected . '://' . $host . $basePath;
+            } elseif ($scheme !== null) {
                   $base = preg_replace('~^https?://~i', Http::detect_scheme($scheme) . '://', $base);
             }
 
             $base = rtrim($base, '/');
 
-            if ($path != null && $path != '') {
+            if ($path !== null && $path !== '') {
                   return $base . '/' . ltrim($path, '/');
             }
 
