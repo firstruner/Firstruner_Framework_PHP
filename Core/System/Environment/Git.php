@@ -22,34 +22,45 @@
  * @version 2.0.0
  */
 
+namespace System\Environment;
 
-/* 
+use System\AppStaticParams;
+
+/*
  * -- File description --
- * @Type : Enumerate
+ * @Type : Class
  * @Mode : XP/BDD Creation
  * @Author : Christophe
  * @Update on : 11/02/2026 by : Christophe BOULAS
  */
 
-namespace System;
-
-/* PHP 8+
-enum EAppParams
+abstract class Git
 {
-    //case ...;
-}
-*/
+      public static function GetBranch(): ?string
+      {
+            $gitDir = __DIR__ . '/.git';
 
-/* PHP 7+*/
+            if (!is_dir($gitDir))
+                  return null;
 
-abstract class AppStaticParams
-{
-    const SessionKey_OAuth = "OAuth_Token";
+            $headFile = $gitDir . '/HEAD';
 
-    const RequestKey_Debug = "debug";
+            if (!file_exists($headFile))
+                  return null;
 
-    const CommonValues_DateTimeFormat = "d/m/Y h:i:s";
+            $headContent = trim(file_get_contents($headFile));
 
-    const Git_Branch = '#^ref:\s+refs/heads/(.+)$#';
-    const Git_DetachedBranch = '/^[a-f0-9]{40}$/';
+            if (preg_match(
+                  AppStaticParams::Git_Branch,
+                  $headContent,
+                  $matches))
+                  return $matches[1];
+
+            if (preg_match(
+                  AppStaticParams::Git_DetachedBranch,
+                  $headContent))
+                  return 'detached (' . substr($headContent, 0, 7) . ')';
+
+            return null;
+      }
 }

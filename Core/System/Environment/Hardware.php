@@ -22,34 +22,20 @@
  * @version 2.0.0
  */
 
+namespace System\Environment;
 
-/* 
+/*
  * -- File description --
- * @Type : Enumerate
+ * @Type : Class
  * @Mode : XP/BDD Creation
  * @Author : Christophe
  * @Update on : 11/02/2026 by : Christophe BOULAS
  */
 
-namespace System;
-
-/* PHP 8+
-enum EAppParams
+abstract class Hardware
 {
-    //case ...;
-}
-*/
-
-/* PHP 7+*/
-
-abstract class AppStaticParams
-{
-    const SessionKey_OAuth = "OAuth_Token";
-
-    const RequestKey_Debug = "debug";
-
-    const CommonValues_DateTimeFormat = "d/m/Y h:i:s";
-
-    const Git_Branch = '#^ref:\s+refs/heads/(.+)$#';
-    const Git_DetachedBranch = '/^[a-f0-9]{40}$/';
+    public static function Get_MemoryLimits(): int
+    {
+        return Common::Get_BytesSizeFromString(ini_get('memory_limit'));
+    }
 }

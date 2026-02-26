@@ -36,7 +36,7 @@ use System\Net\Keys\ServerKeys;
  * @Update on : 11/02/2026 by : Christophe BOULAS
  */
 
-class Client
+abstract class Client
 {
     public static function IsMobile()
     {
@@ -49,32 +49,5 @@ class Client
     public static function IsDebug()
     {
         return isset($_REQUEST[AppKeys::DebugMode]);
-    }
-
-    public static function Get_MemoryLimits(): int
-    {
-        return Client::Get_BytesSizeFromString(ini_get('memory_limit'));
-    }
-
-    public static function Get_BytesSizeFromString($val)
-    {
-        $val = trim($val);
-        $last = strtolower($val[strlen($val) - 1]);
-        switch ($last) {
-            // The 'G' modifier is available
-            case 'g':
-                $val *= 1024;
-            case 'm':
-                $val *= 1024;
-            case 'k':
-                $val *= 1024;
-        }
-
-        return $val;
-    }
-
-    public static function GetOS()
-    {
-        return PHP_OS;
     }
 }
