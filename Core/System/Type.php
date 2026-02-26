@@ -179,7 +179,7 @@ abstract class Type // : MemberInfo, IReflect
             throw new NotImplementedException();
 
             $reflection = new \ReflectionClass($this);
-            return $reflection; //->is Public;
+            return isset($reflection); //->is Public;
       }
 
       // public bool IsAutoLayout => (GetAttributeFlagsImpl() & TypeAttributes.LayoutMask) == TypeAttributes.AutoLayout;
@@ -302,7 +302,7 @@ abstract class Type // : MemberInfo, IReflect
       // public abstract EventInfo[] GetEvents(BindingFlags bindingAttr);
 
       // [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicFields)]
-      public function GetField(string $name = null): ?FieldInfo
+      public function GetField(?string $name = null): ?FieldInfo
       {
             // => GetField(name, DefaultLookup);
             return null;
@@ -384,7 +384,7 @@ abstract class Type // : MemberInfo, IReflect
       //public MethodInfo? GetMethod(string name) => GetMethod(name, DefaultLookup);
 
       // [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods | DynamicallyAccessedMemberTypes.NonPublicMethods)]
-      public function GetMethod(string $name, BindingFlags $bindingAttr = null): ?MethodInfo
+      public function GetMethod(string $name, ?BindingFlags $bindingAttr = null): ?MethodInfo
       {
             if ($name == null) throw new ArgumentNullException("name");
 
@@ -482,7 +482,7 @@ abstract class Type // : MemberInfo, IReflect
       // public PropertyInfo? GetProperty(string name) => GetProperty(name, DefaultLookup);
 
       // [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.NonPublicProperties)]
-      public function GetProperty(string $name, BindingFlags $bindingAttr = null): ?PropertyInfo
+      public function GetProperty(string $name, ?BindingFlags $bindingAttr = null): ?PropertyInfo
       {
             if ($name == null) throw new ArgumentNullException("name");
 

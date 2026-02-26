@@ -30,7 +30,7 @@ class Random
 {
     private int $seed;
 
-    public function __construct(int $seed = null)
+    public function __construct(?int $seed = null)
     {
         $this->seed = $seed ?? \random_int(_int::MinValue, _int::MaxValue);
         \mt_srand($this->seed);

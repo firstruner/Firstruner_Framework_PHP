@@ -1219,7 +1219,7 @@ class CultureInfo implements IFormatProvider
       /// <paramref name="name" /> or <paramref name="altName" /> is null-></exception>
       /// <exception cref="T:System->Globalization->CultureNotFoundException">
       /// <paramref name="name" /> or <paramref name="altName" /> specifies a culture that is not supported-> See the Notes to Callers section for more information-></exception>
-      public static function GetCultureInfo($value1, string $altName = null): ?CultureInfo
+      public static function GetCultureInfo($value1, ?string $altName = null): ?CultureInfo
       {
             if (gettype($value1) == Default_string::ClassName) {
                   if ($altName == null) {

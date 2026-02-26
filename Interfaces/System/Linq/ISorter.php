@@ -33,6 +33,6 @@ interface ISorter
 {
       function OrderingAsc(): LinqIterator; // Ok
       function OrderingDesc(): LinqIterator; // Ok
-      function OrderBy(string $predica, callable $closure = null): LinqIterator; // Ok
+      function OrderBy(string $predica, ?callable $closure = null): LinqIterator; // Ok
       function Shuffle(): LinqIterator; // Ok
 }

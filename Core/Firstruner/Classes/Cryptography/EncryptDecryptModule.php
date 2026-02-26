@@ -520,7 +520,7 @@ final class EncryptDecryptModule
       private function Encrypt_RSA(
             string $value,
             int $RSA_EncryptionType,
-            string $_publicKey = null,
+            ?string $_publicKey = null,
             int $ECSize = EncryptionSize::encAuto
       ): CryptedValue {
             switch ($RSA_EncryptionType) {

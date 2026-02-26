@@ -711,7 +711,7 @@ class Calendar // : ICloneable
             int $second,
             int $millisecond,
             int $era = 0,
-            DateTime $result = null,
+            ?DateTime $result = null,
       ): bool {
             $result = new DateTime("1/1/1 0:0:0");
 

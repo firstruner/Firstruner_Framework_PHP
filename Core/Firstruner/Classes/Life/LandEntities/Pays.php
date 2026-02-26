@@ -40,7 +40,7 @@ final class Pays
         string $englishName,
         string $landCode,
         bool $cpAvailable = false,
-        CultureInfo $culture = null
+        ?CultureInfo $culture = null
     ) {
 
         $this->French_Name = $frenchName;
