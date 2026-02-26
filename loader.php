@@ -95,6 +95,8 @@ if (isset($argv)) {
 $loadedFiles = do_loading($debug, $passErrors);
 
 if (isset($argv)) {
+    echo PHP_EOL . "--- PHP Version ---" . PHP_EOL . phpversion() . PHP_EOL;
+
     $afterLoading = snapshot_declared();
     $report = diff_snapshot($beforeLoading, $afterLoading);
 
