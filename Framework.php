@@ -28,6 +28,8 @@ use System\Reflection\Dependencies\Loader;
 
 class Framework
 {
+      public const FrameworkVersion = "3.1.79";
+
       public static bool $VendorLoading = true;
 
       private static bool $loaded = false;
@@ -36,7 +38,7 @@ class Framework
             return Framework::$loaded;
       }
 
-      public static function Load(bool $reload = false, bool $debug = false, bool $passErrors = false)
+      public static function Load(bool $reload = false, bool $details = false, bool $passErrors = false)
       {
             if ($reload) {
                   // TODO: Reload fonction
@@ -49,7 +51,7 @@ class Framework
 
             require_once(__DIR__ . '/Core/System/Reflection/Dependencies/Loader.php');
 
-            Loader::$debug = $debug;
+            Loader::$debug = $details;
             Loader::$passErrors = $passErrors;
 
             if (Framework::$VendorLoading) {

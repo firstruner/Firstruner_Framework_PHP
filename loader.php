@@ -22,6 +22,8 @@
  * @version 2.0.0
  */
 
+define("HOME_LOADER", __DIR__);
+
 require_once(__DIR__ . '/Core/Firstruner/CliTools/CliToolsLoader.php');
 
 require_once(__DIR__ . '/Framework.php');
@@ -41,12 +43,12 @@ $passErrors = false;
  *
  * @return string[] liste des fichiers réellement inclus
  */
-function do_loading(bool $debug, bool $passErrors): array
+function do_loading(bool $details, bool $passErrors): array
 {
     $includedBefore = get_included_files();
 
     Framework::$VendorLoading = false;
-    Framework::Load(debug: $debug, passErrors: $passErrors);
+    Framework::Load(details: $details, passErrors: $passErrors);
 
     Framework_Symfony::$VendorLoading = false;
     Framework_Symfony::Load();
@@ -66,49 +68,19 @@ function do_loading(bool $debug, bool $passErrors): array
     return $diff;
 }
 
-
-function getGitBranch(): ?string
-{
-    $gitDir = __DIR__ . '/.git';
-
-    // 1. Vérifier que .git existe
-    if (!is_dir($gitDir)) {
-        return null; // Pas un repo Git
-    }
-
-    $headFile = $gitDir . '/HEAD';
-
-    // 2. Vérifier que HEAD existe
-    if (!file_exists($headFile)) {
-        return null;
-    }
-
-    $headContent = trim(file_get_contents($headFile));
-
-    // 3. Cas normal : HEAD pointe vers une branche
-    if (preg_match('#^ref:\s+refs/heads/(.+)$#', $headContent, $matches)) {
-        return $matches[1];
-    }
-
-    // 4. Cas detached HEAD (commit direct)
-    if (preg_match('/^[a-f0-9]{40}$/', $headContent)) {
-        return 'detached (' . substr($headContent, 0, 7) . ')';
-    }
-
-    return null;
-}
-
 if (isset($argv)) {
     $flags = new CliFlags($argv);
     $debug = $flags->has('--debug');
     $details = $flags->has('--details');
     $includeFiles = $flags->has('--includeFiles');
     $passErrors = $flags->has('--passErrors');
+    $summary = $flags->has('--summary');
 
     if ($flags->has('--help') || $flags->has('--h')) {
         echo
         "Arguments :" . PHP_EOL .
             "  --help / --h     Affiche l'aide" . PHP_EOL .
+            "  --summary        Affiche un récapitulatif du chargement" . PHP_EOL .
             "  --debug          Affiche un diagnostique rapide" . PHP_EOL .
             "  --details        Affiche le détails des chargements" . PHP_EOL .
             "  --includeFiles   Affiche la liste des fichiers chargés" . PHP_EOL .
@@ -124,21 +96,15 @@ if (isset($argv)) {
     $beforeLoading = snapshot_declared();
 }
 
-$loadedFiles = do_loading($debug, $passErrors);
+$loadedFiles = do_loading($details, $passErrors);
+$report = new LoaderReport();
 
 if (isset($argv)) {
     $afterLoading = snapshot_declared();
     $report = diff_snapshot($beforeLoading, $afterLoading);
 
-    if ($debug) {
-        echo PHP_EOL . PHP_EOL . PHP_EOL . "#####     SUMMARY     #####" . PHP_EOL . PHP_EOL;
-        echo "------------------------" . PHP_EOL;
-        echo "System informations" . PHP_EOL;
-        echo "------------------------" . PHP_EOL;
-        echo "PHP Version : " . phpversion() . PHP_EOL;
-        echo "Branch name : " . getGitBranch() . PHP_EOL;
-        $report->printSummary($details);
-
+    if ($debug)
+    {
         if ($includeFiles) {
             echo PHP_EOL . "[Debug] Fichiers inclus (" . count($loadedFiles) . ")\n";
             echo "-------------------------\n";
@@ -150,4 +116,7 @@ if (isset($argv)) {
             echo PHP_EOL;
         }
     }
+
+    if ($debug || $summary)
+        $report->printSummary($debug);
 }

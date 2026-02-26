@@ -64,6 +64,8 @@ InitializePartialLoader();
 
 final class Loader
 {
+      public const LoaderVersion = "1.5";
+
       private static array $dependants = array();
       private static array $dependants_Loaded = array();
       private static int $Counter = 0;
