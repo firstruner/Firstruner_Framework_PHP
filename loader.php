@@ -66,6 +66,38 @@ function do_loading(bool $debug, bool $passErrors): array
     return $diff;
 }
 
+
+function getGitBranch(): ?string
+{
+    $gitDir = __DIR__ . '/.git';
+
+    // 1. Vérifier que .git existe
+    if (!is_dir($gitDir)) {
+        return null; // Pas un repo Git
+    }
+
+    $headFile = $gitDir . '/HEAD';
+
+    // 2. Vérifier que HEAD existe
+    if (!file_exists($headFile)) {
+        return null;
+    }
+
+    $headContent = trim(file_get_contents($headFile));
+
+    // 3. Cas normal : HEAD pointe vers une branche
+    if (preg_match('#^ref:\s+refs/heads/(.+)$#', $headContent, $matches)) {
+        return $matches[1];
+    }
+
+    // 4. Cas detached HEAD (commit direct)
+    if (preg_match('/^[a-f0-9]{40}$/', $headContent)) {
+        return 'detached (' . substr($headContent, 0, 7) . ')';
+    }
+
+    return null;
+}
+
 if (isset($argv)) {
     $flags = new CliFlags($argv);
     $debug = $flags->has('--debug');
@@ -101,9 +133,10 @@ if (isset($argv)) {
     if ($debug) {
         echo PHP_EOL . PHP_EOL . PHP_EOL . "#####     SUMMARY     #####" . PHP_EOL . PHP_EOL;
         echo "------------------------" . PHP_EOL;
-        echo "PHP Version" . PHP_EOL;
+        echo "System informations" . PHP_EOL;
         echo "------------------------" . PHP_EOL;
-        echo phpversion() . PHP_EOL . PHP_EOL;
+        echo "PHP Version : " . phpversion() . PHP_EOL;
+        echo "Branch name : " . getGitBranch() . PHP_EOL;
         $report->printSummary($details);
 
         if ($includeFiles) {
