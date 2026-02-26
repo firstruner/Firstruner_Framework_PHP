@@ -32,25 +32,25 @@ use System\Collections\Iterators\LinqIterator;
 interface ILinq
 {
       function First(): mixed; // Ok
-      function FirstWhere(string $predica, mixed $value, int $searchMethod, callable $closure = null): mixed; // Ok
+      function FirstWhere(string $predica, mixed $value, int $searchMethod, ?callable $closure = null): mixed; // Ok
       function FirstOrDefault(): mixed; // Ok
-      function FirstWhereOrDefault(string $predica, mixed $value, int $searchMethod, callable $closure = null): mixed; // Ok
+      function FirstWhereOrDefault(string $predica, mixed $value, int $searchMethod, ?callable $closure = null): mixed; // Ok
       function Last(): mixed; // Ok
-      function LastWhere(string $predica, mixed $value, int $searchMethod, callable $closure = null): mixed; // Ok
+      function LastWhere(string $predica, mixed $value, int $searchMethod, ?callable $closure = null): mixed; // Ok
       function LastOrDefault(): mixed; // Ok
-      function LastWhereOrDefault(string $predica, mixed $value, int $searchMethod, callable $closure = null): mixed; // Ok
+      function LastWhereOrDefault(string $predica, mixed $value, int $searchMethod, ?callable $closure = null): mixed; // Ok
 
       function SetDefault(mixed $value): LinqIterator; // Ok
       function Take(int $start, int $end): LinqIterator; // Ok      
       function Join(LinqIterator $iteration): LinqIterator; // Ok
 
-      function Where(string $predica, mixed $value, int $searchMethod, callable $closure = null): LinqIterator; // Ok
-      function Except(string $predica, mixed $value, int $searchMethod, callable $closure = null): LinqIterator; // Ok
+      function Where(string $predica, mixed $value, int $searchMethod, ?callable $closure = null): LinqIterator; // Ok
+      function Except(string $predica, mixed $value, int $searchMethod, ?callable $closure = null): LinqIterator; // Ok
 
       function Any(string $predica): bool; // Ok
-      function GroupBy(string $predica, callable $closure = null): LinqIterator; // Ok
-      function Min(string $predica, callable $closure = null): mixed; // Ok
-      function Max(string $predica, callable $closure = null): mixed; // Ok
-      function Sum(string $predica, callable $closure = null): mixed; // Ok
-      function Avg(string $predica, callable $closure = null): mixed; // Ok
+      function GroupBy(string $predica, ?callable $closure = null): LinqIterator; // Ok
+      function Min(string $predica, ?callable $closure = null): mixed; // Ok
+      function Max(string $predica, ?callable $closure = null): mixed; // Ok
+      function Sum(string $predica, ?callable $closure = null): mixed; // Ok
+      function Avg(string $predica, ?callable $closure = null): mixed; // Ok
 }
