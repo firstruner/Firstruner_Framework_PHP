@@ -99,7 +99,11 @@ if (isset($argv)) {
     $report = diff_snapshot($beforeLoading, $afterLoading);
 
     if ($debug) {
-        echo PHP_EOL . "--- PHP Version ---" . PHP_EOL . phpversion() . PHP_EOL;
+        echo PHP_EOL . PHP_EOL . PHP_EOL . "#####     SUMMARY     #####" . PHP_EOL . PHP_EOL;
+        echo "------------------------" . PHP_EOL;
+        echo "PHP Version" . PHP_EOL;
+        echo "------------------------" . PHP_EOL;
+        echo phpversion() . PHP_EOL . PHP_EOL;
         $report->printSummary($details);
 
         if ($includeFiles) {
