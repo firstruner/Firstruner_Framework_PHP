@@ -22,23 +22,54 @@
  * @version 2.0.0
  */
 
-namespace System;
+namespace System\IO\Directory\Versionning;
 
-/* PHP 8+
- enum EAppParams
- {
-     //case ...;
- }
- */
-
-/* PHP 7+*/
-
-abstract class Environment
+final	class CommitId
 {
-    public const MobileTags = "/(android|avantgo|blackberry|bolt|boost|cricket|docomo|fone|hiptop|mini|mobi|palm|phone|pie|tablet|up\.browser|up\.link|webos|wos)/i";
-    public const DebugTag = "debug";
+	/** @var string */
+	private $id;
 
-    public const OS_AutoDetect = 0x20000;
-	public const OS_Windows = 0x20100;
-	public const OS_NonWindows = 0x20200;
+
+	/**
+	 * @param string $id
+	 */
+	public function __construct($id)
+	{
+		if (!self::isValid($id)) {
+			throw new \InvalidArgumentException(
+				"Invalid commit ID" . (is_string($id)
+					? " '$id'."
+					: ', expected string, ' . gettype($id) . ' given.'));
+		}
+
+		$this->id = $id;
+	}
+
+
+	/**
+	 * @return string
+	 */
+	public function toString()
+	{
+		return $this->id;
+	}
+
+
+	/**
+	 * @return string
+	 */
+	public function __toString()
+	{
+		return $this->id;
+	}
+
+
+	/**
+	 * @param  string $id
+	 * @return bool
+	 */
+	public static function isValid($id)
+	{
+		return is_string($id) && preg_match('/^[0-9a-f]{40}$/i', $id);
+	}
 }

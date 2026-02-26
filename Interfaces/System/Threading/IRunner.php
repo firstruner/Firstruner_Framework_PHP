@@ -22,23 +22,21 @@
  * @version 2.0.0
  */
 
-namespace System;
+namespace System\Threading;
 
-/* PHP 8+
- enum EAppParams
- {
-     //case ...;
- }
- */
-
-/* PHP 7+*/
-
-abstract class Environment
+interface IRunner
 {
-    public const MobileTags = "/(android|avantgo|blackberry|bolt|boost|cricket|docomo|fone|hiptop|mini|mobi|palm|phone|pie|tablet|up\.browser|up\.link|webos|wos)/i";
-    public const DebugTag = "debug";
+	/**
+	 * @param  string $cwd
+	 * @param  array<mixed> $args
+	 * @param  array<string, scalar>|null $env
+	 * @return ProcessResult
+	 */
+	function run($cwd, array $args, ?array $env = null);
 
-    public const OS_AutoDetect = 0x20000;
-	public const OS_Windows = 0x20100;
-	public const OS_NonWindows = 0x20200;
+
+	/**
+	 * @return string
+	 */
+	function getCwd();
 }

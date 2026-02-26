@@ -22,23 +22,32 @@
  * @version 2.0.0
  */
 
-namespace System;
+namespace System\Exceptions;
 
-/* PHP 8+
- enum EAppParams
- {
-     //case ...;
- }
- */
+use System\Threading\ProcessResult;
 
-/* PHP 7+*/
-
-abstract class Environment
+class GitException extends \Exception
 {
-    public const MobileTags = "/(android|avantgo|blackberry|bolt|boost|cricket|docomo|fone|hiptop|mini|mobi|palm|phone|pie|tablet|up\.browser|up\.link|webos|wos)/i";
-    public const DebugTag = "debug";
+	/** @var ProcessResult|null */
+	private $processResult;
 
-    public const OS_AutoDetect = 0x20000;
-	public const OS_Windows = 0x20100;
-	public const OS_NonWindows = 0x20200;
+
+	/**
+	 * @param string $message
+	 * @param int $code
+	 */
+	public function __construct($message, $code = 0, ?\Exception $previous = null, ?ProcessResult $processResult = null)
+	{
+		parent::__construct($message, $code, $previous);
+		$this->processResult = $processResult;
+	}
+
+
+	/**
+	 * @return ProcessResult|null
+	 */
+	public function GetProcessResult()
+	{
+		return $this->processResult;
+	}
 }
