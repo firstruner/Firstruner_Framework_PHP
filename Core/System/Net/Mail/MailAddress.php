@@ -26,7 +26,7 @@ namespace System\Net\Mail;
 
 use System\Default\_string;
 
-final class MailAddress
+class MailAddress
 {
       public const ClassName = "MailAddress";
 
