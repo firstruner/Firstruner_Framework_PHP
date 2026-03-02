@@ -115,7 +115,10 @@ push_to_github:
 discord_notify:
   extends: .discord_notify_template
   rules:
-    allow_failure: true
+    - if: '$CI_COMMIT_MESSAGE =~ /no_notify/'
+      when: manual
+      allow_failure: true
+    - when: on_success
   parallel:
     matrix:
       - TARGET_NAME: "Stagiaires"
