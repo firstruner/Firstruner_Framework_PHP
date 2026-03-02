@@ -28,7 +28,7 @@ use System\Reflection\Dependencies\Loader;
 
 class Framework
 {
-      public const FrameworkVersion = "3.1.83";
+      public const FrameworkVersion = "3.1.84";
 
       public static bool $VendorLoading = true;
 

@@ -53,13 +53,13 @@ function do_loading(bool $details, bool $passErrors): array
     Framework_Symfony::$VendorLoading = false;
     Framework_Symfony::Load();
 
-    echo (!Framework::IsLoaded())
+    echo ((!Framework::IsLoaded())
         ? "🔺 FIRSTRUNER FRAMEWORK : LOADER FAILURE !"
-        : "🟢 FIRSTRUNER FRAMEWORK : Ok";
+        : "🟢 FIRSTRUNER FRAMEWORK : Ok") . PHP_EOL;
 
-    echo (!Framework_Symfony::IsLoaded())
+    echo ((!Framework_Symfony::IsLoaded())
         ? "🔺 SYMFONY FRAMEWORK : LOADER FAILURE !"
-        : "🟢 SYMFONY FRAMEWORK : Ok";
+        : "🟢 SYMFONY FRAMEWORK : Ok") . PHP_EOL;
 
 
     $includedAfter = get_included_files();
