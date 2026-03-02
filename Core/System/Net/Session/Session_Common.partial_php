@@ -1,0 +1,83 @@
+<?php
+
+/**
+ * Copyright 2024 Firstruner and Contributors
+ * Firstruner is an Registered Trademark & Property of Christophe BOULAS
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Freemium License
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to contact@firstruner.fr so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit, reproduce ou modify this file.
+ * Please refer to https://firstruner.fr/ or contact Firstruner for more information.
+ *
+ * @author    Firstruner and Contributors <contact@firstruner.fr>
+ * @copyright 2024 Firstruner and Contributors
+ * @license   Proprietary
+ * @version 2.0.0
+ */
+
+namespace System\Net;
+
+use System\Attributes\Partial;
+use System\Exceptions\Code as ExceptionsCode;
+
+#[Partial()]
+class Session
+{
+    public static function CheckSessionInitialisation()
+    {
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        return true;
+    }
+
+    public static function Get(string $sessionName, $defaultValue = null)
+    {
+        try {
+            return Session::Exists($sessionName)
+                ? $_SESSION[$sessionName]
+                : $defaultValue;
+        } catch (\Exception $e) {
+            if ($defaultValue != null)
+                return $defaultValue;
+
+            throw new \Exception("Session invalid or closed", ExceptionsCode::Session_GetInvalid);
+        }
+    }
+
+    public static function Set(string $sessionName, $value): void
+    {
+        try {
+            $_SESSION[$sessionName] = $value;
+        } catch (\Exception $e) {
+            throw new \Exception("Session invalid or closed", ExceptionsCode::Session_SetInvalid);
+        }
+    }
+
+    public static function Exists(string $sessionName): bool
+    {
+        try {
+            return isset($_SESSION[$sessionName]);
+        } catch (\Exception $e) {
+            throw new \Exception("Session invalid or closed", ExceptionsCode::Session_ExistsInvalid);
+        }
+    }
+
+    public static function IsStarted(bool $autoStart = false): bool
+    {
+        if ($autoStart)
+            if (!isset($_SESSION)) {
+                session_start();
+            }
+
+        return isset($_SESSION);
+    }
+}
