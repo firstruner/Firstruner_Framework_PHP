@@ -34,6 +34,7 @@
 
 namespace DatasDNA\Enumerations;
 
+use System\Attributes\Partial;
 use DatasDNA\Classes\Bases\Adenine;
 use DatasDNA\Classes\Bases\Thymine;
 use DatasDNA\Classes\Bases\Cytosine;
@@ -42,9 +43,14 @@ use DatasDNA\Classes\Exceptions\InvalidBaseException;
 use DatasDNA\Interfaces\INucleic;
 use DatasDNA\Classes\Exceptions\ATCG_Pair_Exception;
 
+#[Partial]
 abstract class ENucleicBases
 {
-
+    // Méthode pour obtenir le nom de la base à partir de la constante SYMBOL
+    public static function GetName(string $base): string
+    {
+        return self::NAMES[$base] ?? throw new InvalidBaseException($base);
+    }
 
     // Récupérer toutes les bases
     public static function GetAll(): array
@@ -61,7 +67,7 @@ abstract class ENucleicBases
     public static function IsValid(INucleic $base): void
     {
         if (!in_array(get_class($base), self::GetAll(), true)) {
-            throw new InvalidBaseException($base::Symbol());
+            throw new InvalidBaseException($base->Symbol());
         }
     }
 
@@ -83,6 +89,6 @@ abstract class ENucleicBases
     // Méthode pour obtenir le poids d'une base
     public static function Weight(INucleic $base): float
     {
-        return $base::Weight();
+        return $base->Weight();
     }
 }

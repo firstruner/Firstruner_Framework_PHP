@@ -34,14 +34,7 @@
 
 namespace DatasDNA\Enumerations;
 
-use DatasDNA\Classes\Bases\Adenine;
-use DatasDNA\Classes\Bases\Thymine;
-use DatasDNA\Classes\Bases\Cytosine;
-use DatasDNA\Classes\Bases\Guanine;
-use DatasDNA\Classes\Bases\AbsNucleicBase;
-use DatasDNA\Classes\Exceptions\InvalidBaseException;
 use System\Attributes\Partial;
-use DatasDNA\Interfaces\INucleic;
 
 #[Partial]
 abstract class ENucleicBases
@@ -75,10 +68,4 @@ abstract class ENucleicBases
         self::CYTOSINE => "Cytosine",
         self::GUANINE => "Guanine",
     ];
-
-    // Méthode pour obtenir le nom de la base à partir de la constante SYMBOL
-    public static function GetName(string $base): string
-    {
-        return self::NAMES[$base] ?? throw new InvalidBaseException($base);
-    }
 }

@@ -23,11 +23,17 @@
  */
 
 
-//
-
 /**
  * UT : Pass
  */
+
+//$trace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2);
+
+/*if (isset($trace[1]))
+{
+      echo "### NEW TEST ###";
+      echo PHP_EOL . "UT Helper depuis : " . $trace[1]['file'] . " ligne " . $trace[1]['line'] . PHP_EOL;
+}*/
 
 // Chargement du vendor
 require_once(__DIR__ . '/../vendor/autoload.php');

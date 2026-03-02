@@ -24,13 +24,17 @@
 
 define("HOME_LOADER", __DIR__);
 
+foreach (glob(__DIR__ . '/Frameworks/LoadingLists/*.php') as $file)
+    require_once $file;
+
 require_once(__DIR__ . '/Core/Firstruner/CliTools/CliToolsLoader.php');
 
-require_once(__DIR__ . '/Framework.php');
-require_once(__DIR__ . '/Framework_Symfony.php');
+require_once(__DIR__ . '/Frameworks/Framework_Tools.php');
+require_once(__DIR__ . '/Frameworks/Framework.php');
+require_once(__DIR__ . '/Frameworks/Framework_Symfony.php');
 
-use Firstruner\Framework;
-use Firstruner\Framework_Symfony;
+use Firstruner\Frameworks\Framework;
+use Firstruner\Frameworks\Framework_Symfony;
 
 $debug = false;
 $details = false;
@@ -53,14 +57,11 @@ function do_loading(bool $details, bool $passErrors): array
     Framework_Symfony::$VendorLoading = false;
     Framework_Symfony::Load();
 
-    echo ((!Framework::IsLoaded())
-        ? "🔺 FIRSTRUNER FRAMEWORK : LOADER FAILURE !"
-        : "🟢 FIRSTRUNER FRAMEWORK : Ok") . PHP_EOL;
+    if (!Framework::IsLoaded())
+        echo "/!\ FIRSTRUNER FRAMEWORK : LOADER FAILURE !";
 
-    echo ((!Framework_Symfony::IsLoaded())
-        ? "🔺 SYMFONY FRAMEWORK : LOADER FAILURE !"
-        : "🟢 SYMFONY FRAMEWORK : Ok") . PHP_EOL;
-
+    if (!Framework_Symfony::IsLoaded())
+        echo "/!\ SYMFONY FRAMEWORK : LOADER FAILURE !";
 
     $includedAfter = get_included_files();
 
