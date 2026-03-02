@@ -1,0 +1,68 @@
+<?php
+
+/**
+ * Copyright 2024 Firstruner and Contributors
+ * Firstruner is an Registered Trademark & Property of Christophe BOULAS
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Freemium License
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to contact@firstruner.fr so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit, reproduce ou modify this file.
+ * Please refer to https://firstruner.fr/ or contact Firstruner for more information.
+ *
+ * @author    Firstruner and Contributors <contact@firstruner.fr>
+ * @copyright 2024 Firstruner and Contributors
+ * @license   Proprietary
+ * @version 2.0.0
+ */
+
+namespace Firstruner\Langages;
+
+use System\Attributes\Partial;
+
+#[Partial()]
+abstract class Morse
+{
+      public const A = "●▬";
+      public const B = "▬●●●";
+      public const C = "▬●▬●";
+      public const D = "▬●●";
+      public const E = "●";
+      public const F = "●●▬●";
+      public const G = "▬▬●";
+      public const H = "●●●●";
+      public const I = "●●";
+      public const J = "●▬▬▬";
+      public const K = "▬●▬";
+      public const L = "●▬●●";
+      public const M = "▬▬";
+      public const N = "▬●";
+      public const O = "▬▬▬";
+      public const P = "●▬▬●";
+      public const Q = "▬▬●▬";
+      public const R = "●▬●";
+      public const S = "●●●";
+      public const T = "▬";
+      public const U = "●●▬";
+      public const V = "●●●▬";
+      public const W = "●▬▬";
+      public const X = "▬●●▬";
+      public const Y = "▬●▬▬";
+      public const Z = "▬▬●●";
+      public const Num_0 = "▬▬▬▬▬";
+      public const Num_1 = "●▬▬▬▬";
+      public const Num_2 = "●●▬▬▬";
+      public const Num_3 = "●●●▬▬";
+      public const Num_4 = "●●●●▬";
+      public const Num_5 = "●●●●●";
+      public const Num_6 = "▬●●●●";
+      public const Num_7 = "▬▬●●●";
+      public const Num_8 = "▬▬▬●●";
+      public const Num_9 = "▬▬▬▬●";
+}

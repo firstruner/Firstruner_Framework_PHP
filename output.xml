@@ -1,0 +1,31 @@
+<?xml version="1.0" standalone="yes"?>
+<matable>
+  <Peoples>
+    <Nom>BOULAS</Nom>
+    <Prenom>Christophe</Prenom>
+    <Age>43</Age>
+    <email>test@test.com</email>
+  </Peoples>
+  <Peoples>
+    <Nom>BOULAS</Nom>
+    <Prenom>Nabila</Prenom>
+    <Age>43</Age>
+    <email>test2@tes3t.com</email>
+  </Peoples>
+  <Peoples>
+    <Nom>BOULAS</Nom>
+    <Prenom>Zoumzoum</Prenom>
+    <Age>13</Age>
+    <email>zooum@test.com</email>
+  </Peoples>
+  <user>
+      <name>orange</name>
+      <sex>male</sex>
+      <homepage>wuxiancheng.cn</homepage>
+  </user>
+  <user>
+      <name>tangerine</name>
+      <sex>male</sex>
+      <homepage>51-n.com</homepage>
+  </user>
+</matable>

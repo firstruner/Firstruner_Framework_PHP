@@ -1,0 +1,115 @@
+<?php
+
+/**
+ * Copyright 2024 Firstruner and Contributors
+ * Firstruner is an Registered Trademark & Property of Christophe BOULAS
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Freemium License
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to contact@firstruner.fr so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit, reproduce ou modify this file.
+ * Please refer to https://firstruner.fr/ or contact Firstruner for more information.
+ *
+ * @author    Firstruner and Contributors <contact@firstruner.fr>
+ * @copyright 2024 Firstruner and Contributors
+ * @license   Proprietary
+ * @version 2.0.0
+ */
+
+namespace System\Net;
+
+use Symfony\Component\HttpFoundation\Response_Light;
+
+use System\AppStaticParams;
+use System\Net\Session\SessionManagment;
+use System\_String;
+use System\Attributes\Partial;
+use System\Net\Headers_Code;
+use System\Net\Headers_Content;
+use System\Net\Http\Headers\HttpHeaders;
+use System\Net\Keys\CookieKeys;
+
+/**
+ * Description of SessionManagment
+ *
+ * @author Christophe
+ */
+
+#[Partial()]
+class Session
+{
+    public static function CheckConnected($withoutResponse = false)
+    {
+        // TODO : Récupérer l'état de Session
+        if (Session::Exists(AppStaticParams::SessionKey_CurrentUser)) {
+            $currentUser = Session::Get(AppStaticParams::SessionKey_CurrentUser);
+
+            if ($currentUser != null) {
+                // Réactualise le temps du Cookie
+                SessionManagment::RenewCookie();
+
+                if (!$withoutResponse) {
+                    return new Response_Light(
+                        _String::Generate(
+                            "",
+                            array("")
+                        ),
+                        Headers_Code::Success_Code,
+                        ['content-type' => Headers_Content::TXT_Code]
+                    );
+                }
+
+                return true;
+            }
+        }
+
+        // TODO : Si NOk Récupérer l'état du cookie
+        if (Cookies::Exists(CookieKeys::JSessionName)) {
+            if (Cookies::Get(CookieKeys::JSessionName) != null) {
+                // TODO : Si Cookie Ok => ReconnectAuto
+                /*
+                if (SessionManagment::Reconnect($_COOKIE[EAppStaticParams::CookieKey_JSessionName]))
+                {
+                    // Réactualise le temps du Cookie
+                    SessionManagment::RenewCookie();
+
+                    if (!$withoutResponse)
+                    {
+                        return new Response_Light(
+                            StringGenerator::Generate(
+                                "", array("")),
+                            EHeaders_Code::Success_Code,
+                            ['content-type' => EHeaders_Content::TXT_Code]);
+                    }
+                }
+                */
+
+                if (!$withoutResponse) {
+                    return new Response_Light(
+                        _String::Generate(
+                            "",
+                            array("")
+                        ),
+                        Headers_Code::Success_Code,
+                        ['content-type' => Headers_Content::TXT_Code]
+                    );
+                }
+
+                return true;
+            }
+        }
+
+        if (!$withoutResponse)
+            HttpHeaders::Redirect(
+                AppStaticParams::ServerKey_DefaultPath . AppStaticParams::ControllerKey_Connexion
+            );
+
+        return false;
+    }
+}
