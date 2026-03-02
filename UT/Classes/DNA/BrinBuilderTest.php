@@ -30,42 +30,26 @@
  * @Mode : DDD Creation
  * @Author : Nadia TRABELSI
  * @Update on : 11/03/2025 by : Nadia TRABELSI
+ * @Update on : 02/03/2026 by : Christophe BOULAS
  */
 
 namespace DatasDNA\tests;
 
+require(__DIR__ . '/../../UT_Helper.php');
+
+use DatasDNA\Classes\Bases\Adenine;
 use PHPUnit\Framework\TestCase;
 use DatasDNA\Classes\Builder\BrinBuilder;
 use DatasDNA\Classes\Brin;
-use DatasDNA\Classes\Exceptions\ATCG_Pair_Exception;
-use DatasDNA\Enumerations\ENucleicBases;
-
-require(__DIR__ . '/../../UT_Helper.php');
 
 class BrinBuilderTest extends TestCase
 {
     public function testAddBaseWithValidBase()
     {
-
-        $brin = BrinBuilder::buildFromBase(ENucleicBases::ADENINE);
+        $brin = BrinBuilder::buildFromBase(new Adenine());
 
         $this->assertInstanceOf(Brin::class, $brin);
     }
-
-    public function testAddBaseWithInvalidBase()
-    {
-        $builder = new BrinBuilder();
-
-        try {
-            $builder->buildFromBase('X'); // Cette ligne doit déclencher une exception
-            $this->fail("L'ajout d'une base invalide n'a pas déclenché d'exception."); // Échec si aucune exception n'est levée
-        } catch (ATCG_Pair_Exception $e) {
-            $this->assertInstanceOf(ATCG_Pair_Exception::class, $e); // Vérifie que l'exception est bien levée
-        } catch (\Exception $e) {
-            $this->fail("Une exception inattendue a été levée : " . $e->getMessage()); // Gère toute autre exception
-        }
-    }
-
 
     public function testBuild()
     {

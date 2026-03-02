@@ -22,7 +22,9 @@
  * @version 2.0.0
  */
 
-use Firstruner\Framework;
+use Firstruner\Frameworks\Framework;
+use Firstruner\Frameworks\Framework_Symfony;
+use Firstruner\Frameworks\Framework_Tools;
 use System\Reflection\Dependencies\Loader;
 
 final class LoaderReport
@@ -38,7 +40,7 @@ final class LoaderReport
     /** @var string[] */
     public array $functions = [];
 
-    private const LoaderReportVersion = 1.3;
+    private const LoaderReportVersion = 1.4;
     private string $empty_space = "                    ";
 
     private function getGitBranch(): ?string
@@ -132,6 +134,9 @@ final class LoaderReport
 
     public function printSummary(bool $debug): void
     {
+        $error_icon = Framework_Tools::IsCLI() ? "▲" : "🔺";
+        $valid_icon = Framework_Tools::IsCLI() ? "☺" : "🟢";
+
         if ($debug)
         {
             $this->printList("Classes", $this->classes);
@@ -151,6 +156,7 @@ final class LoaderReport
         echo $this->empty_space . "╔════════════════════════════════════╗" . PHP_EOL;
         echo $this->empty_space . "║ System informations                ║" . PHP_EOL;
         echo $this->empty_space . "╟────────────────────────────────────╢" . PHP_EOL;
+        echo $this->padText("Loader Mode           : " . (Framework_Tools::IsCLI() ? "CLI" : "Non-CLI")) . PHP_EOL;
         echo $this->padText("Loader Report Version : " . LoaderReport::LoaderReportVersion) . PHP_EOL;
         echo $this->padText("Loader Version        : " . Loader::LoaderVersion) . PHP_EOL;
         echo $this->padText("PHP Version           : " . phpversion()) . PHP_EOL;
@@ -173,7 +179,17 @@ final class LoaderReport
         echo $this->empty_space . "╟────────────────────────────────────╢" . PHP_EOL;
         echo $this->padText("Debug      : " . (Loader::$debug ? "Activé" : "Désactivé")) . PHP_EOL;
         echo $this->padText("Erreurs    : " . (Loader::$passErrors ? "Non gérées" : "Gérées")) . PHP_EOL;
-        echo $this->empty_space . "╚════════════════════════════════════╝" . PHP_EOL . " ";
+        echo $this->empty_space . "╚════════════════════════════════════╝" . PHP_EOL . PHP_EOL;
+
+        echo ((!Framework::IsLoaded())
+            ? $error_icon . " FIRSTRUNER FRAMEWORK : LOADER FAILURE !"
+            : $valid_icon . " FIRSTRUNER FRAMEWORK : Ok") . PHP_EOL;
+
+        echo ((!Framework_Symfony::IsLoaded())
+            ? $error_icon . " SYMFONY FRAMEWORK : LOADER FAILURE !"
+            : $valid_icon . " SYMFONY FRAMEWORK : Ok") . PHP_EOL;
+
+        echo " " . PHP_EOL;
     }
 
     /**
