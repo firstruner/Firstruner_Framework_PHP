@@ -23,13 +23,12 @@ variables:
   PHPUNIT_PATH: "vendor/bin/phpunit"
 
 stages:
-  - test
-  - unittests
-  - pushToGitHub
-  - notify
+  - Loader
+  - Tests_Unitaires
+  - External_Pushs
+  - Notifications
 
 .discord_notify_template:
-  stage: notify
   image: python:3.12-alpine
   before_script:
     - apk add --no-cache curl
@@ -67,12 +66,12 @@ cache:
   - ./vendor/bin/phpunit --version
 
 loader-test:
-  stage: test
+  stage: Loader
   script:
     - php ./loader.php --summary
 
 unit-tests:
-  stage: unittests
+  stage: Tests_Unitaires
   <<: *phpunit_install
   rules:
     - if: '$CI_COMMIT_MESSAGE =~ /no_tests/'
@@ -85,7 +84,7 @@ unit-tests:
     - php $PHPUNIT_PATH UT/WebServices --colors=never --log-junit report_UT_1stFrmk_WebSrv.xml
 
 push_to_github:
-  stage: pushToGitHub
+  stage: External_Pushs
   image: alpine:3.20
   rules:
     - if: '$CI_COMMIT_BRANCH == "main" && $CI_COMMIT_MESSAGE !~ /no_transfer/'
@@ -111,6 +110,7 @@ push_to_github:
     - bash ./pushtogithub.sh
 
 discord_notify:
+  stage: Notifications
   extends: .discord_notify_template
   rules:
     - if: '$CI_COMMIT_BRANCH == "main" && $CI_COMMIT_MESSAGE =~ /no_notify/'
