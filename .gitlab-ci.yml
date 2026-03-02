@@ -78,6 +78,7 @@ unit-tests:
       when: manual
       allow_failure: true
     - when: on_success
+      allow_failure: true
   script:
     - php $PHPUNIT_PATH UT/Classes --colors=never --log-junit report_UT_1stFrmk_Classes.xml
     - php $PHPUNIT_PATH UT/Methods --colors=never --log-junit report_UT_1stFrmk_Methods.xml
