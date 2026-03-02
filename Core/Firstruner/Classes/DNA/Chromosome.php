@@ -42,7 +42,6 @@ use DatasDNA\Interfaces\ILuid_Generator;
 
 class Chromosome extends CCollection implements IDNA_Component, ILuid_Generator
 {
-
     private Luid $LUID;
 
     //  Constructeur avec typage strict

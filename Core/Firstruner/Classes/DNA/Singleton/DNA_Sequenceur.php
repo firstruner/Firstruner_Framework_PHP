@@ -63,7 +63,7 @@ class DNA_Sequenceur
     }
 
     // Empêche la sérialization/désérialization
-    private function __wakeup()
+    public function __wakeup()
     {
         throw new \Exception("Not authorized");
     }
