@@ -19,7 +19,7 @@
  * @author    Firstruner and Contributors <contact@firstruner.fr>
  * @copyright 2024-2026 Firstruner and Contributors
  * @license   Proprietary
- * @version 2.0.0
+ * @version 3.3.0
  */
 
 namespace System\IO\Directory\Versionning\Git;
@@ -199,7 +199,7 @@ final class GitRepository
 	public function getCurrentBranchName()
 	{
 		try {
-			$branch = $this->extractFromCommand(['branch', '-a', '--no-color'], function($value) {
+			$branch = $this->extractFromCommand(['branch', '-a', '--no-color'], function ($value) {
 				if (isset($value[0]) && $value[0] === '*') {
 					return trim(substr($value, 1));
 				}
@@ -210,7 +210,6 @@ final class GitRepository
 			if (is_array($branch)) {
 				return $branch[0];
 			}
-
 		} catch (GitException $e) {
 			// nothing
 		}
@@ -226,7 +225,7 @@ final class GitRepository
 	 */
 	public function getBranches()
 	{
-		return $this->extractFromCommand(['branch', '-a', '--no-color'], function($value) {
+		return $this->extractFromCommand(['branch', '-a', '--no-color'], function ($value) {
 			return trim(substr($value, 1));
 		});
 	}
@@ -239,7 +238,7 @@ final class GitRepository
 	 */
 	public function getRemoteBranches()
 	{
-		return $this->extractFromCommand(['branch', '-r', '--no-color'], function($value) {
+		return $this->extractFromCommand(['branch', '-r', '--no-color'], function ($value) {
 			return trim(substr($value, 1));
 		});
 	}
@@ -252,7 +251,7 @@ final class GitRepository
 	 */
 	public function getLocalBranches()
 	{
-		return $this->extractFromCommand(['branch', '--no-color'], function($value) {
+		return $this->extractFromCommand(['branch', '--no-color'], function ($value) {
 			return trim(substr($value, 1));
 		});
 	}
@@ -462,8 +461,10 @@ final class GitRepository
 		if (!($committerDate instanceof \DateTimeImmutable))
 			throw new GitException(
 				'Failed fetching of commit committer date.',
-				0, null, 
-				$result);
+				0,
+				null,
+				$result
+			);
 
 		return new Commit(
 			$commitId,
@@ -620,7 +621,8 @@ final class GitRepository
 				"Command '{$result->getCommand()}' failed (exit-code {$result->getExitCode()}).",
 				$result->getExitCode(),
 				null,
-				$result);
+				$result
+			);
 
 		return $result;
 	}

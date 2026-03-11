@@ -19,7 +19,7 @@
  * @author    Firstruner and Contributors <contact@firstruner.fr>
  * @copyright 2024-2026 Firstruner and Contributors
  * @license   Proprietary
- * @version 2.0.0
+ * @version 3.3.0
  */
 
 namespace System\Net;
@@ -110,9 +110,9 @@ class Http
       }
 
       public static function Site_URL(
-      ?string $path = _string::EmptyString,
-      ?string $scheme = null,
-      int $basePathDepth = 0
+            ?string $path = _string::EmptyString,
+            ?string $scheme = null,
+            int $basePathDepth = 0
       ): string {
             $env = getenv('SITE_URL');
             $base = ($env !== false && $env !== _string::EmptyString) ? $env : _string::EmptyString;
@@ -132,16 +132,16 @@ class Http
                   if (!empty($segments)) {
                         $last = end($segments);
                         if (strpos($last, '.') !== false) {
-                        array_pop($segments);
+                              array_pop($segments);
                         }
                   }
 
                   // Remonter de $basePathDepth niveaux
                   for ($i = 0; $i < $basePathDepth; $i++) {
                         if (!empty($segments)) {
-                        array_pop($segments);
+                              array_pop($segments);
                         } else {
-                        break;
+                              break;
                         }
                   }
 

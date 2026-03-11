@@ -19,11 +19,11 @@
  * @author    Firstruner and Contributors <contact@firstruner.fr>
  * @copyright 2024-2026 Firstruner and Contributors
  * @license   Proprietary
- * @version 2.0.0
+ * @version 3.3.0
  */
 
 header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
-header("Last-Modified: ".gmdate("D, d M Y H:i:s")." GMT");
+header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
 
 header("Cache-Control: no-store, no-cache, must-revalidate");
 header("Cache-Control: post-check=0, pre-check=0", false);

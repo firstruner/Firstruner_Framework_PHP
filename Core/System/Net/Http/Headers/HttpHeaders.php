@@ -19,7 +19,7 @@
  * @author    Firstruner and Contributors <contact@firstruner.fr>
  * @copyright 2024-2026 Firstruner and Contributors
  * @license   Proprietary
- * @version 2.0.0
+ * @version 3.3.0
  */
 
 namespace System\Net\Http\Headers;

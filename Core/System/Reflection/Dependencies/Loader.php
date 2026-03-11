@@ -23,7 +23,7 @@
  * @author    Firstruner and Contributors <contact@firstruner.fr>
  * @copyright 2024-2026 Firstruner and Contributors
  * @license   https://wikipedia.org/wiki/Freemium Freemium License
- * @version 2.0.0
+ * @version 3.3.0
  */
 
 namespace System\Reflection\Dependencies;
@@ -64,7 +64,7 @@ InitializePartialLoader();
 
 final class Loader
 {
-      public const LoaderVersion = "1.6";
+      public const LoaderVersion = "1.7";
 
       private static array $dependants = array();
       private static array $dependants_Loaded = array();
@@ -77,6 +77,7 @@ final class Loader
       private static array $escapesChars = ["/", "\\"];
       public static bool $debug = false;
       public static bool $passErrors = false;
+      public static bool $stackTrace = false;
 
       private const IndexFileName = "index.php";
       private const PartialsAttributesFileName = "PartialsAttributes.php";

@@ -19,11 +19,13 @@
  * @author    Firstruner and Contributors <contact@firstruner.fr>
  * @copyright 2024-2026 Firstruner and Contributors
  * @license   Proprietary
- * @version 2.0.0
+ * @version 3.3.0
  */
 
+// Définitions
 define("HOME_LOADER", __DIR__);
 
+// Requires
 foreach (glob(__DIR__ . '/Frameworks/LoadingLists/*.php') as $file)
     require_once $file;
 
@@ -33,13 +35,16 @@ require_once(__DIR__ . '/Frameworks/Framework_Tools.php');
 require_once(__DIR__ . '/Frameworks/Framework.php');
 require_once(__DIR__ . '/Frameworks/Framework_Symfony.php');
 
+// Using
 use Firstruner\Frameworks\Framework;
 use Firstruner\Frameworks\Framework_Symfony;
 
+// Variables de CLI
 $debug = false;
 $details = false;
 $includeFiles = false;
 $passErrors = false;
+$showStackTrace = false;
 
 /**
  * Exemple: ta logique de chargement.
@@ -47,12 +52,12 @@ $passErrors = false;
  *
  * @return string[] liste des fichiers réellement inclus
  */
-function do_loading(bool $details, bool $passErrors): array
+function do_loading(bool $details, bool $passErrors, bool $showStackTrace): array
 {
     $includedBefore = get_included_files();
 
     Framework::$VendorLoading = false;
-    Framework::Load(details: $details, passErrors: $passErrors);
+    Framework::Load(details: $details, passErrors: $passErrors, showStackTrace: $showStackTrace);
 
     Framework_Symfony::$VendorLoading = false;
     Framework_Symfony::Load();
@@ -77,6 +82,21 @@ if (isset($argv)) {
     $includeFiles = $flags->has('--includeFiles');
     $passErrors = $flags->has('--passErrors');
     $summary = $flags->has('--summary');
+    $showStackTrace = $flags->has('--stacktrace');
+
+    // Réduire le détail des erreurs si pas en Debug
+    if (!$showStackTrace) {
+        ini_set('display_errors', 0);
+        ini_set('log_errors', 1);
+        error_reporting(E_ALL);
+
+        // Gestionnaire d'exceptions
+        set_exception_handler(function ($e) {
+            error_log($e->getMessage());
+            http_response_code(500);
+            echo $e->getMessage();
+        });
+    }
 
     if ($flags->has('--help') || $flags->has('--h')) {
         echo
@@ -84,6 +104,7 @@ if (isset($argv)) {
             "  --help / --h     Affiche l'aide" . PHP_EOL .
             "  --summary        Affiche un récapitulatif du chargement" . PHP_EOL .
             "  --debug          Affiche un diagnostique rapide" . PHP_EOL .
+            "  --stacktrace     Affiche la Stack Trace en cas d'exception" . PHP_EOL .
             "  --details        Affiche le détails des chargements" . PHP_EOL .
             "  --includeFiles   Affiche la liste des fichiers chargés" . PHP_EOL .
             "  --passErrors     Outrepasse les erreurs de chargement" . PHP_EOL .
@@ -98,15 +119,14 @@ if (isset($argv)) {
     $beforeLoading = snapshot_declared();
 }
 
-$loadedFiles = do_loading($details, $passErrors);
+$loadedFiles = do_loading($details, $passErrors, $showStackTrace);
 $report = new LoaderReport();
 
 if (isset($argv)) {
     $afterLoading = snapshot_declared();
     $report = diff_snapshot($beforeLoading, $afterLoading);
 
-    if ($debug)
-    {
+    if ($debug) {
         if ($includeFiles) {
             echo PHP_EOL . "[Debug] Fichiers inclus (" . count($loadedFiles) . ")\n";
             echo "-------------------------\n";

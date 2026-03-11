@@ -19,18 +19,33 @@
  * @author    Firstruner and Contributors <contact@firstruner.fr>
  * @copyright 2024-2026 Firstruner and Contributors
  * @license   Proprietary
- * @version 2.0.0
+ * @version 3.3.0
  */
-
-use Firstruner\Cryptography\EncryptDecryptModule;
-use System\Security\Cryptography\EncryptionMode;
 
 require_once('./loader.php');
 
-$edm = new EncryptDecryptModule();
-$enc_val = $edm->Encrypt(
-       "Welcome to the real world !",
-       EncryptionMode::AES_Value);
-      
-print_r($enc_val->ByteValue());
+use System\Reflection\DelegateValidator;
+use System\Attributes\Delegate;
 
+interface OwnDelegates
+{
+       public function MaFonction(string $a, string $b): void;
+}
+
+class Test
+{
+       #[Delegate(OwnDelegates::class, 'MaFonction')]
+       public function monTest(string $a, string $b): void
+       {
+              // Do anything
+       }
+
+       #[Delegate(OwnDelegates::class, 'MaFonction')]
+       public function monTestPourri(string $a): void
+       {
+              // Do anything too
+       }
+}
+
+DelegateValidator::Validate(Test::class);
+echo "Validation OK";

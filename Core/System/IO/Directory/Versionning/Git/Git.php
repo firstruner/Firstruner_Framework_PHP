@@ -19,7 +19,7 @@
  * @author    Firstruner and Contributors <contact@firstruner.fr>
  * @copyright 2024-2026 Firstruner and Contributors
  * @license   Proprietary
- * @version 2.0.0
+ * @version 3.3.0
  */
 
 namespace System\IO\Directory\Versionning\Git;
@@ -81,7 +81,6 @@ final class Git
 				'--end-of-options',
 				$directory
 			]);
-
 		} catch (GitException $e) {
 			throw new GitException("Git init failed (directory $directory).", $e->getCode(), $e);
 		}
@@ -109,8 +108,7 @@ final class Git
 		if ($directory === null) {
 			$directory = Helpers::ExtractRepositoryNameFromUrl($url);
 			$directory = "$cwd/$directory";
-
-		} elseif(!Helpers::IsAbsolute($directory)) {
+		} elseif (!Helpers::IsAbsolute($directory)) {
 			$directory = "$cwd/$directory";
 		}
 
@@ -126,7 +124,6 @@ final class Git
 				$url,
 				$directory
 			]);
-
 		} catch (GitException $e) {
 			$stderr = '';
 			$result = $e->GetProcessResult();
@@ -180,36 +177,39 @@ final class Git
 				"Command '{$result->getCommand()}' failed (exit-code {$result->getExitCode()}).",
 				$result->getExitCode(),
 				null,
-				$result);
+				$result
+			);
 
 		return $result;
 	}
 
-      public static function GetBranch(): ?string
-      {
-            $gitDir = __DIR__ . '/.git';
+	public static function GetBranch(): ?string
+	{
+		$gitDir = __DIR__ . '/.git';
 
-            if (!is_dir($gitDir))
-                  return null;
+		if (!is_dir($gitDir))
+			return null;
 
-            $headFile = $gitDir . '/HEAD';
+		$headFile = $gitDir . '/HEAD';
 
-            if (!file_exists($headFile))
-                  return null;
+		if (!file_exists($headFile))
+			return null;
 
-            $headContent = trim(file_get_contents($headFile));
+		$headContent = trim(file_get_contents($headFile));
 
-            if (preg_match(
-                  AppStaticParams::Git_Branch,
-                  $headContent,
-                  $matches))
-                  return $matches[1];
+		if (preg_match(
+			AppStaticParams::Git_Branch,
+			$headContent,
+			$matches
+		))
+			return $matches[1];
 
-            if (preg_match(
-                  AppStaticParams::Git_DetachedBranch,
-                  $headContent))
-                  return 'detached (' . substr($headContent, 0, 7) . ')';
+		if (preg_match(
+			AppStaticParams::Git_DetachedBranch,
+			$headContent
+		))
+			return 'detached (' . substr($headContent, 0, 7) . ')';
 
-            return null;
-      }
+		return null;
+	}
 }

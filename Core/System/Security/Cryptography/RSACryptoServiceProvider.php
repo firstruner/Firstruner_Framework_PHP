@@ -19,7 +19,7 @@
  * @author    Firstruner and Contributors <contact@firstruner.fr>
  * @copyright 2024-2026 Firstruner and Contributors
  * @license   Proprietary
- * @version 2.0.0
+ * @version 3.3.0
  */
 
 namespace System\Security\Cryptography;
@@ -100,7 +100,7 @@ final class RSACryptoServiceProvider
             'private_key_type' => OPENSSL_KEYTYPE_RSA,
             'config' => $this->openssl_configfile,
         ];
-        
+
         $res = openssl_pkey_new($config);
 
         if ($res === false)
