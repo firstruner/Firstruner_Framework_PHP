@@ -19,7 +19,7 @@
  * @author    Firstruner and Contributors <contact@firstruner.fr>
  * @copyright 2024-2026 Firstruner and Contributors
  * @license   Proprietary
- * @version 2.0.0
+ * @version 3.3.0
  */
 
 use Firstruner\Frameworks\Framework;
@@ -87,72 +87,63 @@ final class LoaderReport
         }
     }
 
-    private function padText(string $texte) : string
+    private function padText(string $texte): string
     {
         $width = 36; // largeur interne EXACTE entre ║ et ║ (d'après ton cadre)
         return $this->empty_space . "║" . $this->mb_str_pad($texte, $width) . "║";
     }
 
-    private function printLogo() : string
+    private function printLogo(): void
     {
-        return "                                      
+        $logo = "                                      
                                                                                 
                     ███████████████████████████████████████████                 
                     ███████████████████████████████████████████                 
-                             ██████████████████████████████████                 
-                             ██████████████████████████████████                 
-                 █████████   ██████████████████████████████████                 
-                 █████████   ██████████████████████████████████                 
-                 █████████   ██████████████████████████████████                 
-                 █████████   █████                                              
-                 █████████   █████                                              
-                 █████████   █████                                              
-                 █████████   █████                                              
-                 █████████   █████                                              
-                 █████████   █████                                              
-                 █████████   █████                                              
-                 █████████                                                      
-                 █████████                                                      
-                 █████████████████████████████████████                          
-                 ████████████████████████████████████                           
-                 ███████████████████████████████████                            
-                 ██████████████████████████████████                             
-                 ██████████████████████████████████                             
-                 █████████████████████████████████                              
-                 ████████████████████████████████                               
-                 █████████████                                                  
-                 █████████████                                                  
-                 █████████████                                                  
-                 █████████████                                                  
-                 █████████████                                                  
-                 █████████████                                                  
-                 █████████████                                                  
-                 █████████████                                                  
-                 █████████████                                                  
-                 █████████████                                                  ";
+                            ██████████████████████████████████                 
+                            ██████████████████████████████████                 
+                █████████   ██████████████████████████████████                 
+                █████████   ██████████████████████████████████                 
+                █████████   ██████████████████████████████████                 
+                █████████   █████                                              
+                █████████   █████                                              
+                █████████   █████                                              
+                █████████   █████                                              
+                █████████   █████                                              
+                █████████   █████                                              
+                █████████   █████                                              
+                █████████                                                      
+                █████████                                                      
+                █████████████████████████████████████                          
+                ████████████████████████████████████                           
+                ███████████████████████████████████                            
+                ██████████████████████████████████                             
+                ██████████████████████████████████                             
+                █████████████████████████████████                              
+                ████████████████████████████████                               
+                █████████████                                                  
+                █████████████                                                  
+                █████████████                                                  
+                █████████████                                                  
+                █████████████                                                  
+                █████████████                                                  
+                █████████████                                                  
+                █████████████                                                  
+                █████████████                                                  
+                █████████████                                                  ";
+
+        echo $logo;
     }
 
-    public function printSummary(bool $debug): void
+    private function print_Title(): void
     {
-        $error_icon = Framework_Tools::IsCLI() ? "▲" : "🔺";
-        $valid_icon = Framework_Tools::IsCLI() ? "☺" : "🟢";
+        echo PHP_EOL . PHP_EOL . PHP_EOL .
+            $this->empty_space . "╔════════════════════════════════════╗" . PHP_EOL .
+            $this->empty_space . "║              SUMMARY               ║" . PHP_EOL .
+            $this->empty_space . "╚════════════════════════════════════╝" . PHP_EOL . PHP_EOL;
+    }
 
-        if ($debug)
-        {
-            $this->printList("Classes", $this->classes);
-            $this->printList("Interfaces", $this->interfaces);
-            $this->printList("Traits", $this->traits);
-            $this->printList("Enums", $this->enums);
-            $this->printList("Fonctions", $this->functions);
-        }
-
-        echo $this->printLogo();
-
-        echo PHP_EOL . PHP_EOL . PHP_EOL . 
-             $this->empty_space . "╔════════════════════════════════════╗" . PHP_EOL .
-             $this->empty_space . "║              SUMMARY               ║" . PHP_EOL .
-             $this->empty_space . "╚════════════════════════════════════╝" . PHP_EOL . PHP_EOL;
-
+    private function print_SysInfos(): void
+    {
         echo $this->empty_space . "╔════════════════════════════════════╗" . PHP_EOL;
         echo $this->empty_space . "║ System informations                ║" . PHP_EOL;
         echo $this->empty_space . "╟────────────────────────────────────╢" . PHP_EOL;
@@ -163,7 +154,10 @@ final class LoaderReport
         echo $this->padText("Branch name           : " . $this->getGitBranch()) . PHP_EOL;
         echo $this->padText("Framework version     : " . Framework::FrameworkVersion) . PHP_EOL;
         echo $this->empty_space . "╚════════════════════════════════════╝" . PHP_EOL . PHP_EOL;
+    }
 
+    private function print_SummaryElements(): void
+    {
         echo $this->empty_space . "╔════════════════════════════════════╗" . PHP_EOL;
         echo $this->empty_space . "║ Chargements détectés               ║" . PHP_EOL;
         echo $this->empty_space . "╟────────────────────────────────────╢" . PHP_EOL;
@@ -173,13 +167,23 @@ final class LoaderReport
         echo $this->padText("Enums      : " . count($this->enums)) . PHP_EOL;
         echo $this->padText("Fonctions  : " . count($this->functions)) . PHP_EOL;
         echo $this->empty_space . "╚════════════════════════════════════╝" . PHP_EOL . PHP_EOL;
+    }
 
+    private function print_LoaderProperties(): void
+    {
         echo $this->empty_space . "╔════════════════════════════════════╗" . PHP_EOL;
         echo $this->empty_space . "║ Propriétés du Loader               ║" . PHP_EOL;
         echo $this->empty_space . "╟────────────────────────────────────╢" . PHP_EOL;
-        echo $this->padText("Debug      : " . (Loader::$debug ? "Activé" : "Désactivé")) . PHP_EOL;
-        echo $this->padText("Erreurs    : " . (Loader::$passErrors ? "Non gérées" : "Gérées")) . PHP_EOL;
+        echo $this->padText("Debug          : " . (Loader::$debug ? "Activé" : "Désactivé")) . PHP_EOL;
+        echo $this->padText("Erreurs        : " . (Loader::$passErrors ? "Non gérées" : "Gérées")) . PHP_EOL;
+        echo $this->padText("Stack Trace    : " . (Loader::$stackTrace ? "Affichée" : "Masquée")) . PHP_EOL;
         echo $this->empty_space . "╚════════════════════════════════════╝" . PHP_EOL . PHP_EOL;
+    }
+
+    private function print_LoaderStatus(): void
+    {
+        $error_icon = Framework_Tools::IsCLI() ? "▲" : "🔺";
+        $valid_icon = Framework_Tools::IsCLI() ? "☺" : "🟢";
 
         echo ((!Framework::IsLoaded())
             ? $error_icon . " FIRSTRUNER FRAMEWORK : LOADER FAILURE !"
@@ -188,20 +192,38 @@ final class LoaderReport
         echo ((!Framework_Symfony::IsLoaded())
             ? $error_icon . " SYMFONY FRAMEWORK : LOADER FAILURE !"
             : $valid_icon . " SYMFONY FRAMEWORK : Ok") . PHP_EOL;
-
-        echo " " . PHP_EOL;
     }
 
     /**
      * @param string[] $items
      */
-    private function printList(string $title, array $items): void
+    private function print_itemList(string $title, array $items): void
     {
         echo PHP_EOL . $title . " (" . count($items) . ")\n";
         echo str_repeat("-", mb_strlen($title) + 6) . "\n";
         sort($items, SORT_STRING);
-        foreach ($items as $name) {
+
+        foreach ($items as $name)
             echo $this->empty_space . " - " . $name . PHP_EOL;
+    }
+
+    public function printSummary(bool $debug): void
+    {
+        if ($debug) {
+            $this->print_itemList("Classes", $this->classes);
+            $this->print_itemList("Interfaces", $this->interfaces);
+            $this->print_itemList("Traits", $this->traits);
+            $this->print_itemList("Enums", $this->enums);
+            $this->print_itemList("Fonctions", $this->functions);
         }
+
+        $this->printLogo();
+        $this->print_Title();
+        $this->print_SysInfos();
+        $this->print_SummaryElements();
+        $this->print_LoaderProperties();
+        $this->print_LoaderStatus();
+
+        echo " " . PHP_EOL;
     }
 }

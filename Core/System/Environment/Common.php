@@ -19,7 +19,7 @@
  * @author    Firstruner and Contributors <contact@firstruner.fr>
  * @copyright 2024-2026 Firstruner and Contributors
  * @license   Proprietary
- * @version 2.0.0
+ * @version 3.3.0
  */
 
 namespace System\Environment;
@@ -46,11 +46,11 @@ abstract class Common
             switch ($last) {
                   // The 'G' modifier is available
                   case 'g':
-                  $val *= 1024;
+                        $val *= 1024;
                   case 'm':
-                  $val *= 1024;
+                        $val *= 1024;
                   case 'k':
-                  $val *= 1024;
+                        $val *= 1024;
             }
 
             return $val;

@@ -19,7 +19,7 @@
  * @author    Firstruner and Contributors <contact@firstruner.fr>
  * @copyright 2024-2026 Firstruner and Contributors
  * @license   Proprietary
- * @version 2.0.0
+ * @version 3.3.0
  */
 
 namespace Firstruner\Frameworks;
@@ -35,7 +35,7 @@ use const Firstruner\Frameworks\LoadingLists\DNA\Firstruner_Framework_DNAClasses
 
 class Framework
 {
-      public const FrameworkVersion = "3.2.7";
+      public const FrameworkVersion = "3.3.0";
 
       public static bool $VendorLoading = true;
 
@@ -45,7 +45,7 @@ class Framework
             return Framework::$loaded;
       }
 
-      public static function Load(bool $reload = false, bool $details = false, bool $passErrors = false)
+      public static function Load(bool $reload = false, bool $details = false, bool $passErrors = false, bool $showStackTrace = false)
       {
             if ($reload) {
                   // TODO: Reload fonction
@@ -60,6 +60,7 @@ class Framework
 
             Loader::$debug = $details;
             Loader::$passErrors = $passErrors;
+            Loader::$stackTrace = $showStackTrace;
 
             if (Framework::$VendorLoading) {
                   if (!class_exists("FPDF")) Loader::Load(HOME_LOADER . '/Core/System/Printing/fpdf/fpdf.php');

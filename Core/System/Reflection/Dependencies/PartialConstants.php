@@ -23,7 +23,7 @@
  * @author    Firstruner and Contributors <contact@firstruner.fr>
  * @copyright 2024-2026 Firstruner and Contributors
  * @license   https://wikipedia.org/wiki/Freemium Freemium License
- * @version 2.0.0
+ * @version 3.3.0
  */
 
 namespace System\Reflection\Dependencies;

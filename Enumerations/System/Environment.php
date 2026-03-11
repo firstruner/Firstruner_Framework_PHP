@@ -19,7 +19,7 @@
  * @author    Firstruner and Contributors <contact@firstruner.fr>
  * @copyright 2024-2026 Firstruner and Contributors
  * @license   Proprietary
- * @version 2.0.0
+ * @version 3.3.0
  */
 
 namespace System;
@@ -39,6 +39,6 @@ abstract class Environment
     public const DebugTag = "debug";
 
     public const OS_AutoDetect = 0x20000;
-	public const OS_Windows = 0x20100;
-	public const OS_NonWindows = 0x20200;
+    public const OS_Windows = 0x20100;
+    public const OS_NonWindows = 0x20200;
 }

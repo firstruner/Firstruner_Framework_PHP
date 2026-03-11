@@ -19,14 +19,14 @@
  * @author    Firstruner and Contributors <contact@firstruner.fr>
  * @copyright 2024-2026 Firstruner and Contributors
  * @license   Proprietary
- * @version 2.0.0
+ * @version 3.3.0
  */
 
 namespace Firstruner\Frameworks;
 
 class Framework_Tools
 {
-      public static function IsCLI() : bool
+      public static function IsCLI(): bool
       {
             return (PHP_SAPI === 'cli');
       }
@@ -35,16 +35,14 @@ class Framework_Tools
       {
             $matches = [];
 
-            foreach (get_declared_classes() as $fqcn)
-            {
+            foreach (get_declared_classes() as $fqcn) {
                   $shortName = (new \ReflectionClass($fqcn))->getShortName();
 
                   if (stripos($shortName, $className) !== false)
                         $matches[] = $fqcn; // on retourne le FQCN complet
             }
 
-            if (count($matches) == 0)
-            {
+            if (count($matches) == 0) {
                   echo "/!\ La classe {$className} n'est pas chargée.";
                   return;
             }
@@ -67,15 +65,12 @@ class Framework_Tools
             echo "Namespace : " . $ref->getNamespaceName() . "\n";
             echo "Fichier : " . $ref->getFileName() . "\n";
             echo "Type : " . (
-                        $ref->isEnum() ? 'Enum' :
-                        ($ref->isInterface() ? 'Interface' :
-                        ($ref->isTrait() ? 'Trait' : 'Class'))
-                  ) . "\n\n";
+                  $ref->isEnum() ? 'Enum' : ($ref->isInterface() ? 'Interface' : ($ref->isTrait() ? 'Trait' : 'Class'))
+            ) . "\n\n";
 
             // ===== CONSTANTES =====
             echo "===== CONSTANTES =====\n";
-            foreach ($ref->getReflectionConstants() as $const)
-            {
+            foreach ($ref->getReflectionConstants() as $const) {
                   echo $const->getName() . ' = ';
                   var_export($const->getValue());
                   echo "\n";
@@ -99,8 +94,7 @@ class Framework_Tools
 
             // ===== PROPRIÉTÉS =====
             echo "\n===== PROPRIÉTÉS =====\n";
-            foreach ($ref->getProperties() as $prop)
-            {
+            foreach ($ref->getProperties() as $prop) {
                   echo implode(' ', \Reflection::getModifierNames($prop->getModifiers())) . ' ';
                   echo '$' . $prop->getName();
 
@@ -112,14 +106,12 @@ class Framework_Tools
 
             // ===== MÉTHODES =====
             echo "\n===== MÉTHODES =====\n";
-            foreach ($ref->getMethods() as $method)
-            {
+            foreach ($ref->getMethods() as $method) {
                   echo implode(' ', \Reflection::getModifierNames($method->getModifiers())) . ' ';
                   echo $method->getName() . '(';
 
                   $params = [];
-                  foreach ($method->getParameters() as $param)
-                  {
+                  foreach ($method->getParameters() as $param) {
                         $paramStr = '';
 
                         if ($param->hasType())

@@ -19,7 +19,7 @@
  * @author    Firstruner and Contributors <contact@firstruner.fr>
  * @copyright 2024Firstruner and Contributors
  * @license   Proprietary
- * @version 2.0.0
+ * @version 3.3.0
  */
 
 namespace PrestaShop\Config;
@@ -30,9 +30,11 @@ abstract class Paths
       {
             $dir = realpath($startDir);
             for ($i = 0; $i < 12 && $dir; $i++) {
-                  if (is_dir($dir . '/config')
+                  if (
+                        is_dir($dir . '/config')
                         && (file_exists($dir . '/config/settings.inc.php')
-                              || file_exists($dir . '/app/config/parameters.php'))) {
+                              || file_exists($dir . '/app/config/parameters.php'))
+                  ) {
                         return $dir;
                   }
                   $parent = dirname($dir);

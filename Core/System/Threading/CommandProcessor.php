@@ -19,7 +19,7 @@
  * @author    Firstruner and Contributors <contact@firstruner.fr>
  * @copyright 2024-2026 Firstruner and Contributors
  * @license   Proprietary
- * @version 2.0.0
+ * @version 3.3.0
  */
 
 namespace System\Threading;
@@ -41,19 +41,16 @@ class CommandProcessor
 	{
 		if ($mode === Environment::OS_NonWindows) {
 			$this->isWindows = FALSE;
-
 		} elseif ($mode === Environment::OS_Windows) {
 			$this->isWindows = TRUE;
-
 		} elseif ($mode === Environment::OS_AutoDetect) {
 			$this->isWindows = strtoupper(substr(PHP_OS, 0, 3)) === 'WIN';
-
 		} else {
 			throw new \InvalidArgumentException("Invalid mode '$mode'.");
 		}
 	}
 
-		/**
+	/**
 	 * @param  string $app
 	 * @param  array<mixed> $args
 	 * @param  array<string, scalar>|null $env
@@ -74,21 +71,17 @@ class CommandProcessor
 
 					if (is_bool($value)) {
 						$value = $value ? '1' : '0';
-
 					} elseif ($value === null) {
 						// ignored
 						continue;
-
 					} elseif (!is_scalar($value)) {
 						throw new InvalidStateException('Unknow option value type ' . (is_object($value) ? get_class($value) : gettype($value)) . '.');
 					}
 
 					$cmd[] = $_c . $this->escapeArgument((string) $value);
 				}
-
 			} elseif (is_scalar($arg) && !is_bool($arg)) {
 				$cmd[] = $this->escapeArgument((string) $arg);
-
 			} elseif ($arg === null) {
 				// ignored
 
@@ -103,7 +96,6 @@ class CommandProcessor
 			foreach ($env as $envVar => $envValue) {
 				if ($this->isWindows) {
 					$envPrefix .= 'set ' . $envVar . '=' . $envValue . ' && ';
-
 				} else {
 					$envPrefix .= $envVar . '=' . $envValue . ' ';
 				}

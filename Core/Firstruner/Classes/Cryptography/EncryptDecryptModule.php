@@ -19,7 +19,7 @@
  * @author    Firstruner and Contributors <contact@firstruner.fr>
  * @copyright 2024-2026 Firstruner and Contributors
  * @license   Proprietary
- * @version 2.0.0
+ * @version 3.3.0
  */
 
 namespace Firstruner\Cryptography;
@@ -92,11 +92,10 @@ final class EncryptDecryptModule
             array|string|null $keys = null,
             string|int $encryption = -1,
             ?SecureString $securePassword = null,
-            string $OpenSSLConfigFile = _string::EmptyString)
-      {
+            string $OpenSSLConfigFile = _string::EmptyString
+      ) {
             $this->openSSLConfigFile = $OpenSSLConfigFile;
-            if ($OpenSSLConfigFile != _string::EmptyString)
-            {
+            if ($OpenSSLConfigFile != _string::EmptyString) {
                   if (!File::Exists($OpenSSLConfigFile))
                         throw new IOException("Fichier $OpenSSLConfigFile introuvable");
 
@@ -107,7 +106,8 @@ final class EncryptDecryptModule
 
             if (($keys == null)
                   && ($encryption < 0)
-                  && ($securePassword == null))
+                  && ($securePassword == null)
+            )
                   $this->init_ByArray([]);
 
             if (gettype($keys) == _array::ClassName)
@@ -231,8 +231,7 @@ final class EncryptDecryptModule
       {
             $i = $this->k;
 
-            if ($mode == EncryptionMode::MD5_Value)
-            {
+            if ($mode == EncryptionMode::MD5_Value) {
                   $i = (new Random())->Next(0, count($this->CryptoKeys) - 1);
 
                   if ($this->_LockKey && ($this->k >= 0))
@@ -254,7 +253,7 @@ final class EncryptDecryptModule
                               return new CryptedValue(
                                     $this->MD5_Encrypt($value, $i, true),
                                     $i
-                                    );
+                              );
 
                         case EncryptionMode::RSA_Value:
                               return new CryptedValue($this->RSA_EncryptFromString($value), 0);
@@ -770,7 +769,8 @@ final class EncryptDecryptModule
             $cspParams->ProviderType(1);
             $rsaProvider = new RSACryptoServiceProvider(
                   $this->openSSLConfigFile,
-                  $cspParams::KeySize);
+                  $cspParams::KeySize
+            );
 
             $rsaProvider->ImportCspBlob(System_String::FromBase64($privateKey));
 
@@ -1009,8 +1009,9 @@ final class EncryptDecryptModule
                   EncryptionMode::AES_256_ProtocolName,
                   $rijAlg->Key(),
                   $rijAlg->IV(),
-                  CryptoStreamMode::Write);
-            
+                  CryptoStreamMode::Write
+            );
+
             $csEncrypt->Write($plainText);
 
             // récupère les bytes chiffrés
