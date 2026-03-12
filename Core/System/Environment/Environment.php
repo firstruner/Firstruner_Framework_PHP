@@ -30,7 +30,7 @@
  * @Update on : 12/03/2026 by : Christophe BOULAS
  */
 
-namespace System;
+namespace System\Environment;
 
 use System\Collections\Dictionary;
 use System\Collections\KeyValuePair;
@@ -38,7 +38,7 @@ use System\Default\_string;
 use System\Exceptions\IOException;
 use System\Exceptions\NotImplementedException;
 
-class Environment
+class Variables
 {
       private static ?Dictionary $values = null;
 
@@ -64,7 +64,7 @@ class Environment
       {
             $envPath = HOME_LOADER . '.env';
 
-            if (Environment::$values != null)
+            if (Variables::$values != null)
                   return;
 
             if (!file_exists($envPath)) 
@@ -76,15 +76,15 @@ class Environment
                   throw new IOException("Error on load .env file");
             }
 
-            Environment::$values = new Dictionary();
+            Variables::$values = new Dictionary();
 
             foreach ($lines as $line)
             {
-                  if (Environment::isNotVariable($line))
+                  if (Variables::isNotVariable($line))
                         continue;
 
-                  $lineSplitted = explode('=', Environment::sanitizeLine($line));
-                  Environment::$values->Add(
+                  $lineSplitted = explode('=', Variables::sanitizeLine($line));
+                  Variables::$values->Add(
                         new KeyValuePair(
                               trim($lineSplitted[0], "\"'"),
                               trim($lineSplitted[1], "\"'")
@@ -94,12 +94,12 @@ class Environment
 
       public static function Get(string $variableName, $defaultValue = null): ?string
       {
-            Environment::readEnvFile();
+            Variables::readEnvFile();
 
-            if (!Environment::Exists($variableName))
+            if (!Variables::Exists($variableName))
                   return $defaultValue;
 
-            return Environment::$values->GetByKey($variableName)->Value;
+            return Variables::$values->GetByKey($variableName)->Value;
       }
 
       public static function Set(string $variableName, string $value): void
@@ -109,8 +109,8 @@ class Environment
 
       public static function Exists(string $variableName): bool
       {
-            Environment::readEnvFile();
+            Variables::readEnvFile();
 
-            return (Environment::$values->Exists($variableName));
+            return (Variables::$values->Exists($variableName));
       }
 }
