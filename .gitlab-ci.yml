@@ -137,17 +137,20 @@ push_to_partial_php:
 
     - |
       while IFS= read -r file || [ -n "$file" ]; do
-        file=$(printf '%s' "$file" | tr -d '\r')
+        file=$(printf '%s' "$file" | tr -d '\r' | sed 's#\\#/#g')
         [ -z "$file" ] && continue
         case "$file" in \#*) continue ;; esac
 
-        if [ ! -e "$file" ]; then
-          echo "Fichier introuvable dans la whitelist: [$file]"
+        src="./$file"
+        src=$(printf '%s' "$src" | sed 's#^\./\./#./#')
+
+        if [ ! -e "$src" ]; then
+          echo "Fichier introuvable dans la whitelist: [$file] -> [$src]"
           exit 1
         fi
 
         mkdir -p "/tmp/exported-files/$(dirname "$file")"
-        cp "$file" "/tmp/exported-files/$file"
+        cp "$src" "/tmp/exported-files/$file"
       done < ./Frameworks/github_partialclass_list.dat
 
     - rsync -av --delete /tmp/exported-files/ /tmp/target-repo/
