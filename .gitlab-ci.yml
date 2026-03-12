@@ -136,8 +136,16 @@ push_to_partial_php:
     - git clone --depth 1 --branch "$TARGET_BRANCH" "$TARGET_REPO" /tmp/target-repo
 
     - |
-      while IFS= read -r file; do
+      while IFS= read -r file || [ -n "$file" ]; do
+        file=$(printf '%s' "$file" | tr -d '\r')
         [ -z "$file" ] && continue
+        case "$file" in \#*) continue ;; esac
+
+        if [ ! -e "$file" ]; then
+          echo "Fichier introuvable dans la whitelist: [$file]"
+          exit 1
+        fi
+
         mkdir -p "/tmp/exported-files/$(dirname "$file")"
         cp "$file" "/tmp/exported-files/$file"
       done < ./Frameworks/github_partialclass_list.dat
