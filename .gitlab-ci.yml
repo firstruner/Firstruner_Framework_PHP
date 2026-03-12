@@ -110,6 +110,50 @@ push_to_github:
     - find . -maxdepth 3 -type f -name "*push*github*.sh" -print
     - bash ./pushtogithub.sh
 
+push_to_partial_php:
+  stage: External_Pushs
+  image: alpine:3.20
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
+      when: on_success
+      allow_failure: true
+    - when: manual
+      allow_failure: true
+  variables:
+    GIT_TERMINAL_PROMPT: "0"
+    TARGET_BRANCH: "main"
+    TARGET_REPO: "https://${GITHUB_USER}:${GITHUB_TOKEN}@github.com/firstruner/Framework_PHP_PartialsClass.git"
+  before_script:
+    - apk add --no-cache git bash rsync
+    - test -n "$GITHUB_USER"
+    - test -n "$GITHUB_TOKEN"
+    - test -f ./Frameworks/github_partialclass_list.dat
+    - git config --global user.name "Firstruner"
+    - git config --global user.email "contact@firstruner.fr"
+  script:
+    - rm -rf /tmp/target-repo /tmp/exported-files
+    - mkdir -p /tmp/exported-files
+    - git clone --depth 1 --branch "$TARGET_BRANCH" "$TARGET_REPO" /tmp/target-repo
+
+    - |
+      while IFS= read -r file; do
+        [ -z "$file" ] && continue
+        mkdir -p "/tmp/exported-files/$(dirname "$file")"
+        cp "$file" "/tmp/exported-files/$file"
+      done < ./Frameworks/github_partialclass_list.dat
+
+    - rsync -av --delete /tmp/exported-files/ /tmp/target-repo/
+
+    - cd /tmp/target-repo
+    - |
+      if [ -n "$(git status --porcelain)" ]; then
+        git add .
+        git commit -m "Fixing from Firstruner Framework PHP https://github.com/firstruner/Firstruner_Framework_PHP"
+        git push origin "$TARGET_BRANCH"
+      else
+        echo "Aucun changement à pousser"
+      fi
+
 discord_notify:
   stage: Notifications
   extends: .discord_notify_template
