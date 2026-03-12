@@ -137,29 +137,32 @@ push_to_partial_php:
 
     - |
       while IFS= read -r file || [ -n "$file" ]; do
-        file=$(printf '%s' "$file" | tr -d '\r' | sed 's#\\#/#g')
+        raw="$file"
+        file=$(printf '%s' "$file" | tr -d '\r' | sed 's#\\#/#g' | sed 's#^\./##')
         [ -z "$file" ] && continue
         case "$file" in \#*) continue ;; esac
 
         src="./$file"
-        src=$(printf '%s' "$src" | sed 's#^\./\./#./#')
+        dst="/tmp/exported-files/$file"
 
         if [ ! -e "$src" ]; then
-          echo "Fichier introuvable dans la whitelist: [$file] -> [$src]"
+          echo "Fichier introuvable dans la whitelist: [$raw] -> [$src]"
           exit 1
         fi
 
-        mkdir -p "/tmp/exported-files/$(dirname "$file")"
-        cp "$src" "/tmp/exported-files/$file"
+        mkdir -p "$(dirname "$dst")"
+        cp "$src" "$dst"
       done < ./Frameworks/github_partialclass_list.dat
 
-    - rsync -av --delete /tmp/exported-files/ /tmp/target-repo/
+    - rsync -av --delete --exclude='.git' /tmp/exported-files/ /tmp/target-repo/
 
     - cd /tmp/target-repo
+    - test -d .git
     - |
-      if [ -n "$(git status --porcelain)" ]; then
+      git status --porcelain >/tmp/git_status.out
+      if [ -s /tmp/git_status.out ]; then
         git add .
-        git commit -m "Fixing from Firstruner Framework PHP https://github.com/firstruner/Firstruner_Framework_PHP"
+        git commit -m "Selective sync from ${CI_PROJECT_PATH} @ ${CI_COMMIT_SHORT_SHA}"
         git push origin "$TARGET_BRANCH"
       else
         echo "Aucun changement à pousser"
