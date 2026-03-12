@@ -49,3 +49,5 @@ class Test
 
 DelegateValidator::Validate(Test::class);
 echo "Validation OK";
+
+// Kikoo
