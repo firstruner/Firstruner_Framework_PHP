@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+FILE="src/Framework.php"
+
+if [ -f "$FILE" ]; then
+    CURRENT=$(grep -oP 'FrameworkVersion\s*=\s*"\K[0-9]+\.[0-9]+\.[0-9]+' "$FILE")
+
+    IFS='.' read -r MAJOR MINOR PATCH <<< "$CURRENT"
+
+    PATCH=$((PATCH+1))
+
+    NEW="$MAJOR.$MINOR.$PATCH"
+
+    sed -i "s/FrameworkVersion = \"$CURRENT\"/FrameworkVersion = \"$NEW\"/" "$FILE"
+
+    echo "FrameworkVersion bumped: $CURRENT -> $NEW"
+fi

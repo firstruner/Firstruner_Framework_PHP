@@ -1,10 +1,6 @@
-<# 
-Interactive commit helper + tag management
-#>
+Clear-Host
 
-clear
-
-function Ask-YesNo {
+function Ask_YesNo {
   param(
     [Parameter(Mandatory=$true)][string]$Question,
     [bool]$DefaultYes = $true
@@ -24,7 +20,7 @@ function Ask-YesNo {
   }
 }
 
-function Ask-PullLevel {
+function Ask_PullLevel {
   $choices = @(
     @{ key="0"; value="";                     label="Rien (par défaut)" },
     @{ key="1"; value="recommended_pull";      label="Pull recommandé" },
@@ -56,10 +52,10 @@ while ([string]::IsNullOrWhiteSpace($baseMessage)) {
   $baseMessage = (Read-Host "Message de commit").Trim()
 }
 
-$doNotify   = Ask-YesNo "Notifier ?" $true
-$doTests    = Ask-YesNo "Lancer les tests unitaires ?" $true
-$doTransfer = Ask-YesNo "Transférer vers GitHub ?" $true
-$pullLevel  = Ask-PullLevel
+$doNotify   = Ask_YesNo "Notifier ?" $true
+$doTests    = Ask_YesNo "Lancer les tests unitaires ?" $true
+$doTransfer = Ask_YesNo "Transférer vers GitHub ?" $true
+$pullLevel  = Ask_PullLevel
 
 $tokens = @()
 if (-not $doNotify)   { $tokens += "no_notify" }
@@ -75,7 +71,7 @@ if ($tokens.Count -gt 0) {
 Write-Host "`nMessage final :"
 Write-Host "  $finalMessage`n"
 
-# if (Ask-YesNo "Faire le commit maintenant ?" $false) {
+# if (Ask_YesNo "Faire le commit maintenant ?" $false) {
 git add .
 git commit -m "$finalMessage"
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
@@ -87,6 +83,9 @@ Write-Host "Commit effectué."
 $tagName = (Read-Host "Ajouter un tag (laisser vide pour aucun)").Trim()
 
 Write-Host "Push en cours..."
+git push origin $currentBranch
+if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
 if (-not [string]::IsNullOrWhiteSpace($tagName)) {
 
   # Vérifie si le tag existe localement
