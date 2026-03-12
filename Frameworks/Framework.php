@@ -35,7 +35,7 @@ use const Firstruner\Frameworks\LoadingLists\DNA\Firstruner_Framework_DNAClasses
 
 class Framework
 {
-      public const FrameworkVersion = "3.3.0";
+      public const FrameworkVersion = "3.3.1";
 
       public static bool $VendorLoading = true;
 
